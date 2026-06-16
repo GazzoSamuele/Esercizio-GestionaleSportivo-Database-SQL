@@ -1,0 +1,3 @@
+- autenticazione / sicurezza CRSF TOKEN - hash Password
+    flusso registrazione : form, compiliamo i campi richiesti
+    

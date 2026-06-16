@@ -1,0 +1,22 @@
+INSERT INTO products (name, description, price) 
+VALUES ('PHP Starter Kit','A complete crud application for php', 29.00),
+		('Bootstrap Landing', 'A good frontend interface', 19.00),
+        ('Admin Dashboard', 'complete dashboard for beginners', 49.00);
+
+
+
+INSERT INTO session_types (name, description, duration_hours, price) 
+VALUES ('Starter','One hour focused',1, 50.00),
+		('Deep Dive', 'three hours for review',3, 130.00),
+        ('Full Day', 'full day for your project',8, 280.00);
+
+
+
+
+Comando mysql da cmd per push dello schema:
+
+//per cancellare il vecchio
+C:\xampp\mysql\bin\mysql -u root -e "DROP DATABASE mentoring_app;"
+
+//per fare il reseed
+C:\xampp\mysql\bin\mysql -u root < sql\schema.sql

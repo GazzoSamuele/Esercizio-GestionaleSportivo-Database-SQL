@@ -1,0 +1,178 @@
+------------------------------come selezionare tutti i clienti
+
+SELECT * FROM clienti;
+
+
+
+
+------------------------------visualizzare solo alcune colonne ad esempio nome ed email
+
+SELECT nome, email
+FROM clienti;
+
+
+
+
+
+------------------------------filtrare  i clienti maggiori di 30 anni
+
+SELECT * 
+FROM clienti
+WHERE eta > 30;
+
+
+
+
+
+------------------------------filtrare per nome = valore
+SELECT * 
+FROM clienti
+WHERE nome = 'Giovanni';
+
+
+
+
+
+------------------------------filtrare per range di eta
+SELECT * 
+FROM clienti
+WHERE eta > 36
+AND eta < 46;
+
+
+
+
+
+------------------------------Ordine decrescente dell eta
+SELECT *
+FROM clienti
+ORDER BY eta DESC;
+
+
+
+
+------------------------------Ordine crescente dell eta
+SELECT *
+FROM clienti
+ORDER BY eta ASC;
+
+
+
+
+
+
+------------------------------MODIFICA DELL email
+UPDATE clienti
+SET email = 'mario_nuova@mail.com'
+WHERE id = 1;
+
+
+
+
+
+------------------------------cancellare utente in base all id
+DELETE FROM clienti
+WHERE id = 1;
+
+
+
+
+
+------------------------------funzione di COUNT
+SELECT COUNT(*) AS totale_clienti
+FROM clienti;
+
+
+
+
+
+
+
+
+------------------------------CREO TABELLA PRODOTTI
+CREATE TABLE prodotti(
+  		
+    	id INT AUTO_INCREMENT PRIMARY KEY,
+    	nome VARCHAR(50),
+    	prezzo DECIMAL(10,2)
+    
+);
+
+
+
+
+
+------------------------------popolo tabella PRODOTTI
+
+INSERT INTO prodotti(nome, prezzo)
+
+VALUES  ('Mouse', 18),
+		('Tastiera', 54),
+        ('Monitor', 155);
+
+
+
+
+
+
+------------------------------funzione somma dei prezzi di tutti i prodotti
+SELECT SUM(prezzo) AS totale
+FROM prodotti;
+
+
+
+
+
+
+------------------------------media dei prezzi dei prodotti
+SELECT AVG(prezzo) AS media
+FROM prodotti;
+
+
+
+
+
+------------------------------trovare il prezzo piu alto dei prodotti
+SELECT MAX(prezzo)
+FROM prodotti;
+
+
+
+
+
+------------------------------trovare il prezzo piu basso dei prodotti
+SELECT MIN(prezzo)
+FROM prodotti;
+
+
+
+
+
+------------------------------LIKE, PER trovare i nomi che iniziano per G
+SELECT *
+FROM clienti
+WHERE nome LIKE 'G%';
+
+
+
+
+
+------------------------------LIKE, PER trovare i nomi che TERMINANO per I
+SELECT *
+FROM clienti
+WHERE nome LIKE '%i';
+
+
+
+
+------------------------------RANGE DI eta
+SELECT * 
+FROM clienti
+WHERE eta BETWEEN 20 AND 40;
+
+
+
+
+------------------------CANCELLARE DATABASE
+
+DROP DATABASE nom_database;
