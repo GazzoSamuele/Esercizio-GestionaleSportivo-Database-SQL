@@ -4,7 +4,7 @@
     session_start();
 
     //richiamo del singleton per attivare le PDO
-    require_once __DIR__ . '/classes/Db.php';
+    require_once __DIR__ . '/DB/classes/Db.php';
 
     $errors = [];
     $success = false;
@@ -50,28 +50,34 @@
 ?>
 <?php include 'header.php'?>
 
-<form action="" method="post" class="row g-3">
+<section class="sec sec--white">
+  <div class="container">
+    <div class="authbox">
+      <form action="" method="post" class="row g-3">
         <!-- se success esiste -->
         <?php if($success): ?>
 
             <div class="alert alert-success">
                 Registrazione succesfull! You can now <a href="login.php" class="alert-link">Login</a>
             </div>
-        
+
         <?php endif; ?>
 
-  <div class="col-md-6">
-    <label for="inputEmail4" class="form-label">Email</label>
-    <input type="email" class="form-control" name="email">
-  </div>
-  <div class="col-md-6">
-    <label for="inputPassword4" class="form-label">Password</label>
-    <input type="password" class="form-control" name="password">
-  </div>
+      <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email</label>
+        <input type="email" class="form-control" name="email">
+      </div>
+      <div class="col-md-6">
+        <label for="inputPassword4" class="form-label">Password</label>
+        <input type="password" class="form-control" name="password">
+      </div>
 
-  <div class="col-12">
-    <button type="submit" class="btn btn-primary">Entra</button>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Entra</button>
+      </div>
+      </form>
+    </div>
   </div>
-</form>
+</section>
 
 <?php include 'footer.php'?>

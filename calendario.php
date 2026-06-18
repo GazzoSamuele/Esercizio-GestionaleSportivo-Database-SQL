@@ -11,7 +11,6 @@
 <!-- ============ SEZIONE 1 — News (100vh) ============ -->
 <section class="sec sec--white">
   <div class="container">
-    <span class="tag tag--vh">Sezione 1 · 100vh</span>
     <h2>News & informazioni</h2>
     <p class="sub">Informazioni principali per il club e non solo.</p>
 

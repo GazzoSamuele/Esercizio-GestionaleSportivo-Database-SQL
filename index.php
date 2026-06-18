@@ -2,19 +2,23 @@
 
 <!-- ============ HERO ============ -->
 <section class="hero">
-  <div class="container">
-    <div class="ph hero__logo"><small>LOGO</small></div>
-    <h1>Gestionale società sportiva</h1>
-    <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
-    <div class="minicards">
-      <div class="minicard"><span class="icon">📖</span><b>Storia</b></div>
-      <div class="minicard"><span class="icon">📅</span><b>Calendario risultati</b></div>
-      <div class="minicard"><span class="icon">⚙️</span><b>Servizi</b></div>
-      <div class="minicard"><span class="icon">🏆</span><b>Palmarès</b></div>
-    </div>
-    <div class="hero__cta">
-      <a href="#servizi" class="btn btn--primary">Scopri i servizi</a>
-      <a href="contatti.php" class="btn btn--ghost">Contattaci</a>
+  <div class="container_hero">
+    <video autoplay loop muted playsinline class="video-background">
+    <source src="hero-sport.mp4" type="video/mp4">
+  </video>
+    <div class="hero_content">
+      <h1>Gestionale società sportiva</h1>
+      <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
+      <div class="minicards">
+        <div class="minicard"><span class="icon">📖</span><b>Storia</b></div>
+        <div class="minicard"><span class="icon">📅</span><b>Calendario risultati</b></div>
+        <div class="minicard"><span class="icon">⚙️</span><b>Servizi</b></div>
+        <div class="minicard"><span class="icon">🏆</span><b>Palmarès</b></div>
+      </div>
+      <div class="hero__cta">
+        <a href="#servizi" class="btn btn--primary">Scopri i servizi</a>
+        <a href="contatti.php" class="btn btn--ghost">Contattaci</a>
+      </div>
     </div>
   </div>
 </section>

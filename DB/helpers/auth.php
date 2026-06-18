@@ -66,6 +66,7 @@ function logOut(): void
     session_destroy();
 
     header('Location: login.php');
+    exit;
 }
 
 ?>

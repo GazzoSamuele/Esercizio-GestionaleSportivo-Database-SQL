@@ -1,6 +1,6 @@
 -- CREO IL DATABASE
 
-    -- creo il db se non esiste dal nome mentoring_app
+    -- creo il db se non esiste dal nome dbSocietaSportiva_app
     CREATE DATABASE IF NOT EXISTS dbSocietaSportiva_app
         CHARACTER SET utf8mb4
         COLLATE utf8mb4_unicode_ci;
@@ -44,9 +44,9 @@ USE dbSocietaSportiva_app;
      -- bisogna inserire le proprietà in ordine altrimenti si rischia di inserire un 
      -- valore di una proprietà diversa da quella in cui vogliamo effettivamente inserirla
 
-     --esempio di inserimento di un nuovo utente(non è da scrivere in questo file però)
+     -- esempio di inserimento di un nuovo utente(non è da scrivere in questo file però)
 
- TABELLA CLIENTI CREATA
+-- TABELLA CLIENTI CREATA
 --   CREATE TABLE clienti(
 	
 --     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,61 +55,61 @@ USE dbSocietaSportiva_app;
 --     email VARCHAR(100),
 --     eta INT
 -- );
-DATI INSERITI DEI CLIENTI DELLA TABELLA 
+-- DATI INSERITI DEI CLIENTI DELLA TABELLA 
 -- INSERT INTO clienti(nome , cognome, email, eta)
 
 -- VALUES  ('Luca', 'Bianchi','luca@test.it', 48),
 -- 		('Marcello', 'Gallo','marcello@test.it', 34),
 --         ('Giovanni', 'Verdi','giovanni@test.it', 45);
 
---SESSION Types
+-- SESSION Types
 
-CREATE TABLE IF NOT EXISTS session_types(
+-- CREATE TABLE IF NOT EXISTS session_types(
 
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    duration_hours INT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     name VARCHAR(100) NOT NULL,
+--     description TEXT,
+--     duration_hours INT NOT NULL,
+--     price DECIMAL(10,2) NOT NULL,
+--     is_active BOOLEAN NOT NULL DEFAULT TRUE,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
-) ENGINE=InnoDB;
+-- ) ENGINE=InnoDB;
 
 
---Bookings 
+-- Bookings 
 
-CREATE TABLE IF NOT EXISTS bookings (
+-- CREATE TABLE IF NOT EXISTS bookings (
 
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    session_type_id INT NOT NULL,
+--     id INT AUTO_INCREMENT PRIMARY KEY,
+--     user_id INT NOT NULL,
+--     session_type_id INT NOT NULL,
 
-    scheduled_at DATETIME NOT NULL,
-    price_paid DECIMAL(10,2) NOT NULL,
-    status ENUM('pending','paid','cencelled','completed') NOT NULL DEFAULT 'pending',
-    payment_ref VARCHAR(100) DEFAULT NULL,
-    notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--     scheduled_at DATETIME NOT NULL,
+--     price_paid DECIMAL(10,2) NOT NULL,
+--     status ENUM('pending','paid','cancelled','completed') NOT NULL DEFAULT 'pending',
+--     payment_ref VARCHAR(100) DEFAULT NULL,
+--     notes TEXT,
+--     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    -- tabella aggiuntiva creata per fare riferimento ad un'altra determinata tabella
-    -- user(id) viene cancellato a cascata tramite ON DELETE CASCADE
-    FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
+--     -- tabella aggiuntiva creata per fare riferimento ad un'altra determinata tabella
+--     -- user(id) viene cancellato a cascata tramite ON DELETE CASCADE
+--     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
 
-    FOREIGN KEY(session_type_id) REFERENCES session_types(id)
+--     FOREIGN KEY(session_type_id) REFERENCES session_types(id)
 
-) ENGINE=InnoDB;
+-- ) ENGINE=InnoDB;
 
 -- serve per cancellare un determinato database da phpmyadimn
 -- DROP DATABASE dbSocietaSportiva_app;
 
 -- per ricreare un database
 -- 1) cmd
--- 2) // C:\xampp\htdocs\Gestionale-Hockey>C:\xampp\mysql\bin\mysql.exe -u root -p < sql\schema.sql
+-- 2) // C:\xampp\htdocs\Gestionale-Hockey>C:\xampp\mysql\bin\mysql.exe -u root -p < DB\sql\schema.sql
 
 
 
---Products
+-- Products
 
 CREATE TABLE IF NOT EXISTS products(
 
@@ -118,14 +118,14 @@ CREATE TABLE IF NOT EXISTS products(
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
-    file_path VARCHAR(255) DEFAULT NULL,
     image_path VARCHAR(255) DEFAULT NULL,
+    category VARCHAR(50) NOT NULL DEFAULT 'sport',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 ) ENGINE=InnoDB;
 
 
---Purchases
+-- Purchases
 
 CREATE TABLE IF NOT EXISTS purchases(
 
@@ -135,10 +135,24 @@ CREATE TABLE IF NOT EXISTS purchases(
 
     price_paid DECIMAL(10,2) NOT NULL,
     status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
-    payment_ref VARCHAR(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES products(id)
+
+) ENGINE=InnoDB;
+
+-- Calendar
+
+CREATE TABLE IF NOT EXISTS calendar(
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    squadra_casa VARCHAR(50) NOT NULL,
+    squadra_ospite VARCHAR(50) NOT NULL,
+    data DATE NOT NULL,
+    categoria VARCHAR(15) NOT NULL,
+    gol_casa INT NOT NULL,
+    gol_ospite INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 ) ENGINE=InnoDB;

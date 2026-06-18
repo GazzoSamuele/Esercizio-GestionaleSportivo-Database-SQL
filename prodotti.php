@@ -1,3 +1,33 @@
+<?php
+  require_once __DIR__ . '/DB/helpers/auth.php';
+  require_once __DIR__ . '/DB/classes/Products.php';
+  require_once __DIR__ . '/DB/classes/Purchases.php'; 
+
+  $prodotti = Products::findIsActive(true);
+
+  if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'prenota')
+    {
+      $u = currentUser();
+
+      // per ordinare devi essere loggato
+      if(!$u){
+        heaeder('Location: login.php');
+        exit;
+      }
+    
+    $productId = (int) ($_POST['product_id'] ?? 0);
+    // recupero il prodotto (per il prezzo)
+    $prod = Products::findById($productId);
+
+    if($prod){
+      Purchases::create($u['id'], $productId, $prod['price'], 'pending');
+    }
+
+    header('Location: prodotti.php?ok=1');
+    exit;
+  }
+?>
+
 <?php include 'header.php'?>
 
 <section class="pagehead">
@@ -7,10 +37,9 @@
   </div>
 </section>
 
-<!-- ============ SEZIONE 1 — Scelta categoria (100vh) ============ -->
+<!-- ============ SEZIONE 1 ============ -->
 <section class="sec sec--white">
   <div class="container">
-    <span class="tag tag--vh">Sezione 1 · 100vh</span>
     <h2>Scegli la categoria</h2>
     <p class="sub">Apri "Scopri di più" per allungare la card e vedere attrezzature e marche presenti nella sezione.</p>
 

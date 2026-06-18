@@ -5,7 +5,7 @@
     session_start();
 
     //richiamo del singleton per attivare le PDO
-    require_once __DIR__ . '/classes/Db.php';
+    require_once __DIR__ . '/DB/classes/Db.php';
 
     // raccolgo tutti gli errori e imposto succes=false
     $errors = [];

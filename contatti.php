@@ -43,7 +43,7 @@
         </div>
 
         <div class="code-banner">
-          🔒 Per registrarti serve un <b>&nbsp;codice univoco&nbsp;</b>, rilasciato dalla società dopo il pagamento della quota.
+          🔒 Per registrarti serve il codice univoco rilasciato dalla società dopo il pagamento della quota.
         </div>
 
         <div class="field"><label>Codice univoco</label><input type="text" placeholder="ES. HC-2026-XXXX"></div>
