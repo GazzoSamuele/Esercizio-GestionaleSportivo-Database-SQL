@@ -1,31 +1,68 @@
 <?php
+  session_start();
+
   require_once __DIR__ . '/DB/helpers/auth.php';
   require_once __DIR__ . '/DB/classes/Products.php';
   require_once __DIR__ . '/DB/classes/Purchases.php'; 
 
   $prodotti = Products::findIsActive(true);
 
-  if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'prenota')
-    {
-      $u = currentUser();
+ if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_to_cart'){
+    $prodId = (int) ($_POST['product_id'] ?? 0);
+    $_SESSION['cart'][] = $prodId;
+    header('Location: prodotti.php#prodotti');
+    exit;
 
-      // per ordinare devi essere loggato
+    // ORA E' CON IL REDIRECT DELLA PAGINA, POI CAMBIO LA FUNZIONE AL SEMPLICE
+    // LOG DELL'UTENTE, PERCHE' IL CARICAMENTO CHE TI SPOSTA DA FASTIDIO
+    //(SOLO PER VERIFICARE LA POSIZIONE DELLA PAGINA)
+}
+
+  // Questo blocco scatta solo quando premi "Prenota (ritiro)
+
+  if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout'){
+      
+      $u = currentUser();  // Un ordine deve essere legato a un utente.
       if(!$u){
-        heaeder('Location: login.php');
+      //se non sei loggato, non posso creare l'ordine, ti mando al login
+        header('Location: login.php');
         exit;
       }
+
+      // scorro ogni id nel carrello
+      foreach(($_SESSION['cart'] ?? []) as $prodId){
+        // per quell'id, recupero il prodotto dal DB 
+        $prodotto = Products::findById($prodId);
+
+        if($prodotto){
+          // creo una riga d'ordine: questo utente, questo prodotto, 
+          // questo prezzo, stato "pending". Una per ogni prodotto del carrello.
+          Purchases::create($u['id'], $prodId, $prodotto['price'], 'pending');
+        }
+      }
+
+    // finito di ordinare, svuoto il carrello 
+    $_SESSION['cart'] = [];
+    //  ricarico la pagina pulita
+    header('Location: prodotti.php?ordine=ok#prodotti');
+    exit; 
+  }     
+    // $productId = (int) ($_POST['product_id'] ?? 0);
+    // // recupero il prodotto (per il prezzo)
+    // $prod = Products::findById($productId);
+
+    // // ti indica che il prodotto non è stato trovato 
+    // if(!$prod){ 
+    //   die('❌ PRODOTTO NON TROVATO, id = ' . $productId); }   
+
+    // Purchases::create($u['id'], $productId, $prod['price'], 'pending');
+
+    // // messaggio facoltativo per indicare che l'ordine è stato creato correttamente
+    // // die('✅ ORDINE CREATO!');   
     
-    $productId = (int) ($_POST['product_id'] ?? 0);
-    // recupero il prodotto (per il prezzo)
-    $prod = Products::findById($productId);
-
-    if($prod){
-      Purchases::create($u['id'], $productId, $prod['price'], 'pending');
-    }
-
-    header('Location: prodotti.php?ok=1');
-    exit;
-  }
+    // header('Location: prodotti.php?ok=1');
+    // exit;
+  
 ?>
 
 <?php include 'header.php'?>
@@ -87,7 +124,7 @@
 </section>
 
 <!-- ============ SEZIONE 2 — Prodotti + sidebar ============ -->
-<section class="sec sec--bg">
+<section class="sec sec--bg" id="prodotti">
   <div class="container">
     <span class="tag">Sezione 2</span>
     <h2>I prodotti</h2>
@@ -95,19 +132,35 @@
 
     <div class="layout-shop">
       <!-- griglia prodotti -->
-      <div class="prod-grid">
-        <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Casco portiere</h3>
-            <p class="desc">Descrizione del prodotto, materiali e caratteristiche.</p>
-            <div class="opts"><span class="opt">S</span><span class="opt">M</span><span class="opt">L</span></div>
-            <div class="swatch"><i style="background:#0B2545"></i><i style="background:#E63946"></i><i style="background:#fff"></i></div>
-            <div class="product__foot"><span class="price">€ 120</span><button class="add">+</button></div>
-          </div>
-        </article>
+        <div class="prod-grid">
+          <?php foreach($prodotti as $prod): ?>
+            <article class="product">
+                <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="">
+                <div class="product__body">
+                    <h3><?= htmlspecialchars($prod['name']) ?></h3>
+                    <p class="desc"><?= htmlspecialchars($prod['description']) ?></p>
+                    <div class="product__foot">
+                        <span class="price">€ <?= htmlspecialchars($prod['price']) ?></span>
 
-        <article class="product">
+                        <!-- Questo rappresenta che se il prodotto non è disponibile, quando si
+                             clicca su prenota, compare un messaggio "non disponibile" -->
+                        <?php if($prod['is_active']): ?>
+                        <form action="prodotti.php" method="post">
+                            <input type="hidden" name="action" value="add_to_cart">
+                            <input type="hidden" name="product_id" value="<?= (int) $prod['id'] ?>">
+                            <button type="submit" class="btn btn--primary">Prenota</button>
+                        </form>
+                        <!-- Questo è il messaggio non disponibile di prima -->
+                        <?php else: ?>
+                          <span class="badge">Non disponibile</span>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </article>
+          <?php endforeach; ?>
+        </div>
+
+        <!-- <article class="product">
           <div class="ph"><small>FOTO PRODOTTO</small></div>
           <div class="product__body">
             <h3>Bastone composito</h3>
@@ -161,22 +214,61 @@
             <div class="product__foot"><span class="price">€ 15</span><button class="add">+</button></div>
           </div>
         </article>
-      </div>
+      </div> -->
 
       <!-- sidebar selezione -->
-      <aside class="sidebar">
-        <h3>Prodotti selezionati</h3>
-        <div class="cart-item"><span class="ph thumb"></span><div><b>Casco portiere</b><br><small>Taglia M · 1×</small></div></div>
-        <div class="cart-item"><span class="ph thumb"></span><div><b>Bastone composito</b><br><small>Senior · 1×</small></div></div>
-        <div class="sidebar__total"><span>Totale</span><span>€ 209</span></div>
-        <a class="btn btn--primary btn--block">Prenota (ritiro in club house)</a>
+        <aside class="sidebar">
+          <h3>Prodotti selezionati</h3>
 
-        <div class="helper">
-          <b>Non sai cosa scegliere?</b>
-          Scrivi direttamente all'allenatore per capire quale attrezzatura scegliere in base alle tue abilità.
-          <div style="margin-top:10px"><a class="btn btn--ghost btn--block">Scrivi all'allenatore</a></div>
-        </div>
-      </aside>
+          <?php
+          $cart = $_SESSION['cart'] ?? [];   // il carrello (array di id), [] se vuoto
+          $totale = 0;
+          ?>
+
+          <?php foreach($cart as $pid): ?>
+              <?php $prod = Products::findById($pid); ?>
+              <?php if($prod): ?>
+                  <div class="cart-item">
+                      <span class="ph thumb">
+                          <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="">
+                        </span>
+                      <div>
+                          <b><?= htmlspecialchars($prod['name']) ?></b><br>
+                          <small>€ <?= htmlspecialchars($prod['price']) ?></small>
+                      </div>
+                      <!-- <button 
+                          type="button" 
+                          class="btn btn-sm btn-outline-danger" 
+                          title="Delete product cart"
+                          data-bs-toggle="modal" 
+                          data-bs-target="#modalDelete<?= (int) $prod['id'] ?>">
+                              <i class="fas fa-trash"></i>
+                      </button> -->
+                  </div>
+                  <?php $totale += (float) $prod['price']; ?>
+              <?php endif; ?>
+          <?php endforeach; ?>
+
+          <?php if(empty($cart)): ?>
+              <p class="note">Nessun prodotto selezionato.</p>
+          <?php endif; ?>
+
+          <div class="sidebar__total">
+              <span>Totale</span>
+              <span>€ <?= number_format($totale, 2) ?></span>
+          </div>
+
+          <!-- il bottone checkout -->
+          <form action="prodotti.php" method="post">
+              <input type="hidden" name="action" value="checkout">
+              <button type="submit" class="btn btn--primary btn--block">Prenota (ritiro in club house)</button>
+          </form>
+
+          <div class="helper">
+              <b>Non sai cosa scegliere?</b>
+              Scrivi direttamente all'allenatore...
+          </div>
+    </aside>
     </div>
   </div>
 </section>
