@@ -1,4 +1,11 @@
-<?php $pagina = basename($_SERVER['PHP_SELF']); ?>
+<?php 
+    $pagina = basename($_SERVER['PHP_SELF']); 
+
+    require_once __DIR__ . '/DB/helpers/auth.php';
+
+    $isLoggato = currentUser();
+
+?>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -10,6 +17,7 @@
     <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Gestionale-Hockey/style.css">
     <title>Gestionale Club Sportivo</title>
+    
 </head>
 <body>
     <header>
@@ -27,7 +35,11 @@
                     <a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a>
                     <a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a>
                     <a class="nav-link <?= $pagina === 'contatti.php' ? 'active' : '' ?>" href="contatti.php">Contatti</a>
-                    <a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="login.php">Login</a>
+                    <?php if($isLoggato): ?>
+                    <a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="dashboard.php"><?= htmlspecialchars($isLoggato['name']) ?></a>
+                         <?php else: ?>
+                                <a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="login.php">Area riservata</a>
+                    <?php endif; ?>
                 </ul>
             </div>
         </div>

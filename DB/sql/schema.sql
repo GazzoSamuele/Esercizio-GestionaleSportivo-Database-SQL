@@ -28,6 +28,10 @@ USE dbSocietaSportiva_app;
 
         password VARCHAR(255) NOT NULL,
 
+        -- colonna della scadenza quota codice univoco
+        -- DEFAULT NULL così gli utenti esistenti non si rompono
+        quota_scadenza DATE DEFAULT NULL,
+
         -- ENUM rappresenta un dato che può avere due valori
         -- inserendo ENUM il database rifiuta ogni tipo di dato a parte che 'client' e 'admin'?
         -- il valore di DEFAULT stampato sarà 'client'
@@ -155,4 +159,50 @@ CREATE TABLE IF NOT EXISTS calendar(
     gol_ospite INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
+) ENGINE=InnoDB;
+
+-- News & Comunication
+
+CREATE TABLE IF NOT EXISTS news(
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(150) NOT NULL,
+    description TEXT NOT NULL,
+    image_path VARCHAR(255) DEFAULT NULL,
+    -- ENUM distingue le notizie sportive dalle comunicazioni societarie 
+    -- una voce può essere solo 'notizia' o 'comunicazione'
+    tipo ENUM('notizia', 'comunicazione') NOT NULL DEFAULT 'notizia',
+    data DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB;
+
+-- Codice (monouso)
+CREATE TABLE IF NOT EXISTS registration_codes(
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    -- con vincolo UNIQUE serve per cercarlo e validarlo
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    -- used serve per utilizzare il codice una volta e eliminarlo
+    used_by INT DEFAULT NULL,
+    -- used_by per sapere quale utente ha usato quel codice
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY(used_by) REFERENCES users(id) ON DELETE SET NULL
+
+) ENGINE=InnoDB;
+
+-- Richiesta informazioni nel form dei contatti
+
+CREATE TABLE IF NOT EXISTS info_requests(
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL, 
+    phone VARCHAR(30) DEFAULT NULL, 
+    categoria VARCHAR(50) DEFAULT NULL,
+    messaggio TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    
 ) ENGINE=InnoDB;

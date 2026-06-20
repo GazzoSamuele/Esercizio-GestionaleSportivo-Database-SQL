@@ -1,8 +1,9 @@
 <?php
 
+require_once __DIR__ . '/../classes/Db.php';
 // Funzioni di supporto per autenticazione e gestione della sessione utente
 
-//
+
 // una funzione con 'void' non restituisce nulla
 function requireLogin(): void
 {
@@ -30,7 +31,28 @@ function requireAdmin(): void
         exit;
     }
 
+}
 
+// Blocca i client con la quota scaduta. Gli admin sono esenti.
+function requireQuotaValida(): void
+{
+    requireLogin();
+
+    // gli admin non pagano la quota → passano sempre
+    if(($_SESSION['user_role'] ?? '') === 'admin'){
+        return;
+    }
+
+    $pdo  = Db::connect();
+    $stmt = $pdo->prepare('SELECT quota_scadenza FROM users WHERE id = :id');
+    $stmt->execute([':id' => $_SESSION['user_id']]);
+    $scadenza = $stmt->fetchColumn();   // la data oppure false
+
+    // quota assente o passata → fuori
+    if(empty($scadenza) || $scadenza < date('Y-m-d')){
+        header('Location: /Gestionale-Hockey/quotaScaduta.php');
+        exit;
+    }
 }
 // una funzione che restuisce il currentUser
 // la funzione restuisce un array ma non è obbligatorio

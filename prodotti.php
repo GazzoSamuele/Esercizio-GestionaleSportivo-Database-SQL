@@ -5,7 +5,7 @@
   require_once __DIR__ . '/DB/classes/Products.php';
   require_once __DIR__ . '/DB/classes/Purchases.php'; 
 
-  $prodotti = Products::findIsActive(true);
+  $prodotti = Products::findIsActive(true) ?? [];
 
  if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'add_to_cart'){
     $prodId = (int) ($_POST['product_id'] ?? 0);
@@ -21,6 +21,8 @@
   // Questo blocco scatta solo quando premi "Prenota (ritiro)
 
   if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout'){
+
+
       
       $u = currentUser();  // Un ordine deve essere legato a un utente.
       if(!$u){
@@ -47,21 +49,6 @@
     header('Location: prodotti.php?ordine=ok#prodotti');
     exit; 
   }     
-    // $productId = (int) ($_POST['product_id'] ?? 0);
-    // // recupero il prodotto (per il prezzo)
-    // $prod = Products::findById($productId);
-
-    // // ti indica che il prodotto non è stato trovato 
-    // if(!$prod){ 
-    //   die('❌ PRODOTTO NON TROVATO, id = ' . $productId); }   
-
-    // Purchases::create($u['id'], $productId, $prod['price'], 'pending');
-
-    // // messaggio facoltativo per indicare che l'ordine è stato creato correttamente
-    // // die('✅ ORDINE CREATO!');   
-    
-    // header('Location: prodotti.php?ok=1');
-    // exit;
   
 ?>
 
@@ -126,10 +113,12 @@
 <!-- ============ SEZIONE 2 — Prodotti + sidebar ============ -->
 <section class="sec sec--bg" id="prodotti">
   <div class="container">
-    <span class="tag">Sezione 2</span>
     <h2>I prodotti</h2>
     <p class="sub">Rappresentazione tramite card. Seleziona i prodotti: compaiono nella barra laterale.</p>
 
+    <?php if(($_GET['ordine'] ?? '') === 'ok'): ?>
+      <div class="alert alert-success">Ordine effettuato! Ritiro in club house.</div>
+    <?php endif; ?>
     <div class="layout-shop">
       <!-- griglia prodotti -->
         <div class="prod-grid">
@@ -151,70 +140,14 @@
                             <button type="submit" class="btn btn--primary">Prenota</button>
                         </form>
                         <!-- Questo è il messaggio non disponibile di prima -->
-                        <?php else: ?>
-                          <span class="badge">Non disponibile</span>
+                        <!-- <?php else: ?>
+                          <span class="badge">Non disponibile</span> -->
                         <?php endif; ?>
                     </div>
                 </div>
             </article>
           <?php endforeach; ?>
         </div>
-
-        <!-- <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Bastone composito</h3>
-            <p class="desc">Descrizione del prodotto, flex e curva disponibili.</p>
-            <div class="opts"><span class="opt">Junior</span><span class="opt">Senior</span></div>
-            <div class="swatch"><i style="background:#111"></i><i style="background:#E63946"></i></div>
-            <div class="product__foot"><span class="price">€ 89</span><button class="add">+</button></div>
-          </div>
-        </article>
-
-        <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Spallacci protettivi</h3>
-            <p class="desc">Descrizione del prodotto, vestibilità e protezione.</p>
-            <div class="opts"><span class="opt">S</span><span class="opt">M</span><span class="opt">L</span><span class="opt">XL</span></div>
-            <div class="swatch"><i style="background:#0B2545"></i><i style="background:#fff"></i></div>
-            <div class="product__foot"><span class="price">€ 65</span><button class="add">+</button></div>
-          </div>
-        </article>
-
-        <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Guanti portiere</h3>
-            <p class="desc">Descrizione del prodotto e taglie disponibili.</p>
-            <div class="opts"><span class="opt">M</span><span class="opt">L</span></div>
-            <div class="swatch"><i style="background:#0B2545"></i><i style="background:#E63946"></i></div>
-            <div class="product__foot"><span class="price">€ 95</span><button class="add">+</button></div>
-          </div>
-        </article>
-
-        <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Gomitiere</h3>
-            <p class="desc">Descrizione del prodotto, protezione e comfort.</p>
-            <div class="opts"><span class="opt">S</span><span class="opt">M</span><span class="opt">L</span></div>
-            <div class="swatch"><i style="background:#111"></i><i style="background:#fff"></i></div>
-            <div class="product__foot"><span class="price">€ 40</span><button class="add">+</button></div>
-          </div>
-        </article>
-
-        <article class="product">
-          <div class="ph"><small>FOTO PRODOTTO</small></div>
-          <div class="product__body">
-            <h3>Paradenti</h3>
-            <p class="desc">Descrizione del prodotto e colori disponibili.</p>
-            <div class="opts"><span class="opt">Unica</span></div>
-            <div class="swatch"><i style="background:#0B2545"></i><i style="background:#E63946"></i><i style="background:#fff"></i></div>
-            <div class="product__foot"><span class="price">€ 15</span><button class="add">+</button></div>
-          </div>
-        </article>
-      </div> -->
 
       <!-- sidebar selezione -->
         <aside class="sidebar">
@@ -236,14 +169,6 @@
                           <b><?= htmlspecialchars($prod['name']) ?></b><br>
                           <small>€ <?= htmlspecialchars($prod['price']) ?></small>
                       </div>
-                      <!-- <button 
-                          type="button" 
-                          class="btn btn-sm btn-outline-danger" 
-                          title="Delete product cart"
-                          data-bs-toggle="modal" 
-                          data-bs-target="#modalDelete<?= (int) $prod['id'] ?>">
-                              <i class="fas fa-trash"></i>
-                      </button> -->
                   </div>
                   <?php $totale += (float) $prod['price']; ?>
               <?php endif; ?>

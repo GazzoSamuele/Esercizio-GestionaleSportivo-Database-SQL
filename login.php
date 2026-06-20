@@ -14,67 +14,90 @@
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
 
-        //validazione di entrambi i campi
-        if($email === '' || $password === ''){
-            $errors = 'Email and Password are required';
-        }else {
+        // validazione per singolo campo
+        if($email === ''){
+            $errors[] = 'L\'email è obbligatoria';
+        } elseif(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+            $errors[] = 'Formato email non valido';
+        }
+
+        if($password === ''){
+            $errors[] = 'La password è obbligatoria';
+        }
+
+        // se i campi sono validi, controllo le credenziali nel DB
+        if(empty($errors)){
             $connettoreDb = Db::connect();
 
-            // controllo che l'email non sia registrata già
+            // recupero l'utente con quella email
             $stmt = $connettoreDb->prepare('SELECT id, name, email, password, role FROM users WHERE email = :email');
             $stmt->execute([':email' => $email]);
 
             $user = $stmt->fetch();
 
-            //verifico se la password con password_verify
-
+            // verifico la password con password_verify
             if($user && password_verify($password, $user['password'])){
 
-                //rigenero la sessione
+                // rigenero la sessione
                 session_regenerate_id(true);
 
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_role'] = $user['role'];
 
-                //login riuscito
+                // login riuscito
                 header('Location: dashboard.php');
                 exit;
-                
-                }
+            }
 
-            $errors = 'Credentials Invalid!';
-
+            // se arrivo qui, email o password non combaciano
+            $errors[] = 'Credenziali non valide';
         }
     }
 ?>
 <?php include 'header.php'?>
 
+<!-- intestazione pagina -->
+<section class="pagehead">
+  <div class="container">
+    <span class="tag">Area riservata</span>
+    <h1>Accedi al gestionale</h1>
+  </div>
+</section>
+
 <section class="sec sec--white">
   <div class="container">
     <div class="authbox">
-      <form action="" method="post" class="row g-3">
-        <!-- se success esiste -->
-        <?php if($success): ?>
+      <form action="" method="post">
 
-            <div class="alert alert-success">
-                Registrazione succesfull! You can now <a href="login.php" class="alert-link">Login</a>
-            </div>
-
+        <!-- messaggi di errore (validazione campi + credenziali) -->
+        <?php if(!empty($errors)): ?>
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              <?php foreach($errors as $e): ?>
+                <li><?= htmlspecialchars($e) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
         <?php endif; ?>
 
-      <div class="col-md-6">
-        <label for="inputEmail4" class="form-label">Email</label>
-        <input type="email" class="form-control" name="email">
-      </div>
-      <div class="col-md-6">
-        <label for="inputPassword4" class="form-label">Password</label>
-        <input type="password" class="form-control" name="password">
-      </div>
 
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Entra</button>
-      </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" name="email" class="form-control"
+                 value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" name="password" class="form-control" required>
+        </div>
+
+        <button type="submit" class="btn btn-warning w-100">Entra</button>
+
+        <p class="mt-3 text-center">
+          Non hai un account? <a href="register.php">Registrati</a>
+        </p>
       </form>
     </div>
   </div>

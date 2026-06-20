@@ -7,7 +7,7 @@
     </div>
 </footer>
 
-    <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="cmd.js"></script>
+    <script src="/Gestionale-Hockey/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="/Gestionale-Hockey/cmd.js"></script>
 </body>
 </html>

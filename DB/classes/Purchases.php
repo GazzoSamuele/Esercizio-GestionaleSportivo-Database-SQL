@@ -55,4 +55,16 @@ class Purchases
 
             return (int) $pdo->lastInsertId();
         }
+
+        public static function delete(int $id): bool
+        {
+            $pdo = Db::connect();
+
+            $stmt = $pdo->prepare(
+                'DELETE FROM purchases WHERE id = :id'
+            );
+
+            return $stmt->execute([':id' => $id]);
+            
+        }
     }

@@ -2,7 +2,6 @@
 
 require_once __DIR__ . '/Db.php';
 
-
 class Products 
 {
     public static function findById(int $id): ?array

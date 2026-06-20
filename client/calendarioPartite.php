@@ -4,7 +4,7 @@
 require_once __DIR__ . '/../DB/helpers/auth.php';
 require_once __DIR__ . '/../DB/classes/Calendar.php';
 
-requireLogin();
+requireQuotaValida();
 $user = currentUser();                  // utente loggato (id, name, role)
 
 // $partite = Calendar::findAllPartite();  // tutte le partite
@@ -24,59 +24,11 @@ if ($categoria !== '') {
 
 $iniziale = strtoupper(substr($user['name'], 0, 1));
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="/Gestionale-Hockey/style.css">
-    <title>Calendario — Gestionale Società Sportiva</title>
-</head>
-<body>
-<div class="dash">
-    <!-- ============ SIDEBAR ============ -->
-    <aside class="dash-sidebar">
-        <div class="dash-brand">
-            <i class="fas fa-hockey-puck"></i>
-            <span>Gestionale Società Sportiva</span>
-        </div>
+    <?php 
+    
+    $titoloPagina = 'Calendario Partite'; 
 
-        <nav class="dash-nav">
-            <a href="/Gestionale-Hockey/dashboard.php" class="dash-link">
-                <i class="fas fa-house"></i><span>Dashboard</span>
-            </a>
-            <a href="/Gestionale-Hockey/calendario.php" class="dash-link active">
-                <i class="fas fa-calendar-days"></i><span>Calendario</span>
-            </a>
-            <a href="/Gestionale-Hockey/prodotti.php" class="dash-link">
-                <i class="fas fa-bag-shopping"></i><span>Prodotti</span>
-            </a>
-            <?php if($user['role'] === 'admin'): ?>
-            <div class="sidebar-divider hide-on-collapse"></div>
-                <!--
-                <a href="admin.php" class="sidebar-link">
-                    <i class="fas fa-user-shield"></i>
-                    <span class="hide-on-collapse">Admin Panel</span>
-                </a>-->
-                <a href="/Gestionale-Hockey/admin/users.php" class="dash-link">
-                    <i class="fas fa-user-shield"></i>
-                    <span class="hide-on-collapse">Manage Users</span>
-                </a>
-            <?php endif; ?>
-        </nav>
-
-        <div class="dash-user">
-            <div class="dash-avatar"><?= htmlspecialchars($iniziale) ?></div>
-            <div class="dash-user-info">
-                <strong><?= htmlspecialchars($user['name']) ?></strong>
-                <small><?= htmlspecialchars($user['role']) ?></small>
-            </div>
-        </div>
-        <a href="/Gestionale-Hockey/logout.php" class="dash-logout">
-            <i class="fas fa-right-from-bracket"></i> Logout
-        </a>
-    </aside>
+    include __DIR__ . '/../admin/headerDashboard.php'; ?>
 
     <!-- ============ MAIN ============ -->
     <main class="dash-main">

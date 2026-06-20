@@ -4,6 +4,8 @@
 require_once __DIR__ . '/../DB/helpers/auth.php';
 //richiamo le funzioni degli users
 require_once __DIR__ . '/../DB/classes/riferimentoUtenti.php';
+//richiamo le funzioni degli InfoRequest
+require_once __DIR__ . '/../DB/classes/InfoRequest.php';
 
 // dico al pc che sono l'amministratore
 requireAdmin();
@@ -41,7 +43,7 @@ $user = currentUser();
         }
 
         //role
-        if(!in_array($role, ['admin', 'client'], false)){
+        if(!in_array($role, ['admin', 'client'], true)){
             $errors[] = 'Invalid Role';
         }
 
@@ -95,7 +97,7 @@ $user = currentUser();
             if(User::updateUser($id, $name, $email, $role)){
                 $success = "User updated!";
             }else{
-                $errors[] = 'You have not change anything';
+                $errors[] = 'Email già usata da un altro utente';
             };
         }
     }
@@ -120,73 +122,32 @@ $user = currentUser();
 
     }
 
+    // FUNZIONE CHE CAMBIA IL RUOLO (toggle)
+    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'toggle_role'){
+        $id      = (int) ($_POST['user_id'] ?? 0);
+        $newRole = $_POST['new_role'] ?? '';
+
+        if($id === (int) $user['id']){
+            $errors[] = "Non puoi cambiare il ruolo a te stesso";
+        } elseif(User::updateRole($id, $newRole)){
+            $success = "Ruolo aggiornato!";
+        } else {
+            $errors[] = "Ruolo non valido";
+        }
+    }
+
+    $request = InfoRequest::findAllRequest();
+    
     $users = User::findAllUsers();
 
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-    <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Gestionale-Hockey/style.css">
-    <title>Gestione Utenti — Gestionale Società Sportiva</title>
-</head>
-<body>
-
-<div class="dash">
-
-    <!-- ============ SIDEBAR (uguale alla dashboard) ============ -->
-    <aside class="dash-sidebar">
-        <div class="dash-brand">
-            <i class="fas fa-hockey-puck"></i>
-            <span>Gestionale Società Sportiva</span>
-        </div>
-
-        <nav class="dash-nav">
-            <a href="/Gestionale-Hockey/dashboard.php" class="dash-link">
-                <i class="fas fa-house"></i><span>Dashboard</span>
-            </a>
-            <hr>
-            <!-- VERSIONE DASHBOARD CLIENT -->
-            <?php if($user['role'] === 'client'): ?>
-            <a href="/Gestionale-Hockey/client/calendarioPartite.php" class="dash-link">
-                <i class="fas fa-calendar-days"></i><span>Calendario</span>
-            </a>
-
-            <a href="/Gestionale-Hockey/client/ordiniEffettuati.php" class="dash-link">
-                <i class="fas fa-calendar-days"></i><span>Ordini</span>
-            </a>
-
-            <!-- <a href="/Gestionale-Hockey/client/news.php" class="dash-link">
-                <i class="fas fa-calendar-days"></i><span>News</span>
-            </a> -->
-        
-            <?php endif; ?>
-
-            <!-- SE L'UTENTE è ADMIN, MI MOSTRI QUESTO -->
-            <?php if($user['role'] === 'admin'): ?>
-            <a href="/Gestionale-Hockey/admin/users.php" class="dash-link active">
-                <i class="fas fa-user-shield"></i><span>Utenti Registrati</span>
-            </a>
-            <a href="/Gestionale-Hockey/admin/ordiniProdottiRicevuti.php" class="dash-link">
-                <i class="fas fa-user-shield"></i><span>Ordini Effettuati</span>
-            </a>
-            <?php endif; ?>
-        </nav>
-
-        <div class="dash-user">
-            <div class="dash-avatar"><?= htmlspecialchars(strtoupper(substr($user['name'], 0, 1))) ?></div>
-            <div class="dash-user-info">
-                <strong><?= htmlspecialchars($user['name']) ?></strong>
-                <small><?= htmlspecialchars($user['role']) ?></small>
-            </div>
-        </div>
-        <a href="/Gestionale-Hockey/logout.php" class="dash-logout">
-            <i class="fas fa-right-from-bracket"></i> Logout
-        </a>
-    </aside>
+    <?php 
+  
+    $titoloPagina = 'Gestione Utenti'; 
+  
+    include __DIR__ . '/headerDashboard.php'; 
+    
+   ?>
 
     <!-- ============ MAIN ============ -->
     <main class="dash-main">
@@ -243,91 +204,135 @@ $user = currentUser();
         </section>
 
         <!-- ---- tabella utenti ---- -->
-        <section class="dash-panel">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i> Utenti registrati</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Ruolo</th>
-                        <th>Iscritto</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($users as $u): ?>
-                    <tr>
-                        <!-- prendo l'id dell'utente singolo -->
-                        <td>#<?= (int) $u['id'] ?></td>
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2><i class="fas fa-users"></i> Utenti registrati</h2>
+        </div>
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Ruolo</th>
+                    <th>Iscritto</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($users as $u): ?>
+                <tr>
+                    <!-- prendo l'id dell'utente singolo -->
+                    <td>#<?= (int) $u['id'] ?></td>
 
-                        <td>
-                            <?= htmlspecialchars($u['name']) ?>
-                            <!-- Se siamo noi gli utenti in tabella colora di warning -->
-                            <?php if((int) $u['id'] === (int) $user['id']): ?>
-                            <small class="text-warning">(tu)</small>
-                            <?php endif ?>
-                        </td>
+                    <td>
+                        <?= htmlspecialchars($u['name']) ?>
+                        <!-- Se siamo noi gli utenti in tabella colora di warning -->
+                        <?php if((int) $u['id'] === (int) $user['id']): ?>
+                        <small class="text-warning">(tu)</small>
+                        <?php endif ?>
+                    </td>
 
-                        <td><?= htmlspecialchars($u['email']) ?></td>
+                    <td><?= htmlspecialchars($u['email']) ?></td>
 
-                        <td><?= htmlspecialchars($u['role']) ?></td>
+                    <td><?= htmlspecialchars($u['role']) ?></td>
 
-                        <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
-                        <td><?= date('d M Y', strtotime($u['created_at'])) ?></td>
+                    <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
+                    <td><?= date('d M Y', strtotime($u['created_at'])) ?></td>
 
-                        <td class="text-end">
-                            <?php if((int) $u['id'] !== (int) $user['id']): ?>
+                    <td class="text-end">
+                        <?php if((int) $u['id'] !== (int) $user['id']): ?>
 
-                                <!-- PULSANTE DI EDIT -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-info" 
-                                    title="Edit user"
-                                    data-bs-toggle="modal" data-bs-target="#modalEdit<?= (int) $u['id'] ?>">
-                                        <i class="fas fa-edit"></i>
-                                </button>
-                                <?php include __DIR__ . '/modalEdit.php'; ?>
+                        <!-- PULSANTE DI EDIT -->
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-outline-info" 
+                            title="Edit user"
+                            data-bs-toggle="modal" data-bs-target="#modalEdit<?= (int) $u['id'] ?>">
+                                <i class="fas fa-edit"></i>
+                        </button>
+                        <?php include __DIR__ . '/modali/UserEditModal.php'; ?>
 
-                                <!-- PULSANTE DI DELETE -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-danger" 
-                                    title="Delete user"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalDelete<?= (int) $u['id'] ?>">
-                                        <i class="fas fa-trash"></i>
-                                </button>
-                                <?php include __DIR__ . '/modalDelete.php'; ?>
+                        <!-- PULSANTE DI DELETE -->
+                        <button 
+                            type="button" 
+                            class="btn btn-sm btn-outline-danger" 
+                            title="Delete user"
+                            data-bs-toggle="modal" 
+                            data-bs-target="#modalDelete<?= (int) $u['id'] ?>">
+                                <i class="fas fa-trash"></i>
+                        </button>
+                        <?php include __DIR__ . '/modali/UserDeleteModal.php'; ?>
 
-                                <!-- TOGGLE ROLE  ENT_QUOTES -> converte anche gli apostrofi cosi la stringa JS non si rompe -->
-                                <form action="" method="post" class="d-inline">
-                                    <input type="hidden" name="action"   value="toggle_role">
-                                    <input type="hidden" name="user_id"  value="<?= (int) $u['id'] ?>">
-                                    <input type="hidden" name="new_role" value="<?= $u['role'] === 'admin' ? 'client' : 'admin' ?>">
-                                    <button type="submit"
-                                            class="btn btn-sm btn-outline-warning"
-                                            title="Make <?= $u['role'] === 'admin' ? 'client' : 'admin' ?>"
-                                            onclick="return confirm('Change role of <?= htmlspecialchars($u['name'], ENT_QUOTES) ?>?');">
-                                        <i class="fas fa-exchange-alt"></i>
-                                    </button>
-                                </form>
+                        <!-- TOGGLE ROLE  ENT_QUOTES -> converte anche gli apostrofi cosi la stringa JS non si rompe -->
+                        <form action="" method="post" class="d-inline">
+                            <input type="hidden" name="action"   value="toggle_role">
+                            <input type="hidden" name="user_id"  value="<?= (int) $u['id'] ?>">
+                            <input type="hidden" name="new_role" value="<?= $u['role'] === 'admin' ? 'client' : 'admin' ?>">
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-warning"
+                                    title="Make <?= $u['role'] === 'admin' ? 'client' : 'admin' ?>"
+                                    onclick="return confirm('Change role of <?= htmlspecialchars($u['name'], ENT_QUOTES) ?>?');">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </form>
 
-                            <?php else: ?>
-                                <span class="dash-current">— sei tu —</span>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php if(empty($users)): ?>
-                    <tr><td colspan="6" class="dash-empty">Nessun utente registrato.</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </section>
+                        <?php else: ?>
+                            <span class="dash-current">— sei tu —</span>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <?php endforeach; ?>
+                <?php if(empty($users)): ?>
+                <tr><td colspan="6" class="dash-empty">Nessun utente registrato.</td></tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
+        <!-- ---- tabella richieste informazioni ---- -->
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2><i class="fas fa-users"></i> Richieste informazioni</h2>
+        </div>
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Telefono</th>
+                    <th>Categoria</th>
+                    <th>Messaggio</th>
+                    <th>Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($request as $req): ?>
+                <tr>
+                    <td>#<?= (int) $req['id'] ?></td>
+
+                    <td>
+                        <?= htmlspecialchars($req['name']) ?>
+                    </td>
+
+                    <td><?= htmlspecialchars($req['email']) ?></td>
+
+                    <td><?= htmlspecialchars($req['phone']) ?></td>
+
+                    <td><?= htmlspecialchars($req['categoria']) ?></td>
+
+                    <td><?= htmlspecialchars($req['messaggio']) ?></td>
+
+                    <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
+                    <td><?= date('d M Y', strtotime($req['created_at'])) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            <?php if(empty($request)): ?>
+            <tr><td colspan="7" class="dash-empty">Nessuna nuova richiesta di informazioni</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
     </main>
 
 </div>

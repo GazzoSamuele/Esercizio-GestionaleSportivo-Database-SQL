@@ -1,3 +1,11 @@
+<?php
+require_once __DIR__ . '/DB/classes/News.php';
+
+// le ultime 3 news/comunicazioni
+// findAllNews è in ordine crescente (vecchie → nuove): inverto e prendo le prime 3
+$newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
+?>
+
 <?php include 'header.php'?>
 
 <!-- intestazione pagina -->
@@ -15,29 +23,29 @@
     <p class="sub">Informazioni principali per il club e non solo.</p>
 
     <div class="news-grid">
-      <article class="news">
-        <div class="ph"><small>IMG</small></div>
-        <span class="badge">Trasferta</span>
-        <h3>Trasferta categoria U15</h3>
-        <p>Ritrovo, orari e indicazioni per la prossima trasferta.</p>
-      </article>
-      <article class="news">
-        <div class="ph"><small>IMG</small></div>
-        <span class="badge">Società</span>
-        <h3>Riunione societaria</h3>
-        <p>Convocazione e ordine del giorno della prossima riunione.</p>
-      </article>
-      <article class="news">
-        <div class="ph"><small>IMG</small></div>
-        <span class="badge">Attrezzatura</span>
-        <h3>Nuova attrezzatura disponibile</h3>
-        <p>Avviso sulle nuove forniture disponibili in club house.</p>
-      </article>
+      <?php foreach($newsOnSite as $n): ?>
+        <article class="news">
+          <?php if(!empty($n['image_path'])): ?>
+            <img src="<?= htmlspecialchars($n['image_path']) ?>"
+                 alt="<?= htmlspecialchars($n['title']) ?>"
+                 style="width:100%;height:140px;object-fit:cover;border-radius:8px;">
+          <?php else: ?>
+            <div class="ph"><small>IMG</small></div>
+          <?php endif; ?>
+            <span class="badge"><?= htmlspecialchars(ucfirst($n['tipo'])) ?></span>
+            <h3><?= htmlspecialchars($n['title']) ?></h3>
+            <p><?= htmlspecialchars($n['description']) ?></p>
+          </article>
+          <?php endforeach; ?>
+
+          <?php if(empty($newsOnSite)): ?>
+            <p class="note">Nessuna news al momento.</p>
+        <?php endif; ?>
     </div>
   </div>
 </section>
 
-<!-- ============ SEZIONE 2 — Risultati & Classifica (100vh) ============ -->
+<!-- ============ SEZIONE 2 — Risultati & Classifica ============ -->
 <section class="sec sec--bg">
   <div class="container">
     <span class="tag tag--vh">Sezione 2 · 100vh</span>

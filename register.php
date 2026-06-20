@@ -11,20 +11,23 @@
     $errors = [];
     $success = false;
     
-    // CODICE RIPETIBILE!!!
-    // se la chiamata è post
     if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         // recuperare dagli inout i valori del form
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = trim($_POST['password'] ?? '');
         $conferma_password = trim($_POST['confermaPassword'] ?? '');
+        $codice = trim($_POST['codice'] ?? '');
 
         // validazione con messaggi
 
         // se è vuoto lascio un'errore
         if ($name === '') {
             $errors[] = 'Name is required';
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $errors[] = 'Email non valida';
         }
     
         if (strlen($password) < 8) {
@@ -34,8 +37,11 @@
             $errors[] = 'Passwords do not match';
         }
 
-        // se la validazione passa interroghiamo il Db
+        if ($codice === '') {
+            $errors[] = 'il codice societario è obbligatorio';
+        }
 
+        // se la validazione passa interroghiamo il Db
         // se il container dell'errore è vuoto 
         if(empty($errors)) {
             // connetto il db
@@ -47,22 +53,56 @@
 
             if($stmt->fetch()){
                 $errors[] = 'This email is already registered';
-            
-            } else {
-                // faccio l'hash della password
-                // crea un numero alfanumerico di sicurezza
-                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+        }
+            // il codice esiste? è ancora libero?
 
-                //inserimento del nuovo utente
-                $stmt = $connettoreDb->prepare('INSERT INTO users(name, email, password, role)
-                                       VALUES (:name, :email, :password, :role)');
+            $codeRow = null;
+            if (empty($errors)) {
+                $stmt = $connettoreDb->prepare(
+                    'SELECT id 
+                     FROM registration_codes
+                     WHERE code = :code AND used = 0'
+                );
+                $stmt->execute([':code' => $codice]);
+                $codeRow = $stmt->fetch();
+                if (!$codeRow) {
+                    $errors[] = 'Codice non valido o già utilizzato';
+                }
+            }
+
+            // funzione che crea l'utente e consuma il codice legandolo all'user per sempre
+
+            if(empty($errors)) {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                $quotaScadenza = date('Y-m-d', strtotime('+10 months'));
+
+                $stmt = $connettoreDb->prepare(
+                    'INSERT INTO users(
+                        name, email, password, role, quota_scadenza)
+                     VALUES (:name, :email, :password, :role, :quota_scadenza)'
+                );
                 $stmt->execute([
                     ':name' => $name,
                     ':email' => $email,
                     ':password' => $passwordHash,
-                    ':role' => 'client'
-
+                    ':role' => 'client',
+                    ':quota_scadenza' => $quotaScadenza,
                 ]);
+
+                $newUserId = (int) $connettoreDb->lastInsertId();
+
+                //evidenzio il codice come usato da questo nuovo utente
+
+                $stmt = $connettoreDb->prepare(
+                    // used = 1 segna il codice come usato. Da ora la SELECT ... WHERE used = 0 non lo troverà più 
+                    // non si potrà più registrare un altro account con quel codice.
+                    'UPDATE registration_codes SET used = 1,
+                    used_by = :uid WHERE id = :cid'
+
+                    // used_by = :uid → scrive quale utente l'ha usato 
+                    // WHERE id = :cid → aggiorna solo quella riga del codice
+                );
+                $stmt->execute([':uid' => $newUserId, ':cid' => $codeRow['id']]);
 
                 $success = true;
             }
@@ -144,9 +184,19 @@
                                          required>
                         </div>
 
+                        <div class="mb-3">
+                            <label for="codice">Codice societario</label>
+                            <input type="text"
+                                class="form-control"
+                                name="codice"
+                                value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>"
+                                placeholder="Inserisci il tuo codice dato dalla società dopo il pagamento della quota"
+                                required>
+                        </div>
+
                         <button type="submit" class="btn-warning btn-outline-warning w-100">Crea Account</button>
 
-                        <p>Se hai già un account vai alla pagina login <a href="login.php" class="bg-warning border-danger"></a></p>
+                        <p>Se hai già un account vai alla pagina login <a href="login.php" class="bg-warning border-danger">Login</a></p>
                     </form>
                 </div>
             </div>
