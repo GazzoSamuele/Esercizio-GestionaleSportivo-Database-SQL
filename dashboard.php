@@ -46,6 +46,8 @@ $partite = Calendar::findAllPartite();  // tutte le partite
     </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   
+
 <script src="/Gestionale-Hockey/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
 </body>

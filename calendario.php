@@ -1,17 +1,20 @@
 <?php
-require_once __DIR__ . '/DB/classes/News.php';
+
+  require_once __DIR__ . '/DB/classes/News.php';
 
 // le ultime 3 news/comunicazioni
 // findAllNews è in ordine crescente (vecchie → nuove): inverto e prendo le prime 3
 $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
+
 ?>
+
+<?php require_once __DIR__ . '/DB/data/datiFittizi.php'; ?>
 
 <?php include 'header.php'?>
 
 <!-- intestazione pagina -->
 <section class="pagehead">
   <div class="container">
-    <span class="tag">Calendario</span>
     <h1>Risultati & calendario</h1>
   </div>
 </section>
@@ -47,47 +50,253 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
 
 <!-- ============ SEZIONE 2 — Risultati & Classifica ============ -->
 <section class="sec sec--bg">
-  <div class="container">
-    <span class="tag tag--vh">Sezione 2 · 100vh</span>
-    <h2>Partite & classifica</h2>
-    <p class="sub">Tabella dinamica: a sinistra i risultati delle partite, a destra la classifica. Cambia in base alla categoria scelta.</p>
+  <!-- Risultati Squadre -->
+    <div class="container">
+      <h2>Risultati Squadre</h2>
 
-    <div class="filter">
-      <span>Categoria:</span>
-      <button class="tab active">Prima squadra</button>
-      <button class="tab">Under 19</button>
-      <button class="tab">Under 15</button>
-      <button class="tab">Under 13</button>
-    </div>
+      <div class="categories" >
+        <button class="category active" data-tab="primaSquadra">Prima squadra</button>
+        <button class="category" data-tab="under19">Under 19</button>
+        <button class="category" data-tab="under15">Under 15</button>
+        <button class="category" data-tab="under13">Under 13</button>
+      </div> 
+      
+      <!-- PRIMA SCQUADRA -->
 
-    <div class="two-col">
-      <!-- risultati -->
-      <div class="panel">
-        <div class="panel__head">Risultati partite</div>
-        <div class="match"><span class="team"><span class="dot"></span> Squadra Casa</span><span class="score">3 - 1</span><span class="team">Squadra Ospite <span class="dot"></span></span></div>
-        <div class="match"><span class="team"><span class="dot"></span> Squadra Casa</span><span class="score">2 - 2</span><span class="team">Squadra Ospite <span class="dot"></span></span></div>
-        <div class="match"><span class="team"><span class="dot"></span> Squadra Casa</span><span class="score">0 - 4</span><span class="team">Squadra Ospite <span class="dot"></span></span></div>
-        <div class="match"><span class="team"><span class="dot"></span> Squadra Casa</span><span class="score">5 - 2</span><span class="team">Squadra Ospite <span class="dot"></span></span></div>
-        <div class="match"><span class="team"><span class="dot"></span> Squadra Casa</span><span class="score">1 - 1</span><span class="team">Squadra Ospite <span class="dot"></span></span></div>
-      </div>
-
-      <!-- classifica -->
-      <div class="panel">
-        <div class="panel__head">Classifica campionato</div>
-        <table class="standings">
-          <thead><tr><th>#</th><th>Squadra</th><th>G</th><th>Pt</th></tr></thead>
+      <div class="tab-panel" data-panel="primaSquadra">
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Posizione</th>
+                <th>Squadra</th>
+                <th>Partite Totali</th>
+                <th>Gol Fatti</th>
+                <th>Gol Subiti</th>
+              </tr>
+          </thead>
           <tbody>
-            <tr><td class="pos">1</td><td>Team A</td><td>12</td><td>27</td></tr>
-            <tr><td class="pos">2</td><td>Team B</td><td>12</td><td>24</td></tr>
-            <tr><td class="pos">3</td><td>Team C</td><td>12</td><td>21</td></tr>
-            <tr><td class="pos">4</td><td>Team D</td><td>12</td><td>18</td></tr>
-            <tr><td class="pos">5</td><td>Team E</td><td>12</td><td>15</td></tr>
-            <tr><td class="pos">6</td><td>Team F</td><td>12</td><td>12</td></tr>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 10; $i++): ?>
+            <tr>
+              <td class="pos"><?= $i + 1 ?></td>
+              <td><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td><?= rand(1, 35) ?></td>
+              <td><?= rand(0, 40) ?></td>
+              <td><?= rand(0, 30) ?></td>
+            </tr>
+          <?php endfor; ?>
           </tbody>
         </table>
       </div>
     </div>
-    <p class="note">Di default si mostrano i risultati e la classifica della prima squadra.</p>
+      <!-- under19 -->
+     <div class="tab-panel" data-panel="under19" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Posizione</th>
+                <th>Squadra</th>
+                <th>Partite Totali</th>
+                <th>Gol Fatti</th>
+                <th>Gol Subiti</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 10; $i++): ?>
+            <tr>
+              <td class="pos"><?= $i + 1 ?></td>
+              <td><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td><?= rand(1, 30) ?></td>
+              <td><?= rand(0, 50) ?></td>
+              <td><?= rand(0, 50) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      
+      <!-- under15 -->
+     <div class="tab-panel" data-panel="under15" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Posizione</th>
+                <th>Squadra</th>
+                <th>Partite Totali</th>
+                <th>Gol Fatti</th>
+                <th>Gol Subiti</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 10; $i++): ?>
+            <tr>
+              <td class="pos"><?= $i + 1 ?></td>
+              <td><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td><?= rand(1, 20) ?></td>
+              <td><?= rand(0, 35) ?></td>
+              <td><?= rand(0, 30) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      
+      <!-- under13 -->
+     <div class="tab-panel" data-panel="under13" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Posizione</th>
+                <th>Squadra</th>
+                <th>Partite Totali</th>
+                <th>Gol Fatti</th>
+                <th>Gol Subiti</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 10; $i++): ?>
+            <tr>
+              <td class="pos"><?= $i + 1 ?></td>
+              <td><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td><?= rand(1, 15) ?></td>
+              <td><?= rand(0, 25) ?></td>
+              <td><?= rand(0, 25) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>          
+<!------------------------------------------->
+    <!-- Classifica Risultati Squadre -->
+  <div class="container">
+    <h2>Classifica Del Campionato</h2>
+
+    <div class="results" >
+      <button class="result active" data-tab="prima_squadra">Prima squadra</button>
+      <button class="result" data-tab="under_19">Under 19</button>
+      <button class="result" data-tab="under_15">Under 15</button>
+      <button class="result" data-tab="under_13">Under 13</button>
+    </div> 
+    
+    <!-- PRIMA SCQUADRA -->
+
+      <div class="results-panel" data-panel="prima_squadra">
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Squadra Casa</th>
+                <th>Risultato</th>
+                <th>Squadra Ospite</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 6; $i++): ?>
+            <tr>
+              <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
+              <td class="team"><?= htmlspecialchars($squadre[$i + 6]) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- under19 -->
+      <div class="results-panel" data-panel="under_19" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Squadra Casa</th>
+                <th>Risultato</th>
+                <th>Squadra Ospite</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 6; $i++): ?>
+            <tr>
+              <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
+              <td class="team"><?= htmlspecialchars($squadre[$i + 6]) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      
+      <!-- under15 -->
+      <div class="results-panel" data-panel="under_15" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Squadra Casa</th>
+                <th>Risultato</th>
+                <th>Squadra Ospite</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 6; $i++): ?>
+            <tr>
+              <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
+              <td class="team"><?= htmlspecialchars($squadre[$i + 6]) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+      
+      <!-- under13 -->
+      <div class="results-panel" data-panel="under_13" hidden>
+        <div class="table"> 
+        <table>
+          <thead>
+              <tr>
+                <th>Squadra Casa</th>
+                <th>Risultato</th>
+                <th>Squadra Ospite</th>
+              </tr>
+          </thead>
+          <tbody>
+          <?php shuffle($squadre);?>
+            
+            <?php for($i = 0; $i < 6; $i++): ?>
+            <tr>
+              <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
+              <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
+              <td class="team"><?= htmlspecialchars($squadre[$i + 6]) ?></td>
+            </tr>
+          <?php endfor; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>        
+
   </div>
 </section>
 

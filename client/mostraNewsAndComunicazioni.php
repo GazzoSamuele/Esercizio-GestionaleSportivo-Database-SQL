@@ -46,7 +46,7 @@ $user = currentUser();
                     <tr>
                         <th>ID</th>
                         <th>Titolo</th>
-                        <th>Immagine</th>
+                        <!-- <th>Immagine</th> -->
                         <th>Descrizione</th>
                         <th>Data</th>
                         <th>Tipo di Comunicazione</th>
@@ -61,14 +61,14 @@ $user = currentUser();
                         <td><?= htmlspecialchars($nw['title']) ?></td>
 
                         <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
-                        <td>
+                        <!-- <td>
                             <?php if(!empty($nw['image_path'])): ?>
                                 <img src="<?= htmlspecialchars($nw['image_path']) ?>" alt="<?= htmlspecialchars($nw['title']) ?>"
                                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
                             <?php else: ?>
                                 <span class="dash-current">—</span>
                             <?php endif; ?>
-                        </td>
+                        </td> -->
 
                         <td><?= htmlspecialchars($nw['description']) ?></td>
 

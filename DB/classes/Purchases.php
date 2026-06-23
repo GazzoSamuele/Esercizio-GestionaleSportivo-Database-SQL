@@ -37,6 +37,38 @@ class Purchases
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
+        // FUNZIONI PER LA DASHBORD E PER I GRAFICI
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function incassoPerMese(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+                // SUM(price_paid) è la funzione di aggregazione(somma), serve per avere il totale della colonna di tutti i singoli incassi
+                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS mese, SUM(price_paid) AS totale
+                FROM purchases
+                WHERE status = 'paid'
+                GROUP BY mese
+                ORDER BY mese"
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function contaPerStato(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+                
+                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS status, SUM(price_paid) AS totale
+                FROM purchases
+                WHERE status = 'paid'
+                GROUP BY status
+                ORDER BY status"
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
         // funzione che crea un nuovo prodotto da inserire nel DB
 
         public static function create(int $userId, int $productId, string $pricePaid, string $status = 'pending'): int

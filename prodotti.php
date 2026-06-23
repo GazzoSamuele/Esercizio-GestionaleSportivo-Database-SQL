@@ -56,7 +56,6 @@
 
 <section class="pagehead">
   <div class="container">
-    <span class="tag">Prodotti</span>
     <h1>Lo shop del club</h1>
   </div>
 </section>
@@ -117,7 +116,7 @@
     <p class="sub">Rappresentazione tramite card. Seleziona i prodotti: compaiono nella barra laterale.</p>
 
     <?php if(($_GET['ordine'] ?? '') === 'ok'): ?>
-      <div class="alert alert-success">Ordine effettuato! Ritiro in club house.</div>
+      <div class="alert alert--success">Ordine effettuato! Ritiro in club house.</div>
     <?php endif; ?>
     <div class="layout-shop">
       <!-- griglia prodotti -->
@@ -131,18 +130,13 @@
                     <div class="product__foot">
                         <span class="price">€ <?= htmlspecialchars($prod['price']) ?></span>
 
-                        <!-- Questo rappresenta che se il prodotto non è disponibile, quando si
-                             clicca su prenota, compare un messaggio "non disponibile" -->
                         <?php if($prod['is_active']): ?>
                         <form action="prodotti.php" method="post">
                             <input type="hidden" name="action" value="add_to_cart">
                             <input type="hidden" name="product_id" value="<?= (int) $prod['id'] ?>">
                             <button type="submit" class="btn btn--primary">Prenota</button>
                         </form>
-                        <!-- Questo è il messaggio non disponibile di prima -->
-                        <!-- <?php else: ?>
-                          <span class="badge">Non disponibile</span> -->
-                        <?php endif; ?>
+                      <?php endif; ?>
                     </div>
                 </div>
             </article>

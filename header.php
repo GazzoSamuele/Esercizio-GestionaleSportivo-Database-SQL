@@ -21,27 +21,34 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient">
-        <div class="container">
-            <a class="navbar-brand logo" href="index.php"></a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav2">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient fixed-top">
+            <div class="container-fluid">
+
+            <!-- hamburger: appare solo sotto lg, apre l'offcanvas -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                    data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav2">
-                <ul class="navbar-nav ms-auto">
-                    <a class="nav-link <?= $pagina === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a>
-                    <a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a>
-                    <a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a>
-                    <a class="nav-link <?= $pagina === 'contatti.php' ? 'active' : '' ?>" href="contatti.php">Contatti</a>
+
+            <!-- offcanvas: inline su desktop (≥lg), a scomparsa su mobile -->
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                <div class="offcanvas-header">
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <ul class="navbar-nav">
+                        <li class="nav-item"><a class="nav-link <?= $pagina === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a></li>
+                        <li class="nav-item"><a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a></li>
+                        <li class="nav-item"><a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a></li>
+                        <li class="nav-item"><a class="nav-link <?= $pagina === 'contatti.php' ? 'active' : '' ?>" href="contatti.php">Contatti</a></li>
                     <?php if($isLoggato): ?>
-                    <a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="dashboard.php"><?= htmlspecialchars($isLoggato['name']) ?></a>
-                         <?php else: ?>
-                                <a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="login.php">Area riservata</a>
+                        <li class="nav-item"><a class="nav-link-login" href="dashboard.php"><?= htmlspecialchars($isLoggato['name']) ?></a></li>
+                    <?php else: ?>
+                        <li class="nav-item"><a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="login.php">Area riservata</a></li>
                     <?php endif; ?>
                 </ul>
+                </div>
             </div>
         </div>
-        </nav>
-    </header>
+    </nav>
+</header>
