@@ -40,4 +40,17 @@ class InfoRequest
         return (int) $pdo->lastInsertId();
 
     }
+    public static function countAll(): ?int
+    {   
+        
+        $pdo = Db::connect();
+
+            // sto inviando una funzione, quindi inseriamo solo query
+            $stmt = $pdo->query(
+                'SELECT COUNT(*) AS total FROM info_requests'            
+            );
+            return (int) $stmt->fetchColumn();
+
+    }
+
 }

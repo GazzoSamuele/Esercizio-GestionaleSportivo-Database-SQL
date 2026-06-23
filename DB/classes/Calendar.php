@@ -111,6 +111,49 @@ class Calendar
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+     // FUNZIONI PER LA DASHBORD E PER I GRAFICI
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function bilancioRisultati(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+
+                // UNION ALL serve a impilare i risultati di due query una sotto l'altra, come se attaccassi due elenchi
+                "SELECT squadra, SUM(punti) AS punti_totali
+                FROM 
+                (SELECT squadra_casa AS squadra,
+                        CASE WHEN gol_casa > gol_ospite THEN 3
+                        WHEN gol_casa = gol_ospite THEN 1
+                        ELSE 0 END AS punti
+                    FROM calendar  
+                
+                UNION ALL  
+                SELECT squadra_ospite AS squadra,
+                        CASE WHEN gol_ospite > gol_casa THEN 3
+                        WHEN gol_ospite = gol_casa THEN 1
+                        ELSE 0 END AS punti
+                    FROM calendar) AS classifica
+                GROUP BY squadra
+                ORDER BY punti_totali DESC LIMIT 5"
+
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function partitePerCategoria(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+
+                'SELECT categoria, COUNT(*) AS total FROM calendar
+                 GROUP BY categoria'     
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+        // FINE FUNZIONI PER LA DASHBORD E PER I GRAFICI
+
     // CRUD
 
     //create

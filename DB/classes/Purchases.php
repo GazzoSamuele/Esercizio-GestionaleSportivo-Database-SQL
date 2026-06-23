@@ -59,15 +59,29 @@ class Purchases
         {
             $pdo = Db::connect();
             $stmt = $pdo->query(
-                
-                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS status, SUM(price_paid) AS totale
-                FROM purchases
-                WHERE status = 'paid'
-                GROUP BY status
-                ORDER BY status"
+
+                'SELECT status, COUNT(*) AS total FROM purchases
+                 GROUP BY status'     
             );
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function topProdotti(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+
+               'SELECT p.name, COUNT(*) AS total 
+                FROM purchases purc
+                JOIN products p ON purc.product_id = p.id
+                GROUP BY p.id
+                ORDER BY COUNT(*) DESC LIMIT 5'
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // FINE FUNZIONI PER LA DASHBORD E PER I GRAFICI
 
         // funzione che crea un nuovo prodotto da inserire nel DB
 
@@ -100,3 +114,44 @@ class Purchases
             
         }
     }
+
+   
+//purchase.php
+
+// incassoPerMese()
+
+// Cosa rappresenta: quanti soldi ha incassato la società ogni mese, tra prodotti venuti ed iscrizioni fatte.
+// Dove finisce: un grafico a linee 
+
+// contaPerStato()
+
+// Cosa rappresenta: quanti ordini sono pending, paid, refunded.
+// Dove finisce: in una card che mostra gli iscritti o le richieste di informazioni ancora da visualizzare. essa si collega alla pagina ordiniProdottiRicevuti.php
+
+// topProdotti()
+
+// Cosa rappresenta: i 5 prodotti più venduti.
+// Dove finisce: una ciambella che rappresenta i 5 prodotti più venduti
+
+// //riferimentoUtenti.php
+// iscrittiPerMese()
+
+// Cosa rappresenta: quanti nuovi tesserati si sono iscritti ogni mese.
+// Dove finisce: un grafico a linee che mostra se la società sta crescendo o no.
+
+// contaQuote()
+
+// Cosa rappresenta: quanti soci hanno la quota valida / in scadenza / scaduta.
+// Dove finisce: 3 stat-card
+
+// //calendar.php
+
+// bilancioRisultati()
+
+// Cosa rappresenta: quante partite la squadra ha vinto / pareggiato / perso.
+// Dove finisce: una ciambella sportiva (verde vittorie, giallo pari, rosso sconfitte).
+
+// partitePerCategoria()
+
+// Cosa rappresenta: quante partite per categoria (es. Under14, Senior...).
+// Dove finisce: un grafico a barre.

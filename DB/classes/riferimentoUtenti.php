@@ -115,6 +115,41 @@ class User
         return $user !== false;
     }
 
+    // FUNZIONI PER LA DASHBORD E PER I GRAFICI
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function iscrittiPerMese(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+
+                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS mese, COUNT(*) AS totale
+                FROM users
+                GROUP BY mese
+                ORDER BY mese"
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // visualizzazione in dashboard di grafici e tabelle
+        public static function contaQuote(): array
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->query(
+
+            "SELECT 
+                COUNT(CASE WHEN quota_scadenza < CURDATE() THEN 1 END) AS conteggio_rifiutato,
+                COUNT(CASE WHEN quota_scadenza > CURDATE() THEN 1 END) AS conteggio_approvati,
+                COUNT(CASE WHEN quota_scadenza BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY ) THEN 1 END) AS conteggio_InScadenza
+            FROM users"
+
+            );
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        // FINE FUNZIONI PER LA DASHBORD E PER I GRAFICI
+
+
     // funzione della classe che CREA un UTENTE
 
     // int in fondo perchè l'utente restuisce un id
