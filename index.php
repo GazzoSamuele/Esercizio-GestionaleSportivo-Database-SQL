@@ -1,4 +1,19 @@
 <?php require_once __DIR__ . '/DB/data/datiFittizi.php'; ?>
+<?php
+require_once __DIR__ . '/DB/classes/Products.php';
+// prendo i prodotti per mostrare le loro foto nei riquadri dello shop
+$shopProdotti = Products::findAllProducts();
+
+// stampa la foto di un prodotto reale nel riquadro; se manca, lascia il placeholder grigio
+function shopThumb(array $prodotti, int $i): void {
+    if (!empty($prodotti[$i]['image_path'])) {
+        echo '<img class="thumb" src="' . htmlspecialchars($prodotti[$i]['image_path'])
+           . '" alt="' . htmlspecialchars($prodotti[$i]['name'] ?? '') . '">';
+    } else {
+        echo '<span class="ph thumb"></span>';
+    }
+}
+?>
 
 <?php include 'header.php'?>
 
@@ -183,9 +198,9 @@
 
     <div class="shop">
       <div class="shop__list">
-        <div class="shop__item"><span class="ph thumb"></span><b>Attrezzatura d'allenamento</b></div>
-        <div class="shop__item"><span class="ph thumb"></span><b>Attrezzatura giocatore</b></div>
-        <div class="shop__item"><span class="ph thumb"></span><b>Attrezzatura portieri</b></div>
+        <div class="shop__item"><?php shopThumb($shopProdotti, 0); ?><b>Attrezzatura d'allenamento</b></div>
+        <div class="shop__item"><?php shopThumb($shopProdotti, 1); ?><b>Attrezzatura giocatore</b></div>
+        <div class="shop__item"><?php shopThumb($shopProdotti, 2); ?><b>Attrezzatura portieri</b></div>
         <div class="shop__item"><span class="ph thumb"></span><b>Borsoni della società</b></div>
         
       </div>

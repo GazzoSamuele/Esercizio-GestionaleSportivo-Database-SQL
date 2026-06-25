@@ -18,17 +18,17 @@
 
         //nome
         if($name === ''){
-            $errors[] = "Name is required";
+            $errors[] = "Il nome è obbligatorio";
         }
 
         //email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] ="email is a invalid email address";
+            $errors[] ="Email non valida";
         }
 
         //phone
         if($phone === ''){
-            $errors[] = "Phone is required";
+            $errors[] = "Il telefono è obbligatorio";
         }
 
         //categoria
@@ -40,7 +40,7 @@
             // così facendo richiamo i parametri che mi servono
             InfoRequest::create($name, $email, $phone, $categoria, $messaggio);
 
-                $success = "Request created!";
+                $success = "Richiesta inviata!";
 
                 $_POST = [];
         }
@@ -83,7 +83,7 @@
               </div>
               <div>
                 <h6>Indirizzo</h6>
-                <p>123 Business Avenue, Suite 100<br>New York, NY 10001</p>
+                <p>Via dello Sport 12 38100 Trento</p>
               </div>
             </div>
 
@@ -93,7 +93,7 @@
               </div>
               <div>
                 <h6>Telefono</h6>
-                <p>+1 (555) 123-4567</p>
+                <p> +39 0461 123456</p>
               </div>
             </div>
 
@@ -103,7 +103,7 @@
               </div>
               <div>
                 <h6>Email</h6>
-                <p>contact@company.com</p>
+                <p>info@hockeyclub.it</p>
               </div>
             </div>
 

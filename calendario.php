@@ -50,8 +50,11 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
 
 <!-- ============ SEZIONE 2 — Risultati & Classifica ============ -->
 <section class="sec sec--bg">
-  <!-- Risultati Squadre -->
-    <div class="container">
+  <div class="container">
+    <div class="results-row">
+
+      <!-- Risultati Squadre -->
+      <div class="results-col">
       <h2>Risultati Squadre</h2>
 
       <div class="categories" >
@@ -180,9 +183,10 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
         </table>
       </div>
     </div>          
-<!------------------------------------------->
-    <!-- Classifica Risultati Squadre -->
-  <div class="container">
+      </div><!-- /results-col -->
+
+      <!-- Classifica Del Campionato -->
+      <div class="results-col">
     <h2>Classifica Del Campionato</h2>
 
     <div class="results" >
@@ -297,7 +301,9 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
       </div>
     </div>        
 
-  </div>
+      </div><!-- /results-col -->
+    </div><!-- /results-row -->
+  </div><!-- /container -->
 </section>
 
 <?php include 'footer.php'?>

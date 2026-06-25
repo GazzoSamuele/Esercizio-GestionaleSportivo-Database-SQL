@@ -28,17 +28,17 @@ $user = currentUser();
 
         //titolo
         if($title === ''){
-            $errors[] = "Title is required";
+            $errors[] = "Il titolo è obbligatorio";
         }
         
         //descrizione
         if($description === ''){
-            $errors[] = "Description is required";
+            $errors[] = "La descrizione è obbligatoria";
         }
 
         //tipo
         if(!in_array($tipo, ['notizia', 'comunicazione'], true)){
-            $errors[] = 'Invalid Type';
+            $errors[] = 'Tipo non valido';
         }
 
         // se non ho l'array di errors popolato,
@@ -48,7 +48,7 @@ $user = currentUser();
             // così facendo richiamo i parametri che mi servono
             News::createNews($title, $description, $data, $tipo, $image_path);
 
-            $success = "News created!";
+            $success = "News creata!";
             // una volta creato l'utente svuoto la post
             $_POST = [];
             }
@@ -68,15 +68,15 @@ $user = currentUser();
         $data = $_POST['data'] ?? date('Y-m-d');
 
         if($title === ''){
-            $errors[] = "Title is required";
+            $errors[] = "Il titolo è obbligatorio";
         }
 
         if($description === ''){
-            $errors[] = "Description is required";
+            $errors[] = "La descrizione è obbligatoria";
         }
 
         if(!in_array($tipo, ['notizia', 'comunicazione'], true)){
-            $errors[] = 'Invalid Type';
+            $errors[] = 'Tipo non valido';
         }
 
         // se non ho l'array di errors popolato,
@@ -86,7 +86,7 @@ $user = currentUser();
             // così facendo richiamo i parametri che mi servono
             News::updateNews($id, $title, $description, $data, $tipo, $image_path);
 
-            $success = "News Updated!";
+            $success = "News aggiornata!";
             // una volta creato l'utente svuoto la post
             $_POST = [];
         }
@@ -102,9 +102,9 @@ $user = currentUser();
     $targetID = (int) ($_POST['news_id'] ?? 0);
 
     if(News::delete($targetID)){
-        $success = "News deleted!";
+        $success = "News eliminata!";
     }else{
-        $errors[] = "Failed to delete news!";
+        $errors[] = "Eliminazione news fallita!";
     }
 
     }
@@ -220,7 +220,7 @@ $user = currentUser();
                                 <button 
                                     type="button" 
                                     class="btn btn-sm btn-outline-info" 
-                                    title="Edit Comunications"
+                                    title="Modifica comunicazione"
                                     data-bs-toggle="modal" data-bs-target="#modalEditNews<?= (int) $nw['id'] ?>">
                                         <i class="fas fa-edit"></i>
                                 </button>
@@ -230,7 +230,7 @@ $user = currentUser();
                                 <button 
                                     type="button" 
                                     class="btn btn-sm btn-outline-danger" 
-                                    title="Delete Comunications"
+                                    title="Elimina comunicazione"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modalDeleteNews<?= (int) $nw['id'] ?>">
                                         <i class="fas fa-trash"></i>

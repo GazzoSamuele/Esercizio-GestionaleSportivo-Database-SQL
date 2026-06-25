@@ -29,12 +29,12 @@ $user = currentUser();
 
         //nome
         if($name === ''){
-            $errors[] = "Name is required";
+            $errors[] = "Il nome è obbligatorio";
         }
 
         //email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] ="email is a invalid email address";
+            $errors[] ="Email non valida";
         }
 
         //password
@@ -57,7 +57,7 @@ $user = currentUser();
             if($newId === null){
                 $errors[] = 'This email is already registered';
             }else{
-                $success = "User created!";
+                $success = "Utente creato!";
 
                 // una volta creato l'utente svuoto la post
                 $_POST = [];
@@ -76,12 +76,12 @@ $user = currentUser();
         $role =$_POST['role'] ?? 'client';
 
         if($name === ''){
-            $errors[] = "Name is required";
+            $errors[] = "Il nome è obbligatorio";
         }
 
         //email
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] ="email is a invalid email address";
+            $errors[] ="Email non valida";
         }
 
         //role
@@ -95,7 +95,7 @@ $user = currentUser();
         if(empty($errors)){
             // così facendo richiamo i parametri che mi servono
             if(User::updateUser($id, $name, $email, $role)){
-                $success = "User updated!";
+                $success = "Utente aggiornato!";
             }else{
                 $errors[] = 'Email già usata da un altro utente';
             };
@@ -112,12 +112,12 @@ $user = currentUser();
 
     // mi dice se che se l'id è uguale all'user(cioè l'user loggato in quel momento)
     if($targetID === (int) $user['id']){
-        $errors[] = "You can't delete yourself !";
+        $errors[] = "Non puoi eliminare te stesso!";
     }elseif (User::delete($targetID)){
 
-        $success = "User deleted!";
+        $success = "Utente eliminato!";
     }else{
-        $errors[] = "Failed delete user!";
+        $errors[] = "Eliminazione utente fallita!";
     }
 
     }
@@ -247,7 +247,7 @@ $user = currentUser();
                         <button 
                             type="button" 
                             class="btn btn-sm btn-outline-info" 
-                            title="Edit user"
+                            title="Modifica utente"
                             data-bs-toggle="modal" data-bs-target="#modalEdit<?= (int) $u['id'] ?>">
                                 <i class="fas fa-edit"></i>
                         </button>
@@ -257,7 +257,7 @@ $user = currentUser();
                         <button 
                             type="button" 
                             class="btn btn-sm btn-outline-danger" 
-                            title="Delete user"
+                            title="Elimina utente"
                             data-bs-toggle="modal" 
                             data-bs-target="#modalDelete<?= (int) $u['id'] ?>">
                                 <i class="fas fa-trash"></i>

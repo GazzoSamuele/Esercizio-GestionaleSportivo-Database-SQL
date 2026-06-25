@@ -60,7 +60,6 @@
 <!-- intestazione pagina -->
 <section class="pagehead">
   <div class="container">
-    <span class="tag">Area riservata</span>
     <h1>Accedi al gestionale</h1>
   </div>
 </section>

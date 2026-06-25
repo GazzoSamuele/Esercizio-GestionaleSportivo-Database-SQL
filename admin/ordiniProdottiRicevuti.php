@@ -29,17 +29,17 @@ $user = currentUser();
 
         //nome
         if($name === ''){
-            $errors[] = "Name is required";
+            $errors[] = "Il nome è obbligatorio";
         }
 
         // descrizione
         if($descrizione === ''){
-            $errors[] = "Description is required";
+            $errors[] = "La descrizione è obbligatoria";
         }
 
         // immagine
         if($immagine === ''){
-            $errors[] = "Immagine is required";
+            $errors[] = "L'immagine è obbligatoria";
         }
 
         //prezzo
@@ -62,7 +62,7 @@ $user = currentUser();
             if($newId === null){
                 $errors[] = 'This product is already registered';
             }else{
-                $success = "Product created!";
+                $success = "Prodotto creato!";
 
                 // una volta creato l'utente svuoto la post
                 $_POST = [];
@@ -85,17 +85,17 @@ $user = currentUser();
 
         //nome
         if($name === ''){
-            $errors[] = "Name is required";
+            $errors[] = "Il nome è obbligatorio";
         }
 
         // descrizione
         if($descrizione === ''){
-            $errors[] = "Description is required";
+            $errors[] = "La descrizione è obbligatoria";
         }
 
         // immagine
         if($immagine === ''){
-            $errors[] = "Immagine is required";
+            $errors[] = "L'immagine è obbligatoria";
         }
 
         //prezzo
@@ -114,7 +114,7 @@ $user = currentUser();
             $id = (int) ($_POST['product_id'] ?? 0);
             // così facendo richiamo i parametri che mi servono
             if(Products::updateProduct($id, $name, $descrizione, $prezzo, $isActive, $immagine)){
-                $success = "Product updated!";
+                $success = "Prodotto aggiornato!";
             }else{
                 $errors[] = 'You have not change anything';
             };
@@ -131,9 +131,9 @@ $user = currentUser();
 
     // mi dice se che se l'id è uguale all'user(cioè l'user loggato in quel momento)
     if(Products::delete($targetID)){
-        $success = "Product deleted!";
+        $success = "Prodotto eliminato!";
     }else{
-        $errors[] = "Failed to delete product!";
+        $errors[] = "Eliminazione prodotto fallita!";
     }
 
     }
@@ -263,7 +263,7 @@ $user = currentUser();
                                 <button 
                                     type="button" 
                                     class="btn btn-sm btn-outline-info" 
-                                    title="Edit products"
+                                    title="Modifica prodotto"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modalEditProduct<?= (int) $p['id'] ?>">
                                         <i class="fas fa-edit"></i>
@@ -274,7 +274,7 @@ $user = currentUser();
                                 <button 
                                     type="button" 
                                     class="btn btn-sm btn-outline-danger" 
-                                    title="Delete products"
+                                    title="Elimina prodotto"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#modalDeleteProduct<?= (int) $p['id'] ?>">
                                         <i class="fas fa-trash"></i>

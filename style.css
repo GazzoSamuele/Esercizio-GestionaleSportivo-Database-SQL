@@ -39,6 +39,9 @@ body {
     background: var(--textColor1);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 img {
@@ -203,20 +206,53 @@ a {
 /* ------------------------------------------------------------
     Navbar
    ------------------------------------------------------------ */
+header{
+    position: fixed;
+    top: 30px;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    margin: 0 auto;
+    height: 100px;
+}
+
+.logo{
+    width: 5%;
+    background-color: var(--color-3);
+    border-radius: 20px;
+}
+
+.navbar{
+    height: 100%;
+}
 .navbar-gradient {
     background: var(--color-3);
     box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
     width: 30%;
-    margin: 0 auto;
     border-radius: 10px;
+    margin: 0 auto;
 }
 
-.fixed-top{
-    position: fixed;
-    top: 25px;
-    right: 0;
-    left: 0;
-    z-index: 3;
+.social-nav {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+    background-color: var(--color-3);
+    border-radius: 20px;
+    padding: 10px;
+    height: 100%;
+    margin: 0px;
+}
+.social-nav a {
+    color: var(--textColor1);
+    font-size: 18px;
+}
+.nav-item{
+    display: flex;
+    align-items: center;
 }
 
 .navbar .nav-link {
@@ -232,15 +268,12 @@ a {
     font-weight: 700;
 }
 
-.logo {
-    width: 25%;
-    height: auto;
-}
 
 .nav-link-login{
-    background-color: var(--color-2);
+    background-color: var(--color-1);
     padding: 10px;
     color: var(--textColor1);
+    border-radius: 10px;
 }
 .offcanvas{
     background-color: var(--color-3);
@@ -250,10 +283,11 @@ a {
 }
 .navbar-nav{
     flex-direction: column;
-    align-items: flex-end;
+    align-items: center;
+    justify-content: center;
     display: flex;
-    gap: 40px;
-    margin-right: 30px;
+    gap: 30px;
+    margin: 0;
 }
 /* ------------------------------------------------------------
     HERO
@@ -597,6 +631,32 @@ a {
     width: 42px;
     height: 42px;
     border-radius: 8px;
+    object-fit: cover;
+    flex: 0 0 auto;
+}
+
+.results-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.results-col {
+    min-width: 0;
+}
+
+.results {
+    margin-bottom: 20px;
+}
+.results-col .table {
+    overflow-x: auto;
+}
+
+@media (max-width: 900px) {
+    .results-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 .accordion {
@@ -642,6 +702,7 @@ footer {
     background: var(--color-3);
     color: #FFF;
     padding: 54px 24px 34px;
+    margin-top: auto;
 }
 
 .footer__top {
@@ -1523,17 +1584,18 @@ footer {
    DASHBOARD
    ============================================================ */
 .dash {
-    --dash-bg: var(--bg-color-1);                                  
-    --dash-panel: var(--color3);                  
-    --dash-line: var(--color-2); 
+    --dash-bg: var(--bg-color-1);
+    --dash-panel: #ffffff;
+    --dash-line: var(--color-2);
     --dash-text: var(--color-3);
     --dash-muted: var(--textColor3);
+    --red: #bd4d63;
 
     display: grid;
     grid-template-columns: 260px 1fr;
     min-height: 100vh;
     background: var(--dash-bg);
-    color: var(--dash-text);
+    color: black;
 }
 
 /* ---- SIDEBAR ---- */
@@ -1556,7 +1618,7 @@ footer {
     padding: 6px 10px 22px;
     font-size: 18px;
     font-weight: 800;
-    color: var(--gold);
+    color: var(--red);
 }
 
 .dash-brand i {
@@ -1575,7 +1637,7 @@ footer {
     gap: 14px;
     padding: 12px 14px;
     border-radius: 12px;
-    color: var(--dash-muted);
+    color: white;
     font-weight: 600;
     font-size: 15px;
     transition: background .15s, color .15s;
@@ -1593,8 +1655,8 @@ footer {
 }
 
 .dash-link.active {
-    background: color-mix(in srgb, var(--gold) 14%, transparent);
-    color: var(--gold);
+    background: color-mix(in srgb, var(--red) 14%, transparent);
+    color: var(--red);
 }
 
 .dash-user {
@@ -1610,8 +1672,8 @@ footer {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: var(--gold);
-    color: var(--textColor2);
+    background: var(--red);
+    color:white;
     font-weight: 800;
     display: flex;
     align-items: center;
@@ -1626,12 +1688,12 @@ footer {
 }
 
 .dash-user-info strong {
-    color: var(--dash-text);
+    color: white;
     font-size: 14px;
 }
 
 .dash-user-info small {
-    color: var(--dash-muted);
+    color: white;
     font-size: 12px;
     text-transform: capitalize;
 }
@@ -1644,15 +1706,15 @@ footer {
     margin-top: 6px;
     padding: 11px;
     border-radius: 12px;
-    border: 1px solid var(--gold);
-    color: var(--gold);
+    border: 1px solid var(--red);
+    color: var(--red);
     font-weight: 700;
     font-size: 14px;
     transition: background .15s, color .15s;
 }
 
 .dash-logout:hover {
-    background: var(--gold);
+    background: var(--red);
     color: var(--textColor2);
 }
 
@@ -1664,7 +1726,7 @@ footer {
 .dash-head h1 {
     font-size: clamp(24px, 3.5vw, 34px);
     font-weight: 800;
-    color: var(--gold);
+    color: var(--red);
     margin-bottom: 4px;
 }
 
@@ -1695,8 +1757,8 @@ footer {
     width: 46px;
     height: 46px;
     border-radius: 12px;
-    background: color-mix(in srgb, var(--gold) 14%, transparent);
-    color: var(--gold);
+    background: color-mix(in srgb, var(--red) 14%, transparent);
+    color: var(--red);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1734,7 +1796,7 @@ footer {
 .dash-panel-head h2 {
     font-size: 19px;
     font-weight: 800;
-    color: var(--gold);
+    color: var(--red);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1749,7 +1811,7 @@ footer {
     text-align: left;
     font-size: 12px;
     letter-spacing: .04em;
-    color: var(--gold);
+    color: var(--red);
     text-transform: uppercase;
     padding: 12px 22px;
     border-top: 1px solid var(--dash-line);
@@ -1802,8 +1864,8 @@ footer {
 .dash .form-control:focus,
 .dash .form-select:focus {
     background: rgba(255, 255, 255, .06);
-    border-color: var(--gold);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 25%, transparent);
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 25%, transparent);
     color: var(--dash-text);
 }
 
@@ -1834,11 +1896,155 @@ footer {
 }
 
 .dash .modal-title {
-    color: var(--gold);
+    color: var(--red);
 }
 
 .dash .btn-close {
     filter: invert(1) grayscale(1) brightness(1.8);
+}
+
+/* ============================================================
+   DASHBOARD — GRIGLIE GRAFICI E CARD
+   ============================================================ */
+
+/* griglia dei grafici (admin) */
+.dash-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+/* card che contiene un grafico Chart.js */
+.dash-chart-card {
+    background: var(--dash-panel);
+    border: 1px solid var(--dash-line);
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow);
+    min-width: 0;
+}
+
+.dash-chart-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--red);
+    margin: 0 0 14px;
+}
+
+/* il canvas riempie lo spazio sotto al titolo */
+.dash-chart-card canvas {
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100% !important;
+}
+
+/* griglia delle card informative (client) */
+.dash-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 18px;
+    align-items: start;
+    margin-bottom: 26px;
+}
+
+/* card con liste (comunicazioni, ordini, impegni) */
+.dash-news-card {
+    background: var(--dash-panel);
+    border: 1px solid var(--dash-line);
+    border-radius: 16px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+}
+
+.dash-news-card h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--red);
+    margin: 0 0 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--dash-line);
+}
+
+.news-item {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, .06);
+}
+
+.news-item:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.news-item strong {
+    display: block;
+    color: var(--dash-text);
+    font-size: 15px;
+}
+
+.news-item small {
+    color: var(--dash-muted);
+    font-size: 12px;
+    text-transform: capitalize;
+}
+
+.news-item p {
+    margin: 4px 0 0;
+    color: var(--dash-muted);
+    font-size: 14px;
+}
+
+/* badge stato ritiro prodotto */
+.badge-ritiro,
+.badge-attesa {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge-ritiro {
+    background: color-mix(in srgb, var(--color-1) 28%, white);
+    color: var(--color-3);
+}
+
+.badge-attesa {
+    background: color-mix(in srgb, var(--textColor3) 18%, white);
+    color: var(--textColor3);
+}
+
+/* gruppo card quote */
+.all-card-quote {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin-bottom: 26px;
+}
+
+.all-card-quote h2 {
+    grid-column: 1 / -1;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--red);
+}
+
+.all-card-quote .dash-stat p {
+    margin: 0;
+    color: var(--dash-muted);
+    font-size: 13px;
+}
+
+/* su schermi stretti i grafici/card vanno a colonna singola */
+@media (max-width: 720px) {
+    .dash-charts,
+    .dash-cards-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ---- responsive ---- */

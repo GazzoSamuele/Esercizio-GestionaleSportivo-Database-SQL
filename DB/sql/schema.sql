@@ -141,6 +141,8 @@ CREATE TABLE IF NOT EXISTS purchases(
     status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    pronto_ritiro BOOLEAN NOT NULL DEFAULT FALSE
+
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES products(id)
 
@@ -205,4 +207,19 @@ CREATE TABLE IF NOT EXISTS info_requests(
     messaggio TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     
+) ENGINE=InnoDB;
+
+-- Impegni del giocatore(allenamenti, partite, ecc..)
+
+CREATE TABLE IF NOT EXISTS impegni(
+
+    id INT AUTO_INCREMENT PRIMARY KEY, 
+    titolo VARCHAR(150) NOT NULL, 
+    descrizione TEXT,
+    tipo ENUM('allenamento', 'partita', 'coppa', 'riunione', 'altro') NOT NULL DEFAULT 'allenamento',
+    data DATE NOT NULL, 
+    ora TIME DEFAULT NULL, 
+    luogo VARCHAR(100) DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
 ) ENGINE=InnoDB;

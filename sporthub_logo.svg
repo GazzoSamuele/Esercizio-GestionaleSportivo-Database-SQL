@@ -1,0 +1,155 @@
+<svg width="100%" viewBox="0 0 680 720" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Logo SportHub Gestionale</title>
+  <desc>Logo gestionale sportivo con palette verde</desc>
+
+  <defs>
+    <clipPath id="shieldClip">
+      <path d="M340 70 L590 145 L590 420 Q590 545 340 650 Q90 545 90 420 L90 145 Z"/>
+    </clipPath>
+    <clipPath id="tennisClip">
+      <circle cx="516" cy="378" r="58"/>
+    </clipPath>
+    <linearGradient id="shieldGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#2a3a1e"/>
+      <stop offset="100%" stop-color="#1a2510"/>
+    </linearGradient>
+    <linearGradient id="shieldLight" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8ea15b" stop-opacity="0.15"/>
+      <stop offset="50%" stop-color="#b8c990" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#8ea15b" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="goldenGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#c8da88"/>
+      <stop offset="45%" stop-color="#8ea15b"/>
+      <stop offset="100%" stop-color="#3d562a"/>
+    </linearGradient>
+    <linearGradient id="bannerGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3d562a"/>
+      <stop offset="100%" stop-color="#2a3a1e"/>
+    </linearGradient>
+    <linearGradient id="tealGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#668041"/>
+      <stop offset="100%" stop-color="#4a5e2e"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer shield shadow -->
+  <path d="M340 78 L600 155 L600 428 Q600 558 340 668 Q80 558 80 428 L80 155 Z" fill="#000" fill-opacity="0.3"/>
+
+  <!-- Outer shield border -->
+  <path d="M340 68 L594 147 L594 422 Q594 550 340 660 Q86 550 86 422 L86 147 Z" fill="#668041"/>
+
+  <!-- Main shield body -->
+  <path d="M340 78 L582 153 L582 416 Q582 540 340 648 Q98 540 98 416 L98 153 Z" fill="url(#shieldGrad)"/>
+
+  <!-- Shine overlay -->
+  <path d="M340 78 L582 153 L582 416 Q582 540 340 648 Q98 540 98 416 L98 153 Z" fill="url(#shieldLight)"/>
+
+  <!-- Center vertical stripe -->
+  <rect x="326" y="78" width="28" height="565" fill="#8ea15b" fill-opacity="0.1" clip-path="url(#shieldClip)"/>
+
+  <!-- Dark lower area for balls -->
+  <path d="M340 285 L545 335 L545 430 Q545 520 340 585 Q135 520 135 430 L135 335 Z" fill="#0d1508" fill-opacity="0.65" clip-path="url(#shieldClip)"/>
+
+  <!-- BANNER -->
+  <path d="M148 155 L532 155 L555 258 L125 258 Z" fill="url(#bannerGrad)"/>
+  <path d="M148 155 L532 155 L555 258 L125 258 Z" fill="none" stroke="#668041" stroke-width="2"/>
+
+  <!-- SPORT text — stretched to fill banner width -->
+  <text x="340" y="222" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="80" font-weight="900"
+        textLength="380" lengthAdjust="spacingAndGlyphs"
+        fill="url(#goldenGrad)" letter-spacing="0">SPORT</text>
+  <text x="340" y="222" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="80" font-weight="900"
+        textLength="380" lengthAdjust="spacingAndGlyphs"
+        fill="none" stroke="#2a3a1e" stroke-width="1.5">SPORT</text>
+
+  <!-- HUB banner -->
+  <rect x="200" y="240" width="280" height="42" rx="3" fill="url(#tealGrad)"/>
+  <line x1="125" y1="261" x2="197" y2="261" stroke="#668041" stroke-width="2.5"/>
+  <line x1="483" y1="261" x2="555" y2="261" stroke="#668041" stroke-width="2.5"/>
+  <line x1="125" y1="266" x2="197" y2="266" stroke="#668041" stroke-width="1.2"/>
+  <line x1="483" y1="266" x2="555" y2="266" stroke="#668041" stroke-width="1.2"/>
+
+  <!-- HUB text — stretched to fill green rect -->
+  <text x="340" y="271" text-anchor="middle"
+        font-family="Arial Black, Arial, sans-serif"
+        font-size="26" font-weight="900"
+        textLength="240" lengthAdjust="spacingAndGlyphs"
+        fill="#ffffff">HUB</text>
+
+  <!-- BALLS -->
+
+  <!-- BASEBALL -->
+  <g transform="translate(160, 380)">
+    <circle cx="0" cy="0" r="62" fill="#f4f4f4"/>
+    <circle cx="0" cy="0" r="62" fill="none" stroke="#d8d8d8" stroke-width="1.5"/>
+    <path d="M-18,-56 Q-42,-30 -42,0 Q-42,30 -18,56" fill="none" stroke="#cc2222" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M18,-56 Q42,-30 42,0 Q42,30 18,56" fill="none" stroke="#cc2222" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M-26,-40 L-36,-32" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M-30,-18 L-40,-12" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M-30,10 L-40,14" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M-26,36 L-36,30" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M26,-40 L36,-32" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M30,-18 L40,-12" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M30,10 L40,14" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <path d="M26,36 L36,30" fill="none" stroke="#cc2222" stroke-width="1.8"/>
+    <ellipse cx="-16" cy="-22" rx="11" ry="7" fill="white" fill-opacity="0.5" transform="rotate(-30,-16,-22)"/>
+  </g>
+
+  <!-- SOCCER BALL -->
+  <g transform="translate(258, 418)">
+    <circle cx="0" cy="0" r="66" fill="#ffffff"/>
+    <circle cx="0" cy="0" r="66" fill="none" stroke="#d0d0d0" stroke-width="1.5"/>
+    <polygon points="0,-26 24,-8 15,21 -15,21 -24,-8" fill="#1a1a2e"/>
+    <polygon points="0,-60 11,-42 0,-28 -11,-42" fill="#1a1a2e"/>
+    <polygon points="54,-26 40,-12 26,-26 32,-46" fill="#1a1a2e"/>
+    <polygon points="46,40 28,32 32,11 52,20" fill="#1a1a2e"/>
+    <polygon points="-46,40 -28,32 -32,11 -52,20" fill="#1a1a2e"/>
+    <polygon points="-54,-26 -40,-12 -26,-26 -32,-46" fill="#1a1a2e"/>
+    <ellipse cx="-16" cy="-28" rx="13" ry="8" fill="white" fill-opacity="0.5" transform="rotate(-20,-16,-28)"/>
+  </g>
+
+  <!-- AMERICAN FOOTBALL -->
+  <g transform="translate(340, 440)">
+    <ellipse cx="0" cy="0" rx="38" ry="72" fill="#8B4513"/>
+    <ellipse cx="0" cy="0" rx="38" ry="72" fill="none" stroke="#6B3410" stroke-width="2"/>
+    <ellipse cx="0" cy="0" rx="38" ry="72" fill="#3a1506" fill-opacity="0.3"/>
+    <line x1="0" y1="-44" x2="0" y2="44" stroke="#f0ede0" stroke-width="2.5"/>
+    <line x1="-11" y1="-26" x2="11" y2="-26" stroke="#f0ede0" stroke-width="2.5"/>
+    <line x1="-14" y1="-12" x2="14" y2="-12" stroke="#f0ede0" stroke-width="2.5"/>
+    <line x1="-14" y1="2" x2="14" y2="2" stroke="#f0ede0" stroke-width="2.5"/>
+    <line x1="-14" y1="16" x2="14" y2="16" stroke="#f0ede0" stroke-width="2.5"/>
+    <line x1="-11" y1="30" x2="11" y2="30" stroke="#f0ede0" stroke-width="2.5"/>
+    <path d="M-30,-40 Q0,-46 30,-40" fill="none" stroke="#f0ede0" stroke-width="4"/>
+    <path d="M-30,40 Q0,46 30,40" fill="none" stroke="#f0ede0" stroke-width="4"/>
+    <ellipse cx="-12" cy="-30" rx="9" ry="16" fill="white" fill-opacity="0.2" transform="rotate(-15,-12,-30)"/>
+  </g>
+
+  <!-- BASKETBALL -->
+  <g transform="translate(424, 416)">
+    <circle cx="0" cy="0" r="64" fill="#E87722"/>
+    <circle cx="0" cy="0" r="64" fill="none" stroke="#c05a00" stroke-width="1.5"/>
+    <path d="M-64,0 Q0,-44 64,0" fill="none" stroke="#1a0a00" stroke-width="3"/>
+    <path d="M-64,0 Q0,44 64,0" fill="none" stroke="#1a0a00" stroke-width="3"/>
+    <line x1="0" y1="-64" x2="0" y2="64" stroke="#1a0a00" stroke-width="3"/>
+    <path d="M-46,-48 Q-64,0 -46,48" fill="none" stroke="#1a0a00" stroke-width="2.5"/>
+    <path d="M46,-48 Q64,0 46,48" fill="none" stroke="#1a0a00" stroke-width="2.5"/>
+    <ellipse cx="-18" cy="-24" rx="13" ry="9" fill="white" fill-opacity="0.35" transform="rotate(-30,-18,-24)"/>
+  </g>
+
+  <!-- TENNIS BALL -->
+  <g transform="translate(516, 378)">
+    <circle cx="0" cy="0" r="58" fill="#c8e620"/>
+    <circle cx="0" cy="0" r="58" fill="none" stroke="#9ab800" stroke-width="1.5"/>
+    <g clip-path="url(#tennisClip)">
+      <path d="M-20,-54 Q-55,-22 -55,14 Q-55,36 -34,52" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+      <path d="M20,-54 Q55,-22 55,14 Q55,36 34,52" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <ellipse cx="-14" cy="-26" rx="11" ry="7" fill="white" fill-opacity="0.45" transform="rotate(-25,-14,-26)"/>
+  </g>
+
+</svg>

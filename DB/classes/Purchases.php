@@ -27,7 +27,7 @@ class Purchases
             $pdo = Db::connect();
             $stmt = $pdo->prepare(
                'SELECT purc.id, p.name AS prodotto, p.image_path AS immagine,
-                purc.price_paid, purc.status, purc.created_at
+                purc.price_paid, purc.status, purc.created_at, purc.pronto_ritiro
                 FROM purchases purc
                 JOIN products p ON purc.product_id = p.id
                 WHERE purc.user_id = :uid

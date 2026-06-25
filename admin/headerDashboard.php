@@ -11,6 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
     <link rel="stylesheet" href="/Gestionale-Hockey/style.css">
     <title><?= htmlspecialchars($titoloPagina) ?> — Gestionale Società Sportiva</title>
 </head>
@@ -38,6 +40,9 @@
             <a href="/Gestionale-Hockey/client/mostraNewsAndComunicazioni.php" class="dash-link <?= $pagina === 'mostraNewsAndComunicazioni.php' ? 'active' : '' ?>">
                 <i class="fas fa-newspaper"></i><span>News &amp; Comunicazioni</span>
             </a>
+            <a href="/Gestionale-Hockey/client/mostraImpegni.php" class="dash-link <?= $pagina === 'mostraImpegni.php' ? 'active' : '' ?>">
+                <i class="fas fa-calendar-day"></i><span>Mostra Impegni</span>
+            </a>
             <?php endif; ?>
 
             <?php if($user['role'] === 'admin'): ?>
@@ -49,6 +54,9 @@
             </a>
             <a href="/Gestionale-Hockey/admin/gestioneNewsAndComunicazioni.php" class="dash-link <?= $pagina === 'gestioneNewsAndComunicazioni.php' ? 'active' : '' ?>">
                 <i class="fas fa-newspaper"></i><span>News &amp; Comunicazioni</span>
+            </a>
+            <a href="/Gestionale-Hockey/admin/gestioneImpegni.php" class="dash-link <?= $pagina === 'gestioneImpegni.php' ? 'active' : '' ?>">
+                <i class="fas fa-calendar-day"></i><span>Gestione Impegni</span>
             </a>
             <?php endif; ?>
         </nav>

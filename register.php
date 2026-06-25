@@ -23,7 +23,7 @@
 
         // se è vuoto lascio un'errore
         if ($name === '') {
-            $errors[] = 'Name is required';
+            $errors[] = 'Il nome è obbligatorio';
         }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -123,7 +123,7 @@
                     <?php if($success): ?>
 
                         <div class="alert alert-success">
-                            Registrazione succesfull! You can now <a href="login.php" class="alert-link">Login</a>
+                            Registrazione completata! Ora puoi accedere<a href="login.php" class="alert-link">Login</a>
                         </div>
                     
                     <?php endif; ?>
@@ -152,7 +152,7 @@
                     <form action="" method="post">
 
                         <div class="mb-3">
-                            <label for="name">Name</label>
+                            <label for="name">Nome</label>
                             <input type="text" 
                                    class="form-control" 
                                    name="name" 
