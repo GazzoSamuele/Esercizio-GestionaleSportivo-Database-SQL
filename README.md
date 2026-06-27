@@ -3,7 +3,7 @@
 Applicazione web full‑stack per la gestione di una società sportiva.
 Unisce un **sito pubblico** vetrina della società a un'**area riservata** (dashboard) con ruoli differenziati per amministratori e soci, il tutto appoggiato a un database MySQL interrogato tramite PDO.
 
-## 📸 Screenshot
+<!-- ## 📸 Screenshot -->
 
 ### Home pubblica
 <img src="screen-home.png" alt="Home del sito" width="800">
@@ -11,7 +11,6 @@ Unisce un **sito pubblico** vetrina della società a un'**area riservata** (dash
 <!-- ### Dashboard
 <!-- <img src="screen-dashboard.png" alt="Dashboard amministratore" width="800"> -->
 
---- -->
 ---
 
 ## 📑 Indice
