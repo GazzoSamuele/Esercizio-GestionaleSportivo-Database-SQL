@@ -28,10 +28,10 @@ function shopThumb(array $prodotti, int $i): void {
       <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
       <div class="minicards">
         
-        <a href="#storia"><div class="minicard"><span class="icon">📖</span><b>Storia</b></div></a>
-        <a href="#servizi"><div class="minicard"><span class="icon">📅</span><b>Servizi</b></div></a>
-        <a href="#palmares"><div class="minicard"><span class="icon">⚙️</span><b>Palmarès</b></div></a>
-        <a href="#shop"><div class="minicard"><span class="icon">🏆</span><b>Shop</b></div></a>
+        <a href="#storia"><div class="minicard"><b>Storia</b></div></a>
+        <a href="#servizi"><div class="minicard"><b>Servizi</b></div></a>
+        <a href="#palmares"><div class="minicard"><b>Palmarès</b></div></a>
+        <a href="#shop"><div class="minicard"><b>Shop</b></div></a>
 
       </div>
       <div class="hero__cta">
@@ -47,23 +47,26 @@ function shopThumb(array $prodotti, int $i): void {
   <div class="container_sez1">
     <div class="main-title-sez1">
       <h2>La nostra società</h2>
+    <p class="sub">Rappresentazione della storia della società e del club, dagli albori ai giorni nostri</p>
     </div>
     
-    <div class="split">
-      <div class="ph split__img"><small>FOTO SOCIETÀ</small></div>
-      <div>
-        <h3>Storia società</h3>
-        <p>Racconto delle origini del club, dei valori e dei traguardi raggiunti negli anni. Testo modificabile.</p>
+      <!-- testo a sinistra, immagine a destra -->
+      <div class="split">
+        <div class="split__text">
+          <h3>Storia società</h3>
+          <p>Racconto delle origini del club, dei valori e dei traguardi raggiunti negli anni. Testo modificabile.</p>
+        </div>
+        <img class="split__img" src="storia-club-index.png" alt="Storia della società">
       </div>
-    </div>
 
-    <div class="split">
-      <div class="ph split__img"><small>FOTO CLUB HOUSE</small></div>
-      <div>
-        <h3>Club house</h3>
-        <p>Descrizione degli spazi, dei servizi e del punto di ritrovo della società. Qui avviene anche il ritiro dei prodotti acquistati.</p>
+      <!-- invertita: immagine a sinistra, testo a destra -->
+      <div class="split split--reverse">
+        <div class="split__text">
+          <h3>Club house</h3>
+          <p>Descrizione degli spazi, dei servizi e del punto di ritrovo della società. Qui avviene anche il ritiro dei prodotti acquistati.</p>
+        </div>
+        <img class="split__img" src="club-house.png" alt="Club house della società">
       </div>
-    </div>
   </div>
 </section>
 
@@ -71,6 +74,7 @@ function shopThumb(array $prodotti, int $i): void {
 <section class="sec sec--bg" id="servizi">
   <div class="container">
     <h2>I servizi che offriamo</h2>
+    <p class="sub">Descrizione di tutti i servizi disponibili nel club, con collegamento alla pagina completa di riferimento</p>
 
     <div class="grid-3">
       <div class="svc">
@@ -192,16 +196,17 @@ function shopThumb(array $prodotti, int $i): void {
   </div>
 </section>
 <!-- ============ SEZIONE 4 — Shop ============ -->
-<section class="sec sec--dark" id="shop">
+<section class="sec sec-custom sec--dark" id="shop">
   <div class="container">
     <h2>Lo shop del club</h2>
+    <p class="sub-shop-index ">La nostra sezione dove poter scegliere il prodotto preferito e farlo arrivare direttamente al club</p>
 
     <div class="shop">
       <div class="shop__list">
-        <div class="shop__item"><?php shopThumb($shopProdotti, 0); ?><b>Attrezzatura d'allenamento</b></div>
-        <div class="shop__item"><?php shopThumb($shopProdotti, 1); ?><b>Attrezzatura giocatore</b></div>
-        <div class="shop__item"><?php shopThumb($shopProdotti, 2); ?><b>Attrezzatura portieri</b></div>
-        <div class="shop__item"><span class="ph thumb"></span><b>Borsoni della società</b></div>
+        <div class="shop__item"><b>Attrezzatura d'allenamento</b></div>
+        <div class="shop__item"><b>Attrezzatura giocatore</b></div>
+        <div class="shop__item"><b>Attrezzatura portieri</b></div>
+        <div class="shop__item"><b>Borsoni della società</b></div>
         
       </div>
       <div class="accordion">
@@ -247,10 +252,37 @@ function shopThumb(array $prodotti, int $i): void {
 </section>
 
 <!-- ============ SEZIONE 5 — Contatti  ============ -->
-<section class="sec sec--white" id="iscrizione">
+<section class="sec sec-custom sec--white" id="iscrizione">
   <div class="container">
     <h2>Entra a far parte del club</h2>
-    <a href="contatti.php" class="btn btn--primary">Scopri di più nella sezione dedicata →</a>
+    <p class="sub">Iscriviti e accedi a tutti gli strumenti riservati ai soci.</p>
+
+    <div class="benefits-grid">
+      <div class="svc">
+        <span class="icon">📊</span>
+        <h3>Dashboard personale</h3>
+        <p>Statistiche, grafici e la tua area riservata, sempre aggiornata.</p>
+      </div>
+      <div class="svc">
+        <span class="icon">🛒</span>
+        <h3>Ordini diretti al club</h3>
+        <p>Acquisti i prodotti online e li ritiri comodamente in club house.</p>
+      </div>
+      <div class="svc">
+        <span class="icon">📅</span>
+        <h3>Calendario dinamico</h3>
+        <p>Partite, allenamenti ed eventi della società sempre a portata di mano.</p>
+      </div>
+      <div class="svc">
+        <span class="icon">📰</span>
+        <h3>News &amp; comunicazioni</h3>
+        <p>Resta aggiornato su avvisi e novità ufficiali del club.</p>
+      </div>
+    </div>
+
+    <div>
+      <a href="contatti.php" class="btn btn--primary">Scopri di più nella sezione dedicata →</a>
+    </div>
   </div>
 </section>
 

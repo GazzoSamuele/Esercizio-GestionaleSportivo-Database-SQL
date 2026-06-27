@@ -20,9 +20,7 @@
     
 </head>
 <body>
-    <header>
-        <img class="logo navbar-nav" src="sporthub_logo.svg" alt="SportHub Logo">
-        
+    <header>       
         <nav class="navbar navbar-expand-lg navbar-dark navbar-gradient">
             <div class="container-fluid">
 
@@ -39,24 +37,25 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav">
+                        <li><img class="logo navbar-nav" src="sporthub_logo.svg" alt="SportHub Logo"></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'contatti.php' ? 'active' : '' ?>" href="contatti.php">Contatti</a></li>
                         <?php if($isLoggato): ?>
-                            <li class="nav-item"><a class="nav-link-login" href="dashboard.php"><?= htmlspecialchars($isLoggato['name']) ?></a></li>
+                            <li class="nav-item"><a class="nav-link-login" href="dashboard.php">Bentornato <?= htmlspecialchars($isLoggato['name']) ?></a></li>
                         <?php else: ?>
                             <li class="nav-item"><a class="nav-link-login <?= $pagina === 'login.php' ? 'active' : '' ?>" href="login.php">Area riservata</a></li>
                         <?php endif; ?>
+                        <!-- <ul class="social-nav">
+                            <li class="nav-item"><a class="nav-link nav-link-login" href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
+                            <li class="nav-item"><a class="nav-link nav-link-login" href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://playtomic.com/"></a></li>
+                            <li class="nav-item"><a class="nav-link" href="https://wansport.com/"></a></li>
+                        </ul> -->
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
-        <ul class="social-nav">
-            <li class="nav-item"><a class="nav-link nav-link-login" href="https://www.instagram.com/"><i class="fa-brands fa-instagram"></i></a></li>
-            <li class="nav-item"><a class="nav-link nav-link-login" href="https://www.facebook.com/"><i class="fa-brands fa-facebook"></i></a></li>
-            <!-- <li class="nav-item"><a class="nav-link" href="https://playtomic.com/"></a></li>
-            <li class="nav-item"><a class="nav-link" href="https://wansport.com/"></a></li> -->
-        </ul>
 </header>

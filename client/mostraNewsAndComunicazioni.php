@@ -33,7 +33,7 @@ $user = currentUser();
         </header>
 
         <!-- ---- tabella news ---- -->
-        <section class="dash-panel">
+        <section class="dash-panel panel-mid-0-auto">
             <div class="dash-panel-head">
                 <div class="filter">
                     <a href="mostraNewsAndComunicazioni.php" class="tab <?= $tipo === '' ? 'active' : '' ?>">Tutte</a>
@@ -56,9 +56,9 @@ $user = currentUser();
                     <?php foreach($news as $nw): ?>
                     <tr>
                         <!-- prendo l'id dell'utente singolo -->
-                        <td>#<?= (int) $nw['id'] ?></td>
+                        <td class="text-align-center">#<?= (int) $nw['id'] ?></td>
 
-                        <td><?= htmlspecialchars($nw['title']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($nw['title']) ?></td>
 
                         <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
                         <!-- <td>
@@ -70,11 +70,11 @@ $user = currentUser();
                             <?php endif; ?>
                         </td> -->
 
-                        <td><?= htmlspecialchars($nw['description']) ?></td>
+                        <td class="td-width"><?= htmlspecialchars($nw['description']) ?></td>
 
-                        <td><?= htmlspecialchars($nw['data']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($nw['data']) ?></td>
 
-                        <td><?= htmlspecialchars($nw['tipo']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($nw['tipo']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

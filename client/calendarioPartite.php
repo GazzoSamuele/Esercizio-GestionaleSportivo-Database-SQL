@@ -9,20 +9,21 @@ $user = currentUser();                  // utente loggato (id, name, role)
 
 // $partite = Calendar::findAllPartite();  // tutte le partite
 
-
 // FILTRO PER CATEGORIA
 
 // categoria scelta (vuota = tutte)
 $categoria = trim($_GET['categoria'] ?? '');
 
 // se c'è una categoria → filtro; altrimenti prendo tutte
-if ($categoria !== '') {
-    $partite = Calendar::findByCategoria($categoria);
-} else {
-    $partite = Calendar::findAllPartite();
-}
+$partite = $categoria !== '' ? Calendar::findByCategoria($categoria) : Calendar::findAllPartite();
+
+$categoria2 = trim($_GET['categoria2'] ?? '');
+
+$base2 = $categoria2 !== '' ? Calendar::findByCategoria($categoria2) : Calendar::findAllPartite();
 
 $iniziale = strtoupper(substr($user['name'], 0, 1));
+
+$ultimePartite = array_slice(array_reverse($base2), 0, 5);
 ?>
     <?php 
     
@@ -37,7 +38,7 @@ $iniziale = strtoupper(substr($user['name'], 0, 1));
         </header>
 
         <!-- ---- stat cards ---- -->
-        <div class="dash-stats">
+        <!-- <div class="dash-stats">
             <div class="dash-stat">
                 <span class="dash-stat-icon"><i class="fas fa-calendar-check"></i></span>
                 <div>
@@ -59,25 +60,24 @@ $iniziale = strtoupper(substr($user['name'], 0, 1));
                     <small>User ID</small>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <!-- ---- calendario partite ---- -->
+        <!-- ---- calendario tutte le partite ---- -->
+    <div class="alg-form-results">
         <section class="dash-panel">
             <div class="dash-panel-head">
-                <h2><i class="fas fa-clock-rotate-left"></i> Calendario partite</h2>
+                <h2><i class="fas fa-clock-rotate-left"></i> Calendario di tutte le partite</h2>
             </div>
             <!-- FILTRO PER SCEGLIERE LA CATEGORIA PREFERITA -->
                 <?php $categorie = ['Pulcini','Giovanile',
                       'Under 19','Under 21','Terza Categoria',
                       'Prima Squadra']; ?>
 
-                <div class="filter">
-                    <a href="calendarioPartite.php" class="tab <?= $categoria === '' ? 'active' : '' ?>">Tutte</a>
+                <div class="filter margin-left">
+                    <a href="?categoria2=<?= urlencode($categoria2) ?>" class="tab <?= $categoria === '' ? 'active' : '' ?>">Tutte</a>
                     <?php foreach($categorie as $cat): ?>
-                        <a href="?categoria=<?= urlencode($cat) ?>"
-                        class="tab <?= $categoria === $cat ? 'active' : '' ?>">
-                            <?= htmlspecialchars($cat) ?>
-                        </a>
+                        <a href="?categoria=<?= urlencode($cat) ?>&categoria2=<?= urlencode($categoria2) ?>"
+                        class="tab <?= $categoria === $cat ? 'active' : '' ?>"><?= htmlspecialchars($cat) ?></a>
                     <?php endforeach; ?>
                 </div>
             <table class="dash-table">
@@ -93,11 +93,11 @@ $iniziale = strtoupper(substr($user['name'], 0, 1));
                 <tbody>
                     <?php foreach($partite as $p): ?>
                         <tr>
-                            <td><?= htmlspecialchars($p['squadra_casa']) ?></td>
-                            <td><?= (int) $p['gol_casa'] ?> - <?= (int) $p['gol_ospite'] ?></td>
-                            <td><?= htmlspecialchars($p['squadra_ospite']) ?></td>
-                            <td><?= date('d M Y', strtotime($p['data'])) ?></td>
-                            <td><?= htmlspecialchars($p['categoria']) ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($p['squadra_casa']) ?></td>
+                            <td class="text-align-center"><?= (int) $p['gol_casa'] ?> - <?= (int) $p['gol_ospite'] ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($p['squadra_ospite']) ?></td>
+                            <td class="text-align-center"><?= date('d M Y', strtotime($p['data'])) ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($p['categoria']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if(empty($partite)): ?>
@@ -106,8 +106,99 @@ $iniziale = strtoupper(substr($user['name'], 0, 1));
                 </tbody>
             </table>
         </section>
-    </main>
 
+        <!-- ---- calendario ultime partite di campionato ---- -->
+        <section class="dash-panel">
+            <div class="dash-panel-head">
+                <h2><i class="fas fa-clock-rotate-left"></i> Calendario ultime partite di campionato</h2>
+            </div>
+            <!-- FILTRO PER SCEGLIERE LA CATEGORIA PREFERITA -->
+                <?php $categorie = ['Pulcini','Giovanile',
+                      'Under 19','Under 21','Terza Categoria',
+                      'Prima Squadra']; ?>
+
+                <div class="filter margin-left">
+                    <a href="?categoria=<?= urlencode($categoria) ?>" class="tab <?= $categoria2 === '' ? 'active' : '' ?>">Tutte</a>
+                    <?php foreach($categorie as $cat): ?>
+                        <a href="?categoria=<?= urlencode($categoria) ?>&categoria2=<?= urlencode($cat) ?>"
+                        class="tab <?= $categoria2 === $cat ? 'active' : '' ?>"><?= htmlspecialchars($cat) ?></a>
+                    <?php endforeach; ?>
+                </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Casa</th>
+                        <th>Risultato</th>
+                        <th>Ospite</th>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($ultimePartite as $ulp): ?>
+                        <tr>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['squadra_casa']) ?></td>
+                            <td class="text-align-center"><?= (int) $ulp['gol_casa'] ?> - <?= (int) $ulp['gol_ospite'] ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['squadra_ospite']) ?></td>
+                            <td class="text-align-center"><?= date('d M Y', strtotime($ulp['data'])) ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['categoria']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($ultimePartite)): ?>
+                        <tr><td colspan="5">Nessuna partita per questa categoria.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- ---- calendario ultime partite di coppa ---- -->
+        <section class="dash-panel">
+            <div class="dash-panel-head">
+                <h2><i class="fas fa-clock-rotate-left"></i> Calendario ultime partite di coppa</h2>
+            </div>
+            <!-- FILTRO PER SCEGLIERE LA CATEGORIA PREFERITA -->
+                <?php $categorie = ['Pulcini','Giovanile',
+                      'Under 19','Under 21','Terza Categoria',
+                      'Prima Squadra']; ?>
+
+                <div class="filter margin-left">
+                    <a href="?categoria=<?= urlencode($categoria) ?>" class="tab <?= $categoria2 === '' ? 'active' : '' ?>">Tutte</a>
+                    <?php foreach($categorie as $cat): ?>
+                        <a href="?categoria=<?= urlencode($categoria) ?>&categoria2=<?= urlencode($cat) ?>"
+                        class="tab <?= $categoria2 === $cat ? 'active' : '' ?>"><?= htmlspecialchars($cat) ?></a>
+                    <?php endforeach; ?>
+                </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>Casa</th>
+                        <th>Risultato</th>
+                        <th>Ospite</th>
+                        <th>Data</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($ultimePartite as $ulp): ?>
+                        <tr>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['squadra_casa']) ?></td>
+                            <td class="text-align-center"><?= (int) $ulp['gol_casa'] ?> - <?= (int) $ulp['gol_ospite'] ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['squadra_ospite']) ?></td>
+                            <td class="text-align-center"><?= date('d M Y', strtotime($ulp['data'])) ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ulp['categoria']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($ultimePartite)): ?>
+                        <tr><td colspan="5">Nessuna partita per questa categoria.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+
+
+
+    </div>
+    </main>
 </div>
 
 </body>

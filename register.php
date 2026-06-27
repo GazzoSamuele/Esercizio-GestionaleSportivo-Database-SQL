@@ -117,87 +117,78 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-6">
-                    <h2 class="fw-bold text-warning text-center mb-4">Registro</h2>
+                    <div class="register-head">
+                        <h2><i class="fas fa-user-plus"></i> Crea Account</h2>
+                    </div>
 
-                    <!-- se success esiste -->
-                    <?php if($success): ?>
+                    <div class="register-body">
+                        <!-- se success esiste -->
+                        <?php if($success): ?>
+                            <div class="alert alert-success">
+                                Registrazione completata! Ora puoi accedere <a href="login.php" class="alert-link">Login</a>
+                            </div>
+                        <?php endif; ?>
 
-                        <div class="alert alert-success">
-                            Registrazione completata! Ora puoi accedere<a href="login.php" class="alert-link">Login</a>
-                        </div>
-                    
-                    <?php endif; ?>
+                        <!-- se errors è diverso da vuoto -->
+                        <?php if(!empty($errors)): ?>
+                            <div class="alert alert-danger">
+                                <ul>
+                                    <?php foreach ($errors as $error): ?>
+                                        <li><?= htmlspecialchars($error); ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
 
-                    <!-- se errors è diverso da vuoto -->
-                    <?php if(!empty($errors)): ?>
+                        <form class="frm-register" action="" method="post">
 
-                        <div class="alert alert-danger">
-                            <ul>
-                                <!-- per ogni errore trovato nell'array degli errori
-                                mi crei un li con l'htmlspecialchars che passerò
-                                come error -->
-                                <?php foreach ($errors as $error): ?>
+                            <div class="mb-3">
+                                <label for="name">Nome</label>
+                                <input type="text"
+                                       class="form-control"
+                                       name="name"
+                                       value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
+                                       required>
+                            </div>
 
-                                    <li>
-                                        <!-- alert che esce una volta completato con successo la registrzione -->
-                                        <?= htmlspecialchars($error); ?>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        </div>
-                    
-                    <?php endif; ?>
+                            <div class="mb-3">
+                                <label for="email">Email</label>
+                                <input type="email"
+                                       class="form-control"
+                                       name="email"
+                                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                                       required>
+                            </div>
 
+                            <div class="mb-3">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
 
-                    <form action="" method="post">
+                            <div class="mb-3">
+                                <label for="password_confirm">Conferma Password</label>
+                                <input type="password"
+                                       class="form-control"
+                                       name="confermaPassword"
+                                       value="<?= htmlspecialchars($_POST['confermaPassword'] ?? '') ?>"
+                                       required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="name">Nome</label>
-                            <input type="text" 
-                                   class="form-control" 
-                                   name="name" 
-                                   value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                                   required>
-                        </div>
-                        <!-- htmlspecialchars rappresenta valore della chiamata trasfomato in elemento html -->
+                            <div class="mb-3">
+                                <label for="codice">Codice societario</label>
+                                <input type="text"
+                                    class="form-control"
+                                    name="codice"
+                                    value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>"
+                                    placeholder="Inserisci il tuo codice dato dalla società dopo il pagamento della quota"
+                                    required>
+                            </div>
 
-                        <div class="mb-3">
-                            <label for="email">Email</label>
-                            <input type="email" 
-                                   class="form-control" 
-                                   name="email" 
-                                   value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                                   required>
-                        </div>
+                            <button type="submit" class="btn btn-warning">Crea Account</button>
 
-                        <div class="mb-3">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" name="password" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password_confirm">Conferma Password</label>
-                            <input type="password" 
-                                         class="form-control"
-                                         name="confermaPassword" 
-                                         value="<?= htmlspecialchars($_POST['confermaPassword'] ?? '') ?>"
-                                         required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="codice">Codice societario</label>
-                            <input type="text"
-                                class="form-control"
-                                name="codice"
-                                value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>"
-                                placeholder="Inserisci il tuo codice dato dalla società dopo il pagamento della quota"
-                                required>
-                        </div>
-
-                        <button type="submit" class="btn-warning btn-outline-warning w-100">Crea Account</button>
-
-                        <p>Se hai già un account vai alla pagina login <a href="login.php" class="bg-warning border-danger">Login</a></p>
-                    </form>
+                            <p class="mt-3" style="color: white;">Se hai già un account vai alla pagina login <a class="a-login-register" href="login.php">Login</a></p>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

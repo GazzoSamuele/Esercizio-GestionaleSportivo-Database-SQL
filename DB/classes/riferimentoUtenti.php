@@ -258,6 +258,16 @@ class User
 
            ]);
         }
+    // restituisce la data di scadenza quota dell'utente (o null se non c'è)
+    public static function quotaScadenza(int $id): ?string
+        {
+            $pdo = Db::connect();
+            $stmt = $pdo->prepare('SELECT quota_scadenza FROM users WHERE id = :id');
+            $stmt->execute([':id' => $id]);
+            $data = $stmt->fetchColumn();
+            return $data ?: null;
+        }
+
     public static function delete(int $id): bool
         {
             $pdo = Db::connect();
@@ -267,7 +277,7 @@ class User
             );
 
             return $stmt->execute([':id' => $id]);
-            
+
         }
      
 }

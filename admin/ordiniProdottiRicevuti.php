@@ -174,7 +174,8 @@ $user = currentUser();
         <?php endif; ?>
 
         <!-- ---- form nuovo utente ---- -->
-        <section class="dash-panel dash-formcard">
+    <div class="alg-form-results">
+        <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
                 <h2><i class="fas fa-user-plus"></i> Nuovo Ordine Prodotto</h2>
             </div>
@@ -211,6 +212,49 @@ $user = currentUser();
             </div>
         </section>
 
+        <!-- ---- ordini ricevuti dai clienti ---- -->
+        <section class="dash-panel-info">
+            <div class="dash-panel-head">
+                <h2><i class="fas fa-receipt"></i> Ordini ricevuti dai clienti</h2>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cliente</th>
+                        <th>Immagine</th>
+                        <th>Prodotto</th>
+                        <th>Prezzo</th>
+                        <th>Stato</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($ordini as $ord): ?>
+                    <tr>
+                        <td class="text-align-center">#<?= (int) $ord['id'] ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($ord['cliente']) ?></td>
+                        <td class="text-align-center">
+                            <?php if(!empty($ord['immagine'])): ?>
+                                <img src="<?= htmlspecialchars($ord['immagine']) ?>" alt="<?= htmlspecialchars($ord['prodotto']) ?>"
+                                    style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+                            <?php else: ?>
+                                <span class="dash-current">—</span>
+                            <?php endif; ?>
+                        </td>
+                        <td class="text-align-center"><?= htmlspecialchars($ord['prodotto']) ?></td>
+                        <td class="text-align-center">€ <?= htmlspecialchars($ord['prezzo_pagato']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($ord['status']) ?></td>
+                        <td class="text-align-center"><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($ordini)): ?>
+                    <tr><td colspan="7" class="dash-empty">Nessun ordine ricevuto.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </section>
+    </div>
         <!-- ---- tabella Prodotti ---- -->
         <section class="dash-panel">
             <div class="dash-panel-head">
@@ -247,13 +291,13 @@ $user = currentUser();
                             <?php endif; ?>
                         </td>
 
-                        <td><?= htmlspecialchars($p['name']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($p['name']) ?></td>
 
                         <td><?= htmlspecialchars($p['description']) ?></td>
 
-                        <td><?= htmlspecialchars($p['price']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($p['price']) ?></td>
 
-                        <td><?= htmlspecialchars($p['is_active']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($p['is_active']) ?></td>
 
                         <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
                         <td><?= date('d M Y', strtotime($p['created_at'])) ?></td>
@@ -285,49 +329,6 @@ $user = currentUser();
                     <?php endforeach; ?>
                     <?php if(empty($products)): ?>
                     <tr><td colspan="8" class="dash-empty">Nessun prodotto registrato</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </section>
-
-        <!-- ---- ordini ricevuti dai clienti ---- -->
-        <section class="dash-panel">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-receipt"></i> Ordini ricevuti dai clienti</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Immagine</th>
-                        <th>Prodotto</th>
-                        <th>Prezzo</th>
-                        <th>Stato</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($ordini as $ord): ?>
-                    <tr>
-                        <td>#<?= (int) $ord['id'] ?></td>
-                        <td><?= htmlspecialchars($ord['cliente']) ?></td>
-                        <td>
-                            <?php if(!empty($ord['immagine'])): ?>
-                                <img src="<?= htmlspecialchars($ord['immagine']) ?>" alt="<?= htmlspecialchars($ord['prodotto']) ?>"
-                                    style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-                            <?php else: ?>
-                                <span class="dash-current">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td><?= htmlspecialchars($ord['prodotto']) ?></td>
-                        <td>€ <?= htmlspecialchars($ord['price_paid']) ?></td>
-                        <td><?= htmlspecialchars($ord['status']) ?></td>
-                        <td><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
-                    </tr>
-                    <?php endforeach; ?>
-                    <?php if(empty($ordini)): ?>
-                    <tr><td colspan="7" class="dash-empty">Nessun ordine ricevuto.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>

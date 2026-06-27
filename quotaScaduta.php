@@ -1,19 +1,13 @@
 <?php
 require_once __DIR__ . '/DB/helpers/auth.php';
-// devi essere loggato per vedere questa pagina (NON requireQuotaValida, sennò loop)
+// devi essere loggato per vedere questa pagina 
 requireLogin();   
 ?>
 
 <?php include 'header.php'?>
 
-<section class="pagehead">
-  <div class="container">
-    <span class="tag">Quota</span>
-    <h1>Quota societaria scaduta</h1>
-  </div>
-</section>
-
 <section class="sec sec--white">
+  <h2>Quota societaria scaduta</h2>
   <div class="container">
     <div class="authbox">
       <p>La tua quota societaria è scaduta, quindi l'accesso all'area riservata è sospeso.</p>

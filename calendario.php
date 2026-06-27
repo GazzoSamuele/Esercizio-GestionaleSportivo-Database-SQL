@@ -6,20 +6,20 @@
 // findAllNews è in ordine crescente (vecchie → nuove): inverto e prendo le prime 3
 $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
 
+// immagine dedicata in base al titolo della news 
+$immaginiNews = [
+    "L'Under 19 conquista la vetta della classifica" => 'img-calendario-1.png',
+    'Vittoria in rimonta della Prima Squadra'        => 'img-calendario-2.png',
+    'Andrea Conti firma una tripletta'               => 'img-calendario-3.png',
+];
+
 ?>
 
 <?php require_once __DIR__ . '/DB/data/datiFittizi.php'; ?>
 
 <?php include 'header.php'?>
 
-<!-- intestazione pagina -->
-<section class="pagehead">
-  <div class="container">
-    <h1>Risultati & calendario</h1>
-  </div>
-</section>
-
-<!-- ============ SEZIONE 1 — News (100vh) ============ -->
+<!-- ============ SEZIONE 1 — News ============ -->
 <section class="sec sec--white">
   <div class="container">
     <h2>News & informazioni</h2>
@@ -28,10 +28,12 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
     <div class="news-grid">
       <?php foreach($newsOnSite as $n): ?>
         <article class="news">
-          <?php if(!empty($n['image_path'])): ?>
-            <img src="<?= htmlspecialchars($n['image_path']) ?>"
-                 alt="<?= htmlspecialchars($n['title']) ?>"
-                 style="width:100%;height:140px;object-fit:cover;border-radius:8px;">
+          <?php if(isset($immaginiNews[$n['title']])): ?>
+            <img class="img-news-calendario" src="<?= $immaginiNews[$n['title']] ?>"
+                 alt="<?= htmlspecialchars($n['title']) ?>">
+          <?php elseif(!empty($n['image_path'])): ?>
+            <img class="img-news-calendario" src="<?= htmlspecialchars($n['image_path']) ?>"
+                 alt="<?= htmlspecialchars($n['title']) ?>">
           <?php else: ?>
             <div class="ph"><small>IMG</small></div>
           <?php endif; ?>
@@ -211,7 +213,7 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
           <tbody>
           <?php shuffle($squadre);?>
             
-            <?php for($i = 0; $i < 6; $i++): ?>
+            <?php for($i = 0; $i < 10; $i++): ?>
             <tr>
               <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
               <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
@@ -237,7 +239,7 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
           <tbody>
           <?php shuffle($squadre);?>
             
-            <?php for($i = 0; $i < 6; $i++): ?>
+            <?php for($i = 0; $i < 10; $i++): ?>
             <tr>
               <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
               <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
@@ -263,7 +265,7 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
           <tbody>
           <?php shuffle($squadre);?>
             
-            <?php for($i = 0; $i < 6; $i++): ?>
+            <?php for($i = 0; $i < 10; $i++): ?>
             <tr>
               <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
               <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>
@@ -289,7 +291,7 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
           <tbody>
           <?php shuffle($squadre);?>
             
-            <?php for($i = 0; $i < 6; $i++): ?>
+            <?php for($i = 0; $i < 10; $i++): ?>
             <tr>
               <td class="team"><?= htmlspecialchars($squadre[$i]) ?></td>
               <td class="score"><?= rand(0,8) ?> - <?= rand(0,8) ?></td>

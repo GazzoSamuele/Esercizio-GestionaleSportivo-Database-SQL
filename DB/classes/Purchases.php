@@ -11,7 +11,7 @@ class Purchases
             $pdo = Db::connect();
             $stmt = $pdo->query(
                 'SELECT purc.id, u.name AS cliente, p.name AS prodotto, p.image_path 
-                        AS immagine, purc.price_paid, purc.status, purc.created_at
+                        AS immagine, purc.prezzo_pagato, purc.status, purc.created_at
                 FROM purchases purc
                 JOIN users u    ON purc.user_id = u.id
                 JOIN products p ON purc.product_id = p.id
@@ -27,7 +27,7 @@ class Purchases
             $pdo = Db::connect();
             $stmt = $pdo->prepare(
                'SELECT purc.id, p.name AS prodotto, p.image_path AS immagine,
-                purc.price_paid, purc.status, purc.created_at, purc.pronto_ritiro
+                purc.prezzo_pagato, purc.status, purc.created_at, purc.pronto_ritiro
                 FROM purchases purc
                 JOIN products p ON purc.product_id = p.id
                 WHERE purc.user_id = :uid
@@ -44,10 +44,10 @@ class Purchases
         {
             $pdo = Db::connect();
             $stmt = $pdo->query(
-                // SUM(price_paid) è la funzione di aggregazione(somma), serve per avere il totale della colonna di tutti i singoli incassi
-                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS mese, SUM(price_paid) AS totale
+                // SUM(prezzo_pagato) è la funzione di aggregazione(somma), serve per avere il totale della colonna di tutti i singoli incassi
+                "SELECT DATE_FORMAT(created_at, '%Y-%m') AS mese, SUM(prezzo_pagato) AS totale
                 FROM purchases
-                WHERE status = 'paid'
+                WHERE status = 'pagato'
                 GROUP BY mese
                 ORDER BY mese"
             );
@@ -89,7 +89,7 @@ class Purchases
         {
             $pdo = Db::connect();
             $stmt = $pdo->prepare(
-               'INSERT INTO purchases (user_id, product_id, price_paid, status)
+               'INSERT INTO purchases (user_id, product_id, prezzo_pagato, status)
                 VALUES (:uid, :pid, :price, :status)'
             );
             $stmt->execute([
@@ -125,7 +125,7 @@ class Purchases
 
 // contaPerStato()
 
-// Cosa rappresenta: quanti ordini sono pending, paid, refunded.
+// Cosa rappresenta: quanti ordini sono In attesa, pagato, Rimborsato.
 // Dove finisce: in una card che mostra gli iscritti o le richieste di informazioni ancora da visualizzare. essa si collega alla pagina ordiniProdottiRicevuti.php
 
 // topProdotti()

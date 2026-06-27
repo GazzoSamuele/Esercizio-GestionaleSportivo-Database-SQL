@@ -111,6 +111,8 @@ $user = currentUser();
 
     $news = News::findAllNews();
 
+    $ultimeNews = array_slice(array_reverse($news), 0, 5);
+
 ?>
     <?php 
   
@@ -142,7 +144,8 @@ $user = currentUser();
         <?php endif; ?>
 
         <!-- ---- form nuovo utente ---- -->
-        <section class="dash-panel dash-formcard">
+    <div class="alg-form-results">
+        <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
                 <h2><i class="fas fa-user-plus"></i>Nuova News o Comunicazione</h2>
             </div>
@@ -174,6 +177,42 @@ $user = currentUser();
             </div>
         </section>
 
+        <!-- sezione ultime news registrate -->
+
+        <section class="dash-panel-info">
+            <div class="dash-panel-head">
+                <h2><i class="fas fa-users"></i> Le ultime news o comunicazioni registrate</h2>
+            </div>
+            <table class="dash-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titolo</th>
+                        <th>Descrizione</th>
+                        <th>Data</th>
+                        <th>Tipo di Comunicazione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($ultimeNews as $nw): ?>
+                    <tr>
+                        <!-- prendo l'id dell'utente singolo -->
+                        <td>#<?= (int) $nw['id'] ?></td>
+
+                        <td><?= htmlspecialchars($nw['title']) ?></td>
+
+                        <td><?= htmlspecialchars($nw['description']) ?></td>
+
+                        <td class="dim-td-custom"><?= htmlspecialchars($nw['data']) ?></td>
+
+                        <td><?= htmlspecialchars($nw['tipo']) ?></td>
+
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </section>
+    </div>
         <!-- ---- tabella news ---- -->
         <section class="dash-panel">
             <div class="dash-panel-head">

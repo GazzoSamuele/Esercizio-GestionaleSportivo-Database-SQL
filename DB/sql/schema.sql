@@ -90,8 +90,8 @@ USE dbSocietaSportiva_app;
 --     session_type_id INT NOT NULL,
 
 --     scheduled_at DATETIME NOT NULL,
---     price_paid DECIMAL(10,2) NOT NULL,
---     status ENUM('pending','paid','cancelled','completed') NOT NULL DEFAULT 'pending',
+--     prezzo_pagato DECIMAL(10,2) NOT NULL,
+--     status ENUM('In attesa','pagato','cancelled','completed') NOT NULL DEFAULT 'In attesa',
 --     payment_ref VARCHAR(100) DEFAULT NULL,
 --     notes TEXT,
 --     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -137,8 +137,8 @@ CREATE TABLE IF NOT EXISTS purchases(
     user_id INT NOT NULL,
     product_id INT NOT NULL,
 
-    price_paid DECIMAL(10,2) NOT NULL,
-    status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
+    prezzo_pagato DECIMAL(10,2) NOT NULL,
+    status ENUM('In attesa', 'pagato', 'Rimborsato') NOT NULL DEFAULT 'In attesa',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pronto_ritiro BOOLEAN NOT NULL DEFAULT FALSE

@@ -38,7 +38,7 @@
 
         if($prodotto){
           // creo una riga d'ordine: questo utente, questo prodotto, 
-          // questo prezzo, stato "pending". Una per ogni prodotto del carrello.
+          // questo prezzo, stato "In attesa". Una per ogni prodotto del carrello.
           Purchases::create($u['id'], $prodId, $prodotto['price'], 'pending');
         }
       }
@@ -54,58 +54,48 @@
 
 <?php include 'header.php'?>
 
-<section class="pagehead">
-  <div class="container">
-    <h1>Lo shop del club</h1>
-  </div>
-</section>
-
 <!-- ============ SEZIONE 1 ============ -->
-<section class="sec sec--white">
+<section class="sec sec--white ">
   <div class="container">
-    <h2>Scegli la categoria</h2>
-    <p class="sub">Apri "Scopri di più" per allungare la card e vedere attrezzature e marche presenti nella sezione.</p>
+    <h2>Le nostre categorie</h2>
+    <p class="sub">Le nostre categorie di prodotto che possiamo offrirti, sia per fuori che per dentro il campo</p>
 
     <div class="cat-cards">
-      <div class="cat">
-        <div class="ph" style="min-height:150px"><small>PORTIERI</small></div>
-        <div class="cat__body">
-          <h3>Attrezzatura portieri</h3>
-          <p>Tutto il necessario per il ruolo di portiere.</p>
-        </div>
-        <input type="checkbox" id="c1">
-        <div class="cat__more">
-          <ul><li>Maschere e caschi</li><li>Parastinchi e gambali</li><li>Guanti e bloccatori</li><li>Marche: CCM, Bauer, Vaughn</li></ul>
-        </div>
-        <label for="c1">Scopri di più ▾</label>
-      </div>
 
-      <div class="cat">
-        <div class="ph" style="min-height:150px"><small>BASTONI</small></div>
-        <div class="cat__body">
-          <h3>Bastoni</h3>
-          <p>Bastoni per ogni categoria e livello.</p>
+        <div class="cat">
+          <img class="cat__img" src="attrezzatura-allenamento.png" alt="Attrezzatura d'allenamento">
+          <div class="cat__body">
+            <h3>Attrezzatura d'allenamento</h3>
+            <p>Tutto il necessario per allenarsi oltre alle classiche sessioni settimanali</p>
+          </div>
         </div>
-        <input type="checkbox" id="c2">
-        <div class="cat__more">
-          <ul><li>Bastoni senior / junior</li><li>Curve e flex differenti</li><li>Composito e legno</li><li>Marche: Bauer, Warrior, CCM</li></ul>
-        </div>
-        <label for="c2">Scopri di più ▾</label>
-      </div>
 
-      <div class="cat">
-        <div class="ph" style="min-height:150px"><small>PROTEZIONI</small></div>
-        <div class="cat__body">
-          <h3>Protezioni</h3>
-          <p>Protezioni per giocatori di movimento.</p>
+        <div class="cat">
+          <img class="cat__img" src="attrezzatura-mista.png" alt="Attrezzatura giocatore">
+          <div class="cat__body">
+            <h3>Attrezzatura giocatore</h3>
+            <p>Ampia scelta di massima qualità di tutto l'occorente utile durante le partite più impegnative</p>
+          </div>
         </div>
-        <input type="checkbox" id="c3">
-        <div class="cat__more">
-          <ul><li>Spallacci e gomitiere</li><li>Pantaloni protettivi</li><li>Paradenti e collari</li><li>Marche: Bauer, CCM, Warrior</li></ul>
+
+        <div class="cat">
+          <img class="cat__img" src="attrezzatura-portieri.png" alt="Attrezzatura portieri">
+          <div class="cat__body">
+            <h3>Attrezzatura portieri</h3>
+            <p>VAsta gamma di protezioni per affrontare ogni parata in totale sicurezza</p>
+          </div>
         </div>
-        <label for="c3">Scopri di più ▾</label>
-      </div>
+
+        <div class="cat">
+          <img class="cat__img" src="borsone-sportivo.png" alt="Borsoni della società">
+          <div class="cat__body">
+            <h3>Borsoni della società</h3>
+            <p>Borsoni capienti e resistenti con i colori della società, per portare l'attrezzatura ovunque</p>
+          </div>
+        </div>
+
     </div>
+  </div>
   </div>
 </section>
 
@@ -113,7 +103,7 @@
 <section class="sec sec--bg" id="prodotti">
   <div class="container">
     <h2>I prodotti</h2>
-    <p class="sub">Rappresentazione tramite card. Seleziona i prodotti: compaiono nella barra laterale.</p>
+    <p class="sub">Rappresentazione dei nostri prodotti e possibilità di aggiungerli al nostro carrello virtuale collegato direttamente con il club</p>
 
     <?php if(($_GET['ordine'] ?? '') === 'ok'): ?>
       <div class="alert alert--success">Ordine effettuato! Ritiro in club house.</div>

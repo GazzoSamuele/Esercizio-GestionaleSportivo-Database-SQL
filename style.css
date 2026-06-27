@@ -15,7 +15,7 @@
     --radius:    20px;
     --radius-sm: 10px;
     --shadow:    0 1px 2px #adb97c;
-    --shadow-md: 0 10px 28px #adb97c;
+    --shadow-md: 0 0px 28px #adb97c;
 
      --font:    'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 
@@ -59,6 +59,7 @@ a {
     display: flex;
     margin: 0 auto;
     flex-direction: column;
+    justify-content: space-evenly;
 }
 
 .wrap {
@@ -98,7 +99,7 @@ a {
 
 .tag {
     display: inline-block;
-    background: #FFF;
+    background: var(--color-2);
     border: 1px solid var(--line);
     border-radius: 999px;
     padding: 5px 14px;
@@ -142,7 +143,7 @@ a {
 
 .btn--primary:hover {
     background: var(--bg-color-effects);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0px 0px 28px #adb97c;
     color: #ffffffff;
 }
 
@@ -208,7 +209,7 @@ a {
    ------------------------------------------------------------ */
 header{
     position: fixed;
-    top: 30px;
+    top: 0px;
     left: 0;
     right: 0;
     z-index: 5;
@@ -220,7 +221,8 @@ header{
 }
 
 .logo{
-    width: 5%;
+    height: 80px; 
+    width: auto;
     background-color: var(--color-3);
     border-radius: 20px;
 }
@@ -230,10 +232,12 @@ header{
 }
 .navbar-gradient {
     background: var(--color-3);
-    box-shadow: 0 2px 12px rgba(0, 0, 0, .12);
-    width: 30%;
-    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    width: auto;
+    border-radius: 0 0 40px 40px;
     margin: 0 auto;
+    padding: 8px 14px;   
 }
 
 .social-nav {
@@ -270,10 +274,14 @@ header{
 
 
 .nav-link-login{
-    background-color: var(--color-1);
-    padding: 10px;
-    color: var(--textColor1);
-    border-radius: 10px;
+    background: #fff; 
+    color: var(--color-3);
+    border-radius: 999px; 
+    padding: 8px 16px; 
+    font-weight: 600;
+}
+.nav-link-login:hover{
+    background: #eee;
 }
 .offcanvas{
     background-color: var(--color-3);
@@ -304,8 +312,8 @@ header{
 .container_hero {
     display: flex;
     align-items: center;
-    justify-content: center;
-    width: 100%;
+    justify-content: flex-start;
+    width: 80%;
     margin: 0 auto;
 }
 
@@ -325,9 +333,9 @@ header{
   z-index: 2;
 }
 .hero h1 {
-    font-size: clamp(32px, 5vw, 52px);
+    font-size: 4rem;
     font-weight: 800;
-    color: var(--color-2);
+    color: white;
     width: 100%;
     margin: 0 auto 16px;
     line-height: 1.12;
@@ -349,8 +357,7 @@ header{
 }
 
 .minicard {
-    background: #FFF;
-    border: 1px solid var(--line);
+    background: var(--bg-color-2);
     border-radius: var(--radius);
     padding: 22px 16px;
     display: flex;
@@ -384,7 +391,10 @@ header{
    ------------------------------------------------------------ */
 
 .sec {
-    padding: 80px 0;
+    padding-top: 150px;
+}
+.sec-custom{
+    padding: 50px 0;
 }
 
 .sec--white {
@@ -398,7 +408,8 @@ header{
 
 .sec--bg {
     background: var(--bg-color-1);
-    min-height: 50vh;   /* min- e non height: così la sezione cresce con il contenuto invece di tagliarlo */
+    min-height: 50vh;  
+    display: flex;
 }
 
 .sec--dark {
@@ -417,6 +428,11 @@ header{
     font-weight: 700;
     color: var(--color-2);
     margin-bottom: 8px;
+}
+
+.sub-shop-index{
+    color: white;
+    margin-bottom: 32px;
 }
 
 .sec--dark h2 {
@@ -444,40 +460,27 @@ header{
     display: flex;
     flex-direction: column;
 }
-.container_sez1 .split:nth-of-type(2) {
-    display: flex;
-    flex-direction: row-reverse;
-    width: 100%;
-    justify-content: space-between;
-    gap: 36px;
-    align-items: center;
-    margin-bottom: 32px;
-    height: 30vh;
-}
-
-.container_sez1 .split:nth-of-type(3) {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-between;
-    gap: 36px;
-    align-items: center;
-    margin-bottom: 32px;
-    height: 30vh;
-}
 .split {
     display: flex;
-    flex-direction: row;
-    gap: 36px;
+    flex-direction: row;          /* testo a sinistra, immagine a destra */
+    gap: 40px;
     align-items: center;
-    margin-bottom: 32px;
-    height: 50vh;
+    margin-bottom: 40px;
+}
+
+.split--reverse {
+    flex-direction: row-reverse;  /* invertita: immagine a sinistra, testo a destra */
+}
+
+.split__text {
+    flex: 1;
 }
 
 .split__img {
     width: 50%;
-    height: 100%;
-    background-color: var(--bg-color-2);
+    height: 320px;
+    object-fit: cover;
+    border-radius: var(--radius);
 }
 
 .split h3 {
@@ -495,6 +498,14 @@ header{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+}
+
+/* griglia delle card-beneficio (sezione "Entra a far parte del club") */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+    margin: 22px 0 32px;
 }
 
 .svc {
@@ -595,6 +606,9 @@ header{
     font-size: 14px;
 }
 
+.dim-td-custom{
+    width: 120px;
+}
 .table tbody tr:hover {
     background: #FAFBFC;
 }
@@ -615,16 +629,19 @@ header{
     display: flex;
     flex-direction: column;
     gap: 12px;
+    justify-content: space-between;
 }
 
 .shop__item {
     display: flex;
     align-items: center;
     gap: 15px;
-    background: var(--color-2);
+    background: var(--color-3);
     border: 1px solid rgba(255, 255, 255, .12);
     border-radius: var(--radius-sm);
-    padding: 14px 18px;
+    padding: 26px 20px;
+    width: 50%;
+    justify-content: center;
 }
 
 .shop__item .thumb {
@@ -702,7 +719,12 @@ footer {
     background: var(--color-3);
     color: #FFF;
     padding: 54px 24px 34px;
-    margin-top: auto;
+}
+
+/* l'ultima sezione di contenuto cresce per riempire lo spazio:
+   il footer resta in fondo, ma il vuoto prende il colore della sezione (non il grigio del body) */
+body > section:last-of-type {
+    flex-grow: 1;
 }
 
 .footer__top {
@@ -741,6 +763,13 @@ footer {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+}
+
+.img-news-calendario{
+    width: 100%;
+    height: 50%;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .news {
@@ -790,7 +819,10 @@ footer {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
+    margin-bottom: 20px
+}
+.margin-left{
+    margin-left: 20px;
 }
 
 .filter span {
@@ -1051,7 +1083,7 @@ footer {
 
 .cat-cards {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
 }
 
@@ -1066,6 +1098,13 @@ footer {
 
 .cat:hover {
     box-shadow: var(--shadow-md);
+}
+
+.cat__img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
 }
 
 .cat__body {
@@ -1123,6 +1162,7 @@ footer {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+    margin-bottom: 150px;
 }
 
 .product {
@@ -1240,8 +1280,14 @@ footer {
 /* ------------------------------------------------------------
    PAGINA CONTATTI
    ------------------------------------------------------------ */
-.sez-contact{
-    height: 80vh;
+.sez-100vh{
+    height: 100vh;
+}
+
+.container-large{
+    width: 90%;
+    margin: 0px;
+    padding: 0px;
 }
 
 .contact-wrapper {
@@ -1346,6 +1392,7 @@ footer {
     grid-template-columns: 1fr 1fr;
     gap: 100px;
     align-items: start;
+    margin-bottom: 150px;
 }
 
 .formcard {
@@ -1467,19 +1514,62 @@ footer {
 /* ------------------------------------------------------------
    AREA AUTENTICAZIONE (login / registrazione)
    ------------------------------------------------------------ */
+.sec-login{
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+}
+.container-login{
+    width: 90%;
+    display: flex;
+    gap: 20px;
+}
 .authbox {
-    width: 30%;
+    width: 100%;
     margin: 0 auto;
     background: #FFF;
     border: 1px solid var(--line);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
     padding: 32px;
+    display: flex;
+    height: auto;
+    align-items: center;
+}
+.form-login{
+    width: 80%;
+    margin: 0 auto;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
 }
 
+/* nel login le due card (form + video) si dividono lo spazio in parti uguali, senza sforare */
+.container-login .authbox {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+
+.no_padding{
+    padding: 0px;
+}
+
+.video-login{
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    object-fit: cover;
+    display: block;
+}
 /* registrazione: stilizzo le card/form che usano le classi Bootstrap */
+
 .bg_personal {
-    background: linear-gradient(180deg, #FFF, var(--textColor1));
+    background: var(--bg-color-1);
+    display: flex;
 }
 
 .mainProject .row {
@@ -1487,31 +1577,75 @@ footer {
 }
 
 .mainProject .col-lg-6 {
-    background: #FFF;
-    border: 1px solid var(--line);
+    background-color: var(--color-1);
     border-radius: var(--radius);
     box-shadow: var(--shadow);
-    padding: 34px;
     width: 50%;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.register-head {
+    padding: 20px 22px;
+}
+
+.register-head h2 {
+    font-size: 25px;
+    font-weight: 800;
+    color: #bd4d63;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: var(--bg-color-1);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 0;
+}
+.frm-register{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;  
+}
+    
+.register-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 
 .mainProject .form-control {
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
+    background: var(--bg-color-2);
+    border: none;
+    color: #000;
+    border-radius: 10px;
+    padding: 11px 14px;
 }
 
 .mainProject .form-control:focus {
-    border-color: var(--color-2);
-    box-shadow: 0 0 0 3px rgba(11, 37, 69, .12);
+    background: var(--bg-color-1);
+    border-color: #bd4d63;
+    box-shadow: 0 0 0 3px rgba(189, 77, 99, 0.25);
+    color: black;
 }
 
 .mainProject label {
     display: block;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--textColor2);
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
     margin-bottom: 6px;
+}
+.a-login-register{
+    padding: 5px 20px;
+    background-color: var(--bg-color-1);
+    border-radius: 10px;
+    color: #bd4d63;
+    font-weight: bold;
+    margin-left: 15px;
 }
 
 /* ------------------------------------------------------------
@@ -1590,6 +1724,7 @@ footer {
     --dash-text: var(--color-3);
     --dash-muted: var(--textColor3);
     --red: #bd4d63;
+    --blue: #2274A5;
 
     display: grid;
     grid-template-columns: 260px 1fr;
@@ -1651,11 +1786,12 @@ footer {
 
 .dash-link:hover {
     background: rgba(255, 255, 255, .04);
-    color: var(--dash-text);
+    color: #BD4D63;
+    background-color: var(--bg-color-1);
 }
 
 .dash-link.active {
-    background: color-mix(in srgb, var(--red) 14%, transparent);
+    background: var(--bg-color-1);
     color: var(--red);
 }
 
@@ -1721,6 +1857,15 @@ footer {
 /* ---- MAIN ---- */
 .dash-main {
     padding: 34px 38px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.dash-head{
+    display: block;
+    position: static;
+    margin: 0px;
 }
 
 .dash-head h1 {
@@ -1741,16 +1886,18 @@ footer {
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 18px;
     margin-bottom: 26px;
+    width: 100%;
 }
 
 .dash-stat {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 16px;
     background: var(--dash-panel);
     border: 1px solid var(--dash-line);
     border-radius: 16px;
     padding: 20px 22px;
+    flex-direction: column;
 }
 
 .dash-stat-icon {
@@ -1766,6 +1913,15 @@ footer {
     flex: 0 0 auto;
 }
 
+.dash-stat h3{
+    padding: 5px 20px;
+    background-color: var(--bg-color-1);
+    border-radius: 10px;
+    color: #bd4d63;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
 .dash-stat b {
     display: block;
     font-size: 22px;
@@ -1778,10 +1934,28 @@ footer {
     font-size: 13px;
 }
 
+/* card scadenza quota (client): bordo verde se ok, giallo se in scadenza */
+.dash-stat.quota-ok {
+    border-left: 10px solid var(--color-1);
+}
+
+.dash-stat.quota-warn {
+    border-left: 4px solid #e0a800;
+}
+
+/* card prodotti (client) */
+.dash-stat-prodotti {
+    border-left: 10px solid var(--red);
+}
+/* card prodotti (client) */
+.dash-stat-impegni {
+    border-left: 10px solid var(--blue);
+}
+
+
 /* ---- PANNELLO + TABELLA ---- */
 .dash-panel {
     background: var(--dash-panel);
-    border: 1px solid var(--dash-line);
     border-radius: 16px;
     overflow: hidden;
 }
@@ -1793,6 +1967,27 @@ footer {
     padding: 20px 22px;
 }
 
+.alg-form-results {
+    display: flex;
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+/* allineamento per le sezioni che posso far stare il form e le info nella stessa riga */
+
+.dash-panel-form{
+    background: var(--color-1);
+    border-radius: 16px;
+    overflow: hidden;
+    width: 30%;
+}
+.dash-panel-info{
+    background: var(--dash-panel);
+    border-radius: 16px;
+    overflow: hidden;
+    width: 65%;
+}
+
 .dash-panel-head h2 {
     font-size: 19px;
     font-weight: 800;
@@ -1800,6 +1995,10 @@ footer {
     display: flex;
     align-items: center;
     gap: 10px;
+    background-color: var(--bg-color-1);
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 0px;
 }
 
 .dash-table {
@@ -1808,7 +2007,7 @@ footer {
 }
 
 .dash-table th {
-    text-align: left;
+    text-align: center;
     font-size: 12px;
     letter-spacing: .04em;
     color: var(--red);
@@ -1825,6 +2024,33 @@ footer {
     border-bottom: 1px solid rgba(255, 255, 255, .05);
 }
 
+.dash-table-impegni{
+    height: 100%;
+}
+
+/* //////////////////////////////////*/
+/* //////////////////////////////////*/
+/* //////////////////////////////////*/
+
+.text-end {
+    display: flex;
+    justify-content: center;
+}
+
+.text-align-center{
+    text-align: center;
+}
+
+.td-width{
+    width: 30%;
+}
+.panel-mid-0-auto{
+    width: 90%;
+    margin: 0 auto;
+}
+/* //////////////////////////////////*/
+/* //////////////////////////////////*/
+/* //////////////////////////////////*/
 .dash-table tbody tr:last-child td {
     border-bottom: 0;
 }
@@ -1846,27 +2072,27 @@ footer {
 
 .dash label {
     display: block;
-    color: var(--dash-muted);
-    font-size: 13px;
-    font-weight: 600;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
     margin-bottom: 6px;
 }
 
 .dash .form-control,
 .dash .form-select {
-    background: rgba(255, 255, 255, .04);
-    border: 1px solid var(--dash-line);
-    color: var(--dash-text);
+    background: var(--bg-color-2);
+    border: none;
+    color: #000000;
     border-radius: 10px;
     padding: 11px 14px;
 }
 
-.dash .form-control:focus,
+.dash .form-control:focus, 
 .dash .form-select:focus {
-    background: rgba(255, 255, 255, .06);
+    background: var(--bg-color-1);
     border-color: var(--red);
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--red) 25%, transparent);
-    color: var(--dash-text);
+    color: black;
 }
 
 .dash .form-control::placeholder {
@@ -1957,6 +2183,9 @@ footer {
     border-radius: 16px;
     padding: 20px 22px;
     box-shadow: var(--shadow);
+    height: 40vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .dash-news-card h3 {
@@ -2039,7 +2268,6 @@ footer {
     font-size: 13px;
 }
 
-/* su schermi stretti i grafici/card vanno a colonna singola */
 @media (max-width: 720px) {
     .dash-charts,
     .dash-cards-grid {

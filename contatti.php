@@ -49,14 +49,11 @@
 
 <?php include 'header.php'?>
 
-<section class="pagehead">
+<section class="sec sec--white">
   <div class="container">
-    <h1>Contatti & iscrizione</h1>
-  </div>
-</section>
-
-<section class="sec sec--white sez-contact">
-  <div class="container">
+    <h2>Contatti</h2>
+    <p class="sub">Richiedi inforomazioni attraverso il form qua sotto oppure contattando direttamente il club</p>
+  <div class="container-large container">
     <div class="forms">
 
       <!-- FORM 1 — Richiesta informazioni -->
@@ -154,7 +151,7 @@
                 <textarea class="form-control" name="messaggio" rows="5"></textarea>
               </div>
 
-              <button type="submit" class="btn btn-submit">Invia Richiesta</button>
+              <button type="submit" class="btn btn--accent">Invia Richiesta</button>
             </form>
           </div>
         </div>
@@ -182,6 +179,7 @@
       </div>
 
     </div>
+  </div>
   </div>
 </section>
 

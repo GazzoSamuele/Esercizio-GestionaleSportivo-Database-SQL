@@ -57,17 +57,13 @@
 ?>
 <?php include 'header.php'?>
 
-<!-- intestazione pagina -->
-<section class="pagehead">
-  <div class="container">
-    <h1>Accedi al gestionale</h1>
-  </div>
-</section>
-
-<section class="sec sec--white">
-  <div class="container">
+<section class="sec sec--white sec-login">
+   <div class="container">
+    <h2>Accedi al gestionale</h2>
+    <p class="sub">Semplice form dove inserire le proprie credenziali per accedere alla dashboard oppure registrarsi attraverso il link sottostante</p>
+  <div class="container-login">
     <div class="authbox">
-      <form action="" method="post">
+      <form class="form-login" action="" method="post">
 
         <!-- messaggi di errore (validazione campi + credenziali) -->
         <?php if(!empty($errors)): ?>
@@ -95,10 +91,18 @@
         <button type="submit" class="btn btn-warning w-100">Entra</button>
 
         <p class="mt-3 text-center">
-          Non hai un account? <a href="register.php">Registrati</a>
+          Non hai un account? <a class="a-login-register" href="register.php">Registrati</a>
         </p>
       </form>
     </div>
+
+    <div class="authbox no_padding">
+      <video autoplay loop muted playsinline class="video-login">
+        <source src="hero-sport.mp4" type="video/mp4">
+      </video>
+    </div>
+
+  </div>
   </div>
 </section>
 

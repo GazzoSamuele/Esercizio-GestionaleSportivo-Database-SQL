@@ -70,11 +70,22 @@ $partite = Calendar::findAllPartite();  // tutte le partite
         $comunicazioni = array_slice(array_reverse($comunicazioni), 0, 3);
 
         // prende tutti gli acquisti attraverso l'user selezionato
-        $mieiOrdini = Purchases::findByUser($user['id']);
+        $tuttiOrdini = Purchases::findByUser($user['id']);
+        $numOrdini = count($tuttiOrdini);                                   // quanti ordini ha fatto
          // rappresenta solo alcuni degli acquisti fatti (non tutti)
-        $mieiOrdini = array_slice(array_reverse($mieiOrdini), 0, 4);
+        $mieiOrdini = array_slice(array_reverse($tuttiOrdini), 0, 4);
 
         $prossimiImpegni = Impegni::findProssimiImpegni();
+        $prossimoImpegno = $prossimiImpegni[0] ?? null;                     // il primo impegno futuro
+
+        // scadenza quota e giorni mancanti
+        $quotaScadenza = User::quotaScadenza($user['id']);
+        $giorniAllaScadenza = null;
+        if ($quotaScadenza) {
+            $oggi = new DateTime('today');
+            $scad = new DateTime($quotaScadenza);
+            $giorniAllaScadenza = (int) $oggi->diff($scad)->format('%r%a'); // giorni alla scadenza (con segno)
+        }
     }
 ?>
 
@@ -87,6 +98,7 @@ $partite = Calendar::findAllPartite();  // tutte le partite
         </header>
 
         <!-- ---- stat cards ---- -->
+        <?php if ($user['role'] === 'admin'): ?>
         <div class="dash-stats">
             <div class="dash-stat">
                 <span class="dash-stat-icon"><i class="fas fa-calendar-check"></i></span>
@@ -110,6 +122,39 @@ $partite = Calendar::findAllPartite();  // tutte le partite
                 </div>
             </div>
         </div>
+        <?php else: ?>
+        <div class="dash-stats">
+            <!-- scadenza quota (verde = ok, giallo = in scadenza) -->
+            <div class="dash-stat <?= ($giorniAllaScadenza !== null && $giorniAllaScadenza <= 30) ? 'quota-warn' : 'quota-ok' ?>">
+                    <span class="dash-stat-icon">
+                        <i class="fas fa-id-card"></i>
+                    </span>
+                <div>
+                    <h3>Tra quanto scade la quota societaria?</h3>
+                    <b><?= $giorniAllaScadenza !== null ? (int) $giorniAllaScadenza . ' giorni' : '—' ?></b>
+                    <small>Alla scadenza della quota</small>
+                </div>
+            </div>
+            <!-- ordini effettuati -->
+            <div class="dash-stat dash-stat-prodotti">
+                <span class="dash-stat-icon"><i class="fas fa-receipt"></i></span>
+                <div>
+                    <h3>Totale ordini effettuati</h3>
+                    <b><?= (int) $numOrdini ?></b>
+                    <small>Ordini effettuati</small>
+                </div>
+            </div>
+            <!-- prossimo impegno -->
+            <div class="dash-stat dash-stat-impegni">
+                <span class="dash-stat-icon"><i class="fas fa-calendar-day"></i></span>
+                <div>
+                    <h3>Quand'è la prossima partita?</h3>
+                    <b><?= $prossimoImpegno ? date('d M', strtotime($prossimoImpegno['data'])) : '—' ?></b>
+                    <small><?= $prossimoImpegno ? htmlspecialchars($prossimoImpegno['titolo']) : 'Nessun impegno in programma' ?></small>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
     <?php if($user['role'] === 'admin'): ?>
 

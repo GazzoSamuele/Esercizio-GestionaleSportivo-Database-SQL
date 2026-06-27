@@ -97,6 +97,10 @@ $user = currentUser();
 
     $impegni = Impegni::findAllImpegni();
 
+    $lastImpegni = Impegni::findProssimiImpegni();
+
+    $ultimiImpegni = array_slice(array_reverse($lastImpegni), 0, 5);
+
 ?>
     <?php 
   
@@ -127,7 +131,8 @@ $user = currentUser();
         <?php endif; ?>
 
         <!-- ---- form nuovo impegno ---- -->
-        <section class="dash-panel dash-formcard">
+    <div class="alg-form-results">
+        <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
                 <h2><i class="fas fa-user-plus"></i>Nuovo Impegno</h2>
             </div>
@@ -171,6 +176,47 @@ $user = currentUser();
             </div>
         </section>
 
+        <!-- elenco ultimi impegni -->
+        <section class="dash-panel-info">
+            <div class="dash-panel-head">
+                <h2><i class="fas fa-users"></i>Ultimi Impegni Registrati</h2>
+            </div>
+            <table class="dash-table dash-table-impegni">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titolo</th>
+                        <th>Tipo</th>
+                        <th>Data</th>
+                        <th>Ora</th>
+                        <th>Luogo</th>
+                        <th>Descrizione</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($ultimiImpegni as $imp): ?>
+                    <tr>
+                        <!-- prendo l'id dell'utente singolo -->
+                        <td>#<?= (int) $imp['id'] ?></td>
+
+                        <td><?= htmlspecialchars($imp['titolo']) ?></td>
+
+                        <td><?= htmlspecialchars($imp['tipo']) ?></td>
+
+                        <td><?= htmlspecialchars($imp['data']) ?></td>
+
+                        <td><?= htmlspecialchars($imp['ora']) ?></td>
+
+                        <td><?= htmlspecialchars($imp['luogo']) ?></td>
+
+                        <td><?= htmlspecialchars($imp['descrizione']) ?></td>
+
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </section>
+    </div>
         <!-- ---- calendario impegni ---- -->
         <section class="dash-panel">
             <div class="dash-panel-head">
@@ -193,19 +239,19 @@ $user = currentUser();
                     <?php foreach($impegni as $imp): ?>
                     <tr>
                         <!-- prendo l'id dell'utente singolo -->
-                        <td>#<?= (int) $imp['id'] ?></td>
+                        <td class="text-align-center">#<?= (int) $imp['id'] ?></td>
 
-                        <td><?= htmlspecialchars($imp['titolo']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['titolo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['tipo']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['tipo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['data']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['data']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['ora']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['ora']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['luogo']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['luogo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['descrizione']) ?></td>
+                        <td class="text-align-center"><?= htmlspecialchars($imp['descrizione']) ?></td>
 
                         <td class="text-end">
                                

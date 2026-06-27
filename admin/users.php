@@ -171,38 +171,85 @@ $user = currentUser();
         <?php endif; ?>
 
         <!-- ---- form nuovo utente ---- -->
-        <section class="dash-panel dash-formcard">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-user-plus"></i> Nuovo Utente</h2>
-            </div>
-            <div class="dash-formbody">
-                <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
-                <form action="" method="post">
-                    <input type="hidden" name="action" value="create">
-                    <div class="mb-3">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" minlength="8" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="role">Ruolo</label>
-                        <select name="role" id="role" class="form-select">
-                            <option value="client">Client</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-warning" type="submit">Crea utente</button>
-                </form>
-            </div>
-        </section>
+        <div class="alg-form-results">
+            <section class="dash-panel-form dash-formcard">
+                <div class="dash-panel-head">
+                    <h2><i class="fas fa-user-plus"></i> Nuovo Utente</h2>
+                </div>
+                <div class="dash-formbody">
+                    <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
+                    <form action="" method="post">
+                        <input type="hidden" name="action" value="create">
+                        <div class="mb-3">
+                            <label for="name">Nome</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role">Ruolo</label>
+                            <select name="role" id="role" class="form-select">
+                                <option value="client">Client</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-warning" type="submit">Crea utente</button>
+                    </form>
+                </div>
+            </section>
 
+                    <!-- ---- tabella richieste informazioni ---- -->
+            <section class="dash-panel-info">
+                <div class="dash-panel-head">
+                    <h2><i class="fas fa-users"></i> Richieste informazioni</h2>
+                </div>
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Telefono</th>
+                            <th>Categoria</th>
+                            <th>Messaggio</th>
+                            <th>Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach($request as $req): ?>
+                        <tr>
+                            <td>#<?= (int) $req['id'] ?></td>
+
+                            <td>
+                                <?= htmlspecialchars($req['name']) ?>
+                            </td>
+
+                            <td><?= htmlspecialchars($req['email']) ?></td>
+
+                            <td><?= htmlspecialchars($req['phone']) ?></td>
+
+                            <td><?= htmlspecialchars($req['categoria']) ?></td>
+
+                            <td><?= htmlspecialchars($req['messaggio']) ?></td>
+
+                            <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
+                            <td><?= date('d M Y', strtotime($req['created_at'])) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($request)): ?>
+                    <tr><td colspan="7" class="dash-empty">Nessuna nuova richiesta di informazioni</td></tr>
+                    <?php endif; ?>
+                    </tbody>
+                </table>
+            </section>
+        </div>
+        
         <!-- ---- tabella utenti ---- -->
     <section class="dash-panel">
         <div class="dash-panel-head">
@@ -289,51 +336,7 @@ $user = currentUser();
             </tbody>
         </table>
     </section>
-        <!-- ---- tabella richieste informazioni ---- -->
-    <section class="dash-panel">
-        <div class="dash-panel-head">
-            <h2><i class="fas fa-users"></i> Richieste informazioni</h2>
-        </div>
-        <table class="dash-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Telefono</th>
-                    <th>Categoria</th>
-                    <th>Messaggio</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($request as $req): ?>
-                <tr>
-                    <td>#<?= (int) $req['id'] ?></td>
-
-                    <td>
-                        <?= htmlspecialchars($req['name']) ?>
-                    </td>
-
-                    <td><?= htmlspecialchars($req['email']) ?></td>
-
-                    <td><?= htmlspecialchars($req['phone']) ?></td>
-
-                    <td><?= htmlspecialchars($req['categoria']) ?></td>
-
-                    <td><?= htmlspecialchars($req['messaggio']) ?></td>
-
-                    <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
-                    <td><?= date('d M Y', strtotime($req['created_at'])) ?></td>
-                </tr>
-            <?php endforeach; ?>
-            <?php if(empty($request)): ?>
-            <tr><td colspan="7" class="dash-empty">Nessuna nuova richiesta di informazioni</td></tr>
-            <?php endif; ?>
-            </tbody>
-        </table>
-    </section>
-    </main>
+</main>
 
 </div>
 

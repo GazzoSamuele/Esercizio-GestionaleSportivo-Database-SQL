@@ -23,7 +23,7 @@ $ordini = Purchases::findByUser($user['id']);
         <h1>I miei ordini, <?= htmlspecialchars($user['name']) ?></h1>
     </header>
 
-    <div class="dash-stats">
+    <!-- <div class="dash-stats">
         <div class="dash-stat">
             <span class="dash-stat-icon"><i class="fas fa-receipt"></i></span>
             <div>
@@ -45,7 +45,7 @@ $ordini = Purchases::findByUser($user['id']);
                 <small>User ID</small>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <section class="dash-panel">
         <div class="dash-panel-head">
@@ -75,7 +75,7 @@ $ordini = Purchases::findByUser($user['id']);
                             <?php endif; ?>
                         </td>
                         <td><?= htmlspecialchars($ord['prodotto']) ?></td>
-                        <td>€ <?= htmlspecialchars($ord['price_paid']) ?></td>
+                        <td>€ <?= htmlspecialchars($ord['prezzo_pagato']) ?></td>
                         <td><?= htmlspecialchars($ord['status']) ?></td>
                         <td><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
                     </tr>
