@@ -8,16 +8,16 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
 
 // immagine dedicata in base al titolo della news 
 $immaginiNews = [
-    "L'Under 19 conquista la vetta della classifica" => 'img-calendario-1.png',
-    'Vittoria in rimonta della Prima Squadra'        => 'img-calendario-2.png',
-    'Andrea Conti firma una tripletta'               => 'img-calendario-3.png',
+    "L'Under 19 conquista la vetta della classifica" => '/Gestionale-Hockey/assets/img/img-calendario-1.png',
+    'Vittoria in rimonta della Prima Squadra'        => '/Gestionale-Hockey/assets/img/img-calendario-2.png',
+    'Andrea Conti firma una tripletta'               => '/Gestionale-Hockey/assets/img/img-calendario-3.png',
 ];
 
 ?>
 
 <?php require_once __DIR__ . '/DB/data/datiFittizi.php'; ?>
 
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <!-- ============ SEZIONE 1 — News ============ -->
 <section class="sec sec--white">
@@ -308,4 +308,4 @@ $immaginiNews = [
   </div><!-- /container -->
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

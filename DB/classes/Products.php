@@ -40,24 +40,6 @@ class Products
         return $products ?: null;
     }
 
-    public static function findByPrice(int $price): ?array
-    {
-        
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, name, description, price, is_active, image_path, created_at
-             FROM products
-             WHERE price = :price'
-        );
-
-        $stmt->execute([':price' => $price]);
-
-        $products = $stmt->fetch();
-        return $products ?: null;
-    }
-
     public static function findIsActive(bool $isActive): ?array
     {
         $pdo = Db::connect();

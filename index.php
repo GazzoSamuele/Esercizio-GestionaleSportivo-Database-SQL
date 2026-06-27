@@ -15,13 +15,13 @@ function shopThumb(array $prodotti, int $i): void {
 }
 ?>
 
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="container_hero">
     <video autoplay loop muted playsinline class="video-background">
-    <source src="hero-sport.mp4" type="video/mp4">
+    <source src="/Gestionale-Hockey/assets/video/hero-sport.mp4" type="video/mp4">
   </video>
     <div class="hero_content">
       <h1>Gestionale società sportiva</h1>
@@ -56,7 +56,7 @@ function shopThumb(array $prodotti, int $i): void {
           <h3>Storia società</h3>
           <p>Racconto delle origini del club, dei valori e dei traguardi raggiunti negli anni. Testo modificabile.</p>
         </div>
-        <img class="split__img" src="storia-club-index.png" alt="Storia della società">
+        <img class="split__img" src="/Gestionale-Hockey/assets/img/storia-club-index.png" alt="Storia della società">
       </div>
 
       <!-- invertita: immagine a sinistra, testo a destra -->
@@ -65,7 +65,7 @@ function shopThumb(array $prodotti, int $i): void {
           <h3>Club house</h3>
           <p>Descrizione degli spazi, dei servizi e del punto di ritrovo della società. Qui avviene anche il ritiro dei prodotti acquistati.</p>
         </div>
-        <img class="split__img" src="club-house.png" alt="Club house della società">
+        <img class="split__img" src="/Gestionale-Hockey/assets/img/club-house.png" alt="Club house della società">
       </div>
   </div>
 </section>
@@ -286,4 +286,4 @@ function shopThumb(array $prodotti, int $i): void {
   </div>
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

@@ -3,27 +3,8 @@
 require_once __DIR__ . '/Db.php';
 
 
-class News 
+class News
     {
-       public static function findById(int $id): ?array
-    {
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, title, description, tipo, data, image_path, created_at
-             FROM news
-             WHERE id = :id'
-        );
-
-        $stmt->execute([':id' => $id]);
-
-        $news = $stmt->fetch();
-        
-        return $news ?: null;
-    }
-
-
     public static function findByTitle(string $title): ?array
     {
         $pdo = Db::connect();
@@ -41,25 +22,7 @@ class News
         return $news ?: null;
     }
 
-    public static function findByDate(string $data): ?array
-    {
-        
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, title, description, tipo, data, image_path, created_at
-             FROM news
-             WHERE data = :data'
-        );
-
-        $stmt->execute([':data' => $data]);
-
-        $news = $stmt->fetch();
-        return $news ?: null;
-    }
-
-        // funzione della classe cerca per TIPO (tipo di notizia) 
+        // funzione della classe cerca per TIPO (tipo di notizia)
     public static function findByTipo(string $tipo): array
     {
         // connettere il tutto al db

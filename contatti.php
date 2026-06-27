@@ -2,6 +2,16 @@
 
     require_once __DIR__ . '/DB/classes/InfoRequest.php';
 
+    // mappa categoria: il value del form (numero) → etichetta salvata nel DB
+    $categorieContatti = [
+        '1' => 'Giovanili: 6-13 anni',
+        '2' => 'Cadetti: 14-15 anni',
+        '3' => 'Allievi: 16-17 anni',
+        '4' => 'Juniores: 18-19 anni',
+        '5' => 'Promesse: 20-22 anni',
+        '6' => 'Seniores: dai 23 anni in poi',
+    ];
+
     $errors = [];
     $success = '';
 
@@ -32,13 +42,13 @@
         }
 
         //categoria
-        if(!in_array($categoria, ['1', '2', '3', '4', '5', '6'], true)){
-            $errors[] = 'Invalid category';
+        if(!isset($categorieContatti[$categoria])){
+            $errors[] = 'Categoria non valida';
         }
 
         if(empty($errors)){
-            // così facendo richiamo i parametri che mi servono
-            InfoRequest::create($name, $email, $phone, $categoria, $messaggio);
+            // salvo l'etichetta leggibile (es. "Cadetti: 14-15 anni"), non il numero
+            InfoRequest::create($name, $email, $phone, $categorieContatti[$categoria], $messaggio);
 
                 $success = "Richiesta inviata!";
 
@@ -47,7 +57,7 @@
     }
 ?>
 
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <section class="sec sec--white">
   <div class="container">
@@ -136,12 +146,9 @@
                 <label class="form-label">Categoria</label>
                 <select class="form-control" name="categoria" aria-label="Categoria">
                   <option></option>
-                  <option value="1">Giovanili: 6-13 anni</option>
-                  <option value="2">Cadetti: 14-15 anni</option>
-                  <option value="3">Allievi: 16-17 anni</option>
-                  <option value="4">Juniores: 18-19 anni</option>
-                  <option value="5">Promesse: 20-22 anni</option>
-                  <option value="6">Seniores: dai 23 anni in poi</option>
+                  <?php foreach($categorieContatti as $val => $label): ?>
+                    <option value="<?= $val ?>" <?= ($_POST['categoria'] ?? '') === $val ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
+                  <?php endforeach; ?>
                 </select>
                 <p class="field__hint">Per info sull'inserimento alla categoria, chiedere direttamente al club</p>
               </div>
@@ -183,4 +190,4 @@
   </div>
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

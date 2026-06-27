@@ -104,21 +104,21 @@ $user = currentUser();
 
     // FUNZIONE CHE ELIMINA L'UTENTE
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete'){
+        if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete'){
 
-    // prendiamo il target ID (cioè l'id dell'oggetto che deve essere cambiato)
-    // mettimo zero(in fondo) perchè è un int
-    $targetID = (int) ($_POST['user_id'] ?? 0);
+        // prendiamo il target ID (cioè l'id dell'oggetto che deve essere cambiato)
+        // mettimo zero(in fondo) perchè è un int
+        $targetID = (int) ($_POST['user_id'] ?? 0);
 
-    // mi dice se che se l'id è uguale all'user(cioè l'user loggato in quel momento)
-    if($targetID === (int) $user['id']){
-        $errors[] = "Non puoi eliminare te stesso!";
-    }elseif (User::delete($targetID)){
+        // mi dice se che se l'id è uguale all'user(cioè l'user loggato in quel momento)
+        if($targetID === (int) $user['id']){
+            $errors[] = "Non puoi eliminare te stesso!";
+        }elseif (User::delete($targetID)){
 
-        $success = "Utente eliminato!";
-    }else{
-        $errors[] = "Eliminazione utente fallita!";
-    }
+            $success = "Utente eliminato!";
+        }else{
+            $errors[] = "Eliminazione utente fallita!";
+        }
 
     }
 

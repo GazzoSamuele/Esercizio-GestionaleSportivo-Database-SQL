@@ -39,7 +39,7 @@
         if($prodotto){
           // creo una riga d'ordine: questo utente, questo prodotto, 
           // questo prezzo, stato "In attesa". Una per ogni prodotto del carrello.
-          Purchases::create($u['id'], $prodId, $prodotto['price'], 'pending');
+          Purchases::create($u['id'], $prodId, $prodotto['price'], 'In attesa');
         }
       }
 
@@ -52,7 +52,7 @@
   
 ?>
 
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <!-- ============ SEZIONE 1 ============ -->
 <section class="sec sec--white ">
@@ -63,7 +63,7 @@
     <div class="cat-cards">
 
         <div class="cat">
-          <img class="cat__img" src="attrezzatura-allenamento.png" alt="Attrezzatura d'allenamento">
+          <img class="cat__img" src="/Gestionale-Hockey/assets/img/attrezzatura-allenamento.png" alt="Attrezzatura d'allenamento">
           <div class="cat__body">
             <h3>Attrezzatura d'allenamento</h3>
             <p>Tutto il necessario per allenarsi oltre alle classiche sessioni settimanali</p>
@@ -71,7 +71,7 @@
         </div>
 
         <div class="cat">
-          <img class="cat__img" src="attrezzatura-mista.png" alt="Attrezzatura giocatore">
+          <img class="cat__img" src="/Gestionale-Hockey/assets/img/attrezzatura-mista.png" alt="Attrezzatura giocatore">
           <div class="cat__body">
             <h3>Attrezzatura giocatore</h3>
             <p>Ampia scelta di massima qualità di tutto l'occorente utile durante le partite più impegnative</p>
@@ -79,7 +79,7 @@
         </div>
 
         <div class="cat">
-          <img class="cat__img" src="attrezzatura-portieri.png" alt="Attrezzatura portieri">
+          <img class="cat__img" src="/Gestionale-Hockey/assets/img/attrezzatura-portieri.png" alt="Attrezzatura portieri">
           <div class="cat__body">
             <h3>Attrezzatura portieri</h3>
             <p>VAsta gamma di protezioni per affrontare ogni parata in totale sicurezza</p>
@@ -87,7 +87,7 @@
         </div>
 
         <div class="cat">
-          <img class="cat__img" src="borsone-sportivo.png" alt="Borsoni della società">
+          <img class="cat__img" src="/Gestionale-Hockey/assets/img/borsone-sportivo.png" alt="Borsoni della società">
           <div class="cat__body">
             <h3>Borsoni della società</h3>
             <p>Borsoni capienti e resistenti con i colori della società, per portare l'attrezzatura ovunque</p>
@@ -182,4 +182,4 @@
   </div>
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

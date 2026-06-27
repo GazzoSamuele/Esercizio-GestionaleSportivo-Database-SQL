@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS purchases(
     status ENUM('In attesa', 'pagato', 'Rimborsato') NOT NULL DEFAULT 'In attesa',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    pronto_ritiro BOOLEAN NOT NULL DEFAULT FALSE
+    pronto_ritiro BOOLEAN NOT NULL DEFAULT FALSE,
 
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY(product_id) REFERENCES products(id)
@@ -157,6 +157,7 @@ CREATE TABLE IF NOT EXISTS calendar(
     squadra_ospite VARCHAR(50) NOT NULL,
     data DATE NOT NULL,
     categoria VARCHAR(15) NOT NULL,
+    tipo ENUM('campionato','coppa') NOT NULL DEFAULT 'campionato',
     gol_casa INT NOT NULL,
     gol_ospite INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -221,5 +222,19 @@ CREATE TABLE IF NOT EXISTS impegni(
     ora TIME DEFAULT NULL, 
     luogo VARCHAR(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS appuntamenti_personali (
+
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    titolo VARCHAR(100) NOT NULL,
+    tipo ENUM('fisioterapista','nutrizionista','palestra','allenamento extra','altro') NOT NULL,
+    data DATE NOT NULL,
+    ora TIME NOT NULL,
+    appunti TEXT DEFAULT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 
 ) ENGINE=InnoDB;

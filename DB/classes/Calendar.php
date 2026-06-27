@@ -5,79 +5,6 @@ require_once __DIR__ . '/Db.php';
 
 class Calendar 
 {
-    public static function findById(int $id): ?array
-    {
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
-             FROM calendar
-             WHERE id = :id'
-        );
-
-        $stmt->execute([':id' => $id]);
-
-        $calendar = $stmt->fetch();
-        
-        return $calendar ?: null;
-    }
-
-
-    public static function findBySquadraCasa(string $squadra_casa): ?array
-    {
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
-             FROM calendar
-             WHERE squadra_casa = :squadra_casa'
-        );
-
-        $stmt->execute([':squadra_casa' => $squadra_casa]);
-
-        $calendar = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $calendar ?: null;
-    }
-
-
-    public static function findBySquadraOspite(string $squadra_ospite): ?array
-    {
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
-             FROM calendar
-             WHERE squadra_ospite = :squadra_ospite'
-        );
-
-        $stmt->execute([':squadra_ospite' => $squadra_ospite]);
-
-        $calendar = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $calendar ?: null;
-    }
-
-
-    public static function findByData(string $data): ?array
-    {
-        $pdo = Db::connect();
-
-        $stmt = $pdo->prepare(
-
-            'SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
-             FROM calendar
-             WHERE data = :data'
-        );
-
-        $stmt->execute([':data' => $data]);
-
-        $calendar = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        return $calendar ?: null;
-    }
-
-
     public static function findByCategoria(string $categoria): array
     {
         $pdo = Db::connect();
@@ -95,6 +22,61 @@ class Calendar
         return $calendar;
     }
 
+    public static function findUltimeCampionato(string $categoria = '', int $n = 5): array 
+    {
+        $pdo = Db::connect();
+
+        if ($categoria !== '') {
+
+        $stmt = $pdo->prepare(
+
+            "SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
+            FROM calendar
+            WHERE tipo = 'campionato' AND categoria = :categoria
+            ORDER BY data DESC LIMIT :n"
+        );
+            $stmt->bindValue(':categoria', $categoria);
+            } else {
+                $stmt = $pdo->prepare(
+                    "SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
+                     FROM calendar
+                     WHERE tipo = 'campionato'
+                     ORDER BY data DESC LIMIT :n"
+                );
+            }
+            $stmt->bindValue(':n', $n, PDO::PARAM_INT);
+            $stmt->execute();
+            
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public static function findUltimeCoppa(string $categoria = '', int $n = 5): array
+    {
+        $pdo = Db::connect();
+
+        if ($categoria !== '') {
+
+        $stmt = $pdo->prepare(
+
+            "SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
+             FROM calendar
+             WHERE tipo = 'coppa' AND categoria = :categoria
+             ORDER BY data DESC LIMIT :n"
+        );
+            $stmt->bindValue(':categoria', $categoria);
+            } else {
+                $stmt = $pdo->prepare(
+                    "SELECT id, squadra_casa, squadra_ospite, data, categoria, gol_casa, gol_ospite
+                     FROM calendar
+                     WHERE tipo = 'coppa'
+                     ORDER BY data DESC LIMIT :n"
+                );
+            }
+            $stmt->bindValue(':n', $n, PDO::PARAM_INT);
+            $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public static function findAllPartite(): array
     {
@@ -158,15 +140,15 @@ class Calendar
 
     //create
 
-    public static function create(string $squadra_casa, string $squadra_ospite, string $data, string $categoria, int $gol_casa, int $gol_ospite): bool
+    public static function create(string $squadra_casa, string $squadra_ospite, string $data, string $categoria, int $gol_casa, int $gol_ospite, string $tipo = 'campionato'): bool
     {
         $pdo = Db::connect();
 
         $stmt = $pdo->prepare(
 
             'INSERT INTO calendar (squadra_casa, squadra_ospite, 
-                         data, categoria, gol_casa, gol_ospite)
-             VALUES (:casa, :ospite, :data, :categoria, :gc, :go)'
+                         data, categoria, tipo, gol_casa, gol_ospite)
+             VALUES (:casa, :ospite, :data, :categoria, :tipo, :gc, :go)'
         );
 
         return $stmt->execute([
@@ -174,6 +156,7 @@ class Calendar
             ':ospite' => $squadra_ospite, 
             ':data' => $data,
             ':categoria' => $categoria, 
+            ':tipo' => $tipo, 
             ':gc' => $gol_casa, 
             ':go' => $gol_ospite,
         ]);

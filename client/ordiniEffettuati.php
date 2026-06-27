@@ -19,33 +19,10 @@ $ordini = Purchases::findByUser($user['id']);
 
     <!-- ============ MAIN ============ -->
     <main class="dash-main">
-    <header class="dash-head">
-        <h1>I miei ordini, <?= htmlspecialchars($user['name']) ?></h1>
-    </header>
-
-    <!-- <div class="dash-stats">
-        <div class="dash-stat">
-            <span class="dash-stat-icon"><i class="fas fa-receipt"></i></span>
-            <div>
-                <b><?= count($ordini) ?></b>
-                <small>I miei ordini</small>
-            </div>
-        </div>
-        <div class="dash-stat">
-            <span class="dash-stat-icon"><i class="fas fa-id-badge"></i></span>
-            <div>
-                <b><?= htmlspecialchars(ucfirst($user['role'])) ?></b>
-                <small>Tipo account</small>
-            </div>
-        </div>
-        <div class="dash-stat">
-            <span class="dash-stat-icon"><i class="fas fa-hashtag"></i></span>
-            <div>
-                <b>#<?= (int) $user['id'] ?></b>
-                <small>User ID</small>
-            </div>
-        </div>
-    </div> -->
+        <header class="dash-head">
+            <h1>Lista degli miei ordini </h1>
+            <p>Rappresentazione di tutti gli ordini effettuati </p>
+        </header>
 
     <section class="dash-panel">
         <div class="dash-panel-head">

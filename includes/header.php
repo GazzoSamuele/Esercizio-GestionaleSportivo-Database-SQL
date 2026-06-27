@@ -1,7 +1,7 @@
 <?php 
     $pagina = basename($_SERVER['PHP_SELF']); 
 
-    require_once __DIR__ . '/DB/helpers/auth.php';
+    require_once __DIR__ . '/../DB/helpers/auth.php';
 
     $isLoggato = currentUser();
 
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Gestionale-Hockey/style.css">
+    <link rel="stylesheet" href="/Gestionale-Hockey/assets/css/style.css">
     <title>Gestionale Club Sportivo</title>
     
 </head>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav">
-                        <li><img class="logo navbar-nav" src="sporthub_logo.svg" alt="SportHub Logo"></li>
+                        <li><img class="logo navbar-nav" src="/Gestionale-Hockey/assets/img/sporthub_logo.svg" alt="SportHub Logo"></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a></li>

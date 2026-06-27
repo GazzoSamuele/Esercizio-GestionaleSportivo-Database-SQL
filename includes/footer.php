@@ -8,6 +8,6 @@
 </footer>
 
     <script src="/Gestionale-Hockey/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="/Gestionale-Hockey/cmd.js"></script>
+    <script src="/Gestionale-Hockey/assets/js/cmd.js"></script>
 </body>
 </html>

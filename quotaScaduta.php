@@ -4,7 +4,7 @@ require_once __DIR__ . '/DB/helpers/auth.php';
 requireLogin();   
 ?>
 
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <section class="sec sec--white">
   <h2>Quota societaria scaduta</h2>
@@ -17,4 +17,4 @@ requireLogin();
   </div>
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

@@ -51,7 +51,7 @@ $partite = Calendar::findAllPartite();  // tutte le partite
         // rappresentazione degli ordini in sospeso
         $inSospeso = 0;
         foreach ($ordiniStato as $riga) {
-            if ($riga['status'] === 'pending') {
+            if ($riga['status'] === 'In attesa') {
                 $inSospeso = $riga['total'];
             }
         }

@@ -1,6 +1,11 @@
 <?php
 
-require_once __DIR__ . '/DB/classes/Calendar.php';
+require_once __DIR__ . '/../DB/helpers/auth.php';
+require_once __DIR__ . '/../DB/classes/Calendar.php';
+
+// solo un admin loggato può rigenerare il calendario (operazione distruttiva)
+requireAdmin();
+
 // svuoto la tabella: così a ogni lancio riparto da 30 partite di default
 Calendar::deleteAll();
 // dati fittizzi di scqaudre ancora più fittizzie
@@ -9,6 +14,8 @@ $squadre = ['AOSTA', 'TORINO', 'GENOVA', 'MILANO', 'TRENTO',
             'PERUGIA', 'ACQUILA','ROMA', 'NAPOLI', 'CAMPOBASSO', 
             'BARI', 'POTENZA','CATANZARO','PALERMO', 'CAGLIARI' ];
 $categorie = ['Pulcini', 'Giovanile', 'Under 19', 'Under 21', 'Terza Categoria', 'Prima Squadra'];
+
+$tipi = ['campionato', 'coppa'];
 
 // generazione di 30 partite fittizzie
 for ($i = 0; $i < 30; $i++){
@@ -34,8 +41,10 @@ for ($i = 0; $i < 30; $i++){
 
     $categoria = $categorie[array_rand($categorie)];
 
+    $tipo = $tipi[array_rand($tipi)];
+
     Calendar::create($casa, $ospite, $dataCasualePartita, 
-    $categoria, $golCasa, $golOspite);
+    $categoria, $golCasa, $golOspite, $tipo);
 
 
 }

@@ -1732,6 +1732,13 @@ body > section:last-of-type {
     background: var(--dash-bg);
     color: black;
 }
+hr{
+    margin: 1rem 0;
+    color: var(--red);
+    border: 0;
+    border-top: 5px solid;
+    opacity: 0.75;
+}
 
 /* ---- SIDEBAR ---- */
 .dash-sidebar {
@@ -1748,14 +1755,16 @@ body > section:last-of-type {
 
 .dash-brand {
     display: flex;
-    align-items: center;
     gap: 12px;
-    padding: 6px 10px 22px;
-    font-size: 18px;
-    font-weight: 800;
-    color: var(--red);
+    font-size: 16px;
+    font-weight: 900;
+    padding-bottom: 75px;
+    border-radius: 15px;
+    justify-content: flex-start;
 }
-
+.dash-brand span{
+    color: white;
+}
 .dash-brand i {
     font-size: 22px;
 }
@@ -1801,7 +1810,8 @@ body > section:last-of-type {
     align-items: center;
     gap: 12px;
     padding: 14px 10px 12px;
-    border-top: 1px solid var(--dash-line);
+    border-top: 5px solid var(--red);
+    opacity: 0.75;
 }
 
 .dash-avatar {
@@ -1960,6 +1970,9 @@ body > section:last-of-type {
     overflow: hidden;
 }
 
+.width-30{
+    width: 30%;
+}
 .dash-panel-head {
     display: flex;
     align-items: center;
@@ -1967,11 +1980,23 @@ body > section:last-of-type {
     padding: 20px 22px;
 }
 
+.width-100{
+    width: 100%;
+    align-items: stretch;
+}
 .alg-form-results {
     display: flex;
     width: 100%;
-    justify-content: space-evenly;
+    justify-content: space-between;
 }
+
+.alg-mostra-news{
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 20px;
+}
+   
 
 /* allineamento per le sezioni che posso far stare il form e le info nella stessa riga */
 
@@ -1981,11 +2006,20 @@ body > section:last-of-type {
     overflow: hidden;
     width: 30%;
 }
+
+.panel-mostra-news{
+    width: 100%;
+    background-color: var(--dash-panel);
+}
 .dash-panel-info{
     background: var(--dash-panel);
     border-radius: 16px;
     overflow: hidden;
     width: 65%;
+}
+
+.height-fit-content{
+    height: fit-content;
 }
 
 .dash-panel-head h2 {
@@ -2127,6 +2161,36 @@ body > section:last-of-type {
 
 .dash .btn-close {
     filter: invert(1) grayscale(1) brightness(1.8);
+}
+
+/* SEZIONE CALENDARIO */
+.alg-cal-impegni{
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 30px; 
+}
+#calendar {
+    flex: 1;
+}
+.form-nuovi-impegni{
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+    gap: 60px;
+}
+.dash-tab-impegni{
+    background: var(--color-1);
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.tab-impegni-prossimi{
+    background: var(--dash-panel);
+    border-radius: 16px;
+    overflow: hidden;
+    width: 100%;
 }
 
 /* ============================================================

@@ -1,8 +1,8 @@
 <?php
 
 // la richiamo sia nei prodotti nella dashboard sia nei prodotti dela pagina del sito
-require_once __DIR__ . '/DB/classes/Products.php';
-require_once __DIR__ . '/DB/helpers/auth.php';
+require_once __DIR__ . '/../DB/classes/Products.php';
+require_once __DIR__ . '/../DB/helpers/auth.php';
 
 requireAdmin();
 //  scarica la risposta dell'API e così facendo richiama l'api Dummyjson per i dati delle attrezzature sportive

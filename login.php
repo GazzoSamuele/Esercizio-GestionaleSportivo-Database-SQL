@@ -55,7 +55,7 @@
         }
     }
 ?>
-<?php include 'header.php'?>
+<?php include __DIR__ . '/includes/header.php'?>
 
 <section class="sec sec--white sec-login">
    <div class="container">
@@ -98,7 +98,7 @@
 
     <div class="authbox no_padding">
       <video autoplay loop muted playsinline class="video-login">
-        <source src="hero-sport.mp4" type="video/mp4">
+        <source src="/Gestionale-Hockey/assets/video/hero-sport.mp4" type="video/mp4">
       </video>
     </div>
 
@@ -106,4 +106,4 @@
   </div>
 </section>
 
-<?php include 'footer.php'?>
+<?php include __DIR__ . '/includes/footer.php'?>

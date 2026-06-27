@@ -1,6 +1,10 @@
 <?php
 
-require_once __DIR__ . '/DB/classes/News.php';
+require_once __DIR__ . '/../DB/helpers/auth.php';
+require_once __DIR__ . '/../DB/classes/News.php';
+
+// solo un admin loggato può rigenerare le news (operazione distruttiva)
+requireAdmin();
 
 // svuoto la tabella: così a ogni lancio riparto da capo
 News::deleteAll();

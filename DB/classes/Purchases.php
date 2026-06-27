@@ -85,7 +85,7 @@ class Purchases
 
         // funzione che crea un nuovo prodotto da inserire nel DB
 
-        public static function create(int $userId, int $productId, string $pricePaid, string $status = 'pending'): int
+        public static function create(int $userId, int $productId, string $pricePaid, string $status = 'In attesa'): int
         {
             $pdo = Db::connect();
             $stmt = $pdo->prepare(

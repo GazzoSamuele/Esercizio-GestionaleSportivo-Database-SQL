@@ -2,64 +2,8 @@
 
 require_once __DIR__ . '/Db.php';
 
-class User 
+class User
 {
-    // funzione della classe cerca per ID (INT ID) e restituisce un array dell'id
-    public static function findById(int $id): ?array
-    {
-        // connettere il tutto al db
-
-        $pdo = Db::connect();
-
-        // preparare la query per il db
-
-        $stmt = $pdo->prepare(
-
-            //la query per andare a prendere l'id:
-            'SELECT id, name, email, role, created_at
-             FROM users
-             WHERE id = :id'
-        );
-
-        //execute (esecuzione della query)
-
-        $stmt->execute([':id' => $id]);
-
-        //fetch
-        $user = $stmt->fetch();
-        //return
-        return $user ?: null;
-    }
-
-
-    // funzione della classe cerca per NAME (INT NAME) e restituisce un array dell'name
-    public static function findByName(string $name): ?array
-    {
-        // connettere il tutto al db
-
-        $pdo = Db::connect();
-
-        // preparare la query per il db
-
-        $stmt = $pdo->prepare(
-
-            //la query per andare a prendere l'id:
-            'SELECT id, name, email, role, created_at
-             FROM users
-             WHERE name = :name'
-        );
-
-        //execute (esecuzione della query)
-
-        $stmt->execute([':name' => $name]);
-
-        //fetch
-        $user = $stmt->fetch();
-        //return
-        return $user ?: null;
-    }
-
-
     // funzione della classe cerca per EMAIL (STRING EMAIL) e restituisce un array dell'email
     public static function findByEmail(string $email): ?array
     {
@@ -87,33 +31,6 @@ class User
         return $user ?: null;
     }
 
-
-    // funzione della classe cerca per ROLE (INT ROLE) e restituisce un array dell'role
-    public static function findByRole(string $role): bool
-    {
-        // connettere il tutto al db
-
-        $pdo = Db::connect();
-
-        // preparare la query per il db
-
-        $stmt = $pdo->prepare(
-
-            //la query per andare a prendere l'id:
-            'SELECT id, name, email, role, created_at
-             FROM users
-             WHERE role = :role'
-        );
-
-        //execute (esecuzione della query)
-
-        $stmt->execute([':role' => $role]);
-
-        //fetch
-        $user = $stmt->fetch();
-        //return
-        return $user !== false;
-    }
 
     // FUNZIONI PER LA DASHBORD E PER I GRAFICI
 
