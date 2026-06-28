@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-    <link rel="stylesheet" href="/Gestionale-Hockey/assets/css/style.css">
+    <link rel="stylesheet" href="/Gestionale-Hockey/assets/css/style-dashboard.css">
     <title><?= htmlspecialchars($titoloPagina) ?> — Gestionale Società Sportiva</title>
 </head>
 <body>
