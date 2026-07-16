@@ -58,10 +58,10 @@
 <?php include __DIR__ . '/includes/header.php'?>
 
 <section class="sec sec--white sec-login">
-   <div class="container">
+   <div class="container-login">
     <h2>Accedi al gestionale</h2>
     <p class="sub">Semplice form dove inserire le proprie credenziali per accedere alla dashboard oppure registrarsi attraverso il link sottostante</p>
-  <div class="container-login">
+  <div class="container-credentials">
     <div class="authbox">
       <form class="form-login" action="" method="post">
 

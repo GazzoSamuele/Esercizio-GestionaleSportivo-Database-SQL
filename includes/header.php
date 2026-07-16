@@ -14,6 +14,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/apple-touch-icon-60x60.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/apple-touch-icon-72x72.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicons/apple-touch-icon-96x96.png">
+
     <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="/Gestionale-Hockey/assets/css/style.css">
     <title>Gestionale Club Sportivo</title>

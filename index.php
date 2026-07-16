@@ -26,14 +26,14 @@ function shopThumb(array $prodotti, int $i): void {
     <div class="hero_content">
       <h1>Gestionale società sportiva</h1>
       <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
-      <div class="minicards">
+      <!-- <div class="minicards">
         
         <a href="#storia"><div class="minicard"><b>Storia</b></div></a>
         <a href="#servizi"><div class="minicard"><b>Servizi</b></div></a>
         <a href="#palmares"><div class="minicard"><b>Palmarès</b></div></a>
         <a href="#shop"><div class="minicard"><b>Shop</b></div></a>
 
-      </div>
+      </div> -->
       <div class="hero__cta">
         <a href="#servizi" class="btn btn--primary">Scopri i servizi</a>
         <a href="contatti.php" class="btn btn--accent">Contattaci</a>
@@ -47,23 +47,40 @@ function shopThumb(array $prodotti, int $i): void {
   <div class="container_sez1">
     <div class="main-title-sez1">
       <h2>La nostra società</h2>
-    <p class="sub">Rappresentazione della storia della società e del club, dagli albori ai giorni nostri</p>
     </div>
     
-      <!-- testo a sinistra, immagine a destra -->
       <div class="split">
         <div class="split__text">
-          <h3>Storia società</h3>
-          <p>Racconto delle origini del club, dei valori e dei traguardi raggiunti negli anni. Testo modificabile.</p>
+          <h3>Le Origini</h3>
+          <p>Tutto ha inizio nel 1985, quando un gruppo di appassionati decide di fondare l'Olimpia Sport Club. 
+            L'obiettivo era semplice ma ambizioso: creare un punto di riferimento per lo sport sul territorio e promuovere uno stile di vita sano e condiviso.</p>
+
+          <h3>La Crescita</h3>
+          <p>Anno dopo anno, il club è cresciuto fino a contare oltre 350 iscritti e uno staff tecnico altamente qualificato. 
+            Le vittorie sul campo e il consolidamento del settore giovanile hanno trasformato l'entusiasmo iniziale in una realtà solida e organizzata.</p>
+
+          <h3>Oggi</h3>
+          <p>Oggi l'Olimpia Sport Club è molto più di una società sportiva: è una grande famiglia basata su rispetto, inclusione e lealtà. 
+            Il viaggio continua, pronti a scrivere insieme le prossime pagine di questa storia.</p>
         </div>
         <img class="split__img" src="/Gestionale-Hockey/assets/img/storia-club-index.png" alt="Storia della società">
       </div>
 
-      <!-- invertita: immagine a sinistra, testo a destra -->
       <div class="split split--reverse">
         <div class="split__text">
-          <h3>Club house</h3>
-          <p>Descrizione degli spazi, dei servizi e del punto di ritrovo della società. Qui avviene anche il ritiro dei prodotti acquistati.</p>
+          <h3>Il Cuore del Club</h3>
+          <p>La nostra Club House è molto più di una struttura: è il punto di ritrovo ufficiale per atleti, famiglie e tifosi dell'Olimpia Sport Club. 
+            Uno spazio accogliente e informale pensato per rilassarsi, condividere la passione per lo sport e vivere la vita del club anche fuori dal campo.</p>
+
+            <h3>Spazi e Servizi</h3>
+            <ul style="list-style: none">
+                <li><strong>Area Relax & Ristoro:</strong> Un bar interno attrezzato per colazioni, spuntini post-allenamento o per seguire insieme le partite.</li>
+                <li><strong>Zona Studio e Smart Working:</strong> Tavoli con connessione Wi-Fi gratuita, ideali per i ragazzi che aspettano gli allenamenti o per i genitori.</li>
+                <li><strong>Eventi e Riunioni:</strong> Una sala polifunzionale per assemblee, compleanni e serate sociali.</li>
+            </ul>
+            <h3>Punto Ritiro Store</h3>
+              <p>Qui si trova anche la zona dedicata al ritiro dei prodotti acquistati online. Che si tratti del kit ufficiale da gioco, 
+                dell'abbigliamento da allenamento o del merchandising del club, il ritiro è rapido, gratuito e assistito dal nostro staff negli orari di apertura.</p>
         </div>
         <img class="split__img" src="/Gestionale-Hockey/assets/img/club-house.png" alt="Club house della società">
       </div>
