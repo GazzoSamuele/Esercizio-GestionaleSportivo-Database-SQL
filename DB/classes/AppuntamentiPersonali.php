@@ -23,6 +23,21 @@ class AppuntamentiPersonali
         return $appuntamenti_personali;
     }
 
+    public static function findProssimiByUserId(int $user_id): array
+    {
+        $pdo = Db::connect();
+        $stmt = $pdo->prepare(
+
+            'SELECT id, user_id, titolo, tipo, data, ora, appunti, created_at
+             FROM appuntamenti_personali
+             WHERE user_id = :user_id AND data >= CURDATE()
+             ORDER BY data, ora LIMIT 3'
+        );
+
+        $stmt->execute([':user_id' => $user_id]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
     // CRUD
 
     //create

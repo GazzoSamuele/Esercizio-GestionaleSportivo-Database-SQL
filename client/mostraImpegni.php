@@ -83,6 +83,8 @@ $user = currentUser();
             }
         }
     }
+
+    $prossimi = AppuntamentiPersonali::findProssimiByUserId($user['id']);
     
     $coloriAppuntamenti = [
         'fisioterapista' => '#3b82f6',
@@ -116,7 +118,7 @@ $user = currentUser();
     <main class="dash-main">
         <header class="dash-head">
             <h1>Calendario impegni</h1>
-            <p>Visualizza ogni impegno imminente o futuro</p>
+            <p>Visualizza ogni impegno o appuntamento imminente o futuro</p>
         </header>
 
         <!-- ---- form nuovo utente ---- -->
@@ -171,7 +173,7 @@ $user = currentUser();
                                     </tr>
                                 </thead>
                             <tbody>
-                            <?php foreach($appuntamenti as $app): ?>
+                            <?php foreach($prossimi as $app): ?>
                                 <tr>
                                     <td><?= htmlspecialchars($app['titolo']) ?></td>
                                     <td><?= htmlspecialchars($app['tipo']) ?></td>
@@ -179,7 +181,7 @@ $user = currentUser();
                                     <td><?= htmlspecialchars($app['ora']) ?></td>
                                 </tr>
                                 <?php endforeach; ?>
-                                <?php if(empty($appuntamenti)): ?>
+                                <?php if(empty($prossimi)): ?>
                             <tr><td colspan="4">Nessun appuntamento personale.</td></tr>
                         <?php endif; ?>
                     </tbody>
