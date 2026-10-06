@@ -83,15 +83,26 @@ $user = currentUser();
             }
         }
     }
+    
+    $coloriAppuntamenti = [
+        'fisioterapista' => '#3b82f6',
+        'nutrizionista'     => '#668041',
+        'massaggiatore'       => '#e0a800',
+        'palestra'       => '#bd4d63',
+        'allenamento extra'    => '#82007b',
+        'altro'       => '#6b7280',
+    ];
+
 
     $appuntamenti = AppuntamentiPersonali::findByUserId($user['id']);
 
     foreach ($appuntamenti as $app) {
+        $coloreAppuntamento = $coloriAppuntamenti[$app['tipo']] ?? '#004d13';
         $eventi[] = [
             'title'           => $app['titolo'],
             'start'           => $app['data'] . 'T' . $app['ora'],
-            'backgroundColor' => '#7c3aed',
-            'borderColor'     => '#7c3aed',
+            'backgroundColor' => $coloreAppuntamento,
+            'borderColor'     => $coloreAppuntamento,
         ];
 }
 ?>
