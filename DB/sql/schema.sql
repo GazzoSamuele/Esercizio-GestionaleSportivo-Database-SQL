@@ -230,7 +230,7 @@ CREATE TABLE IF NOT EXISTS appuntamenti_personali (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     titolo VARCHAR(100) NOT NULL,
-    tipo ENUM('fisioterapista','nutrizionista','palestra','allenamento extra','altro') NOT NULL,
+    tipo ENUM('fisioterapista','nutrizionista', 'massaggiatore','palestra','allenamento extra','altro') NOT NULL,
     data DATE NOT NULL,
     ora TIME NOT NULL,
     appunti TEXT DEFAULT NULL,

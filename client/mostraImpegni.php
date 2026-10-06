@@ -70,7 +70,7 @@ $user = currentUser();
         }
 
         //role
-        if(!in_array($tipo, ['fisioterapista','nutrizionista','palestra','allenamento extra','altro'], true)){
+        if(!in_array($tipo, ['fisioterapista','nutrizionista', 'massaggiatore', 'palestra','allenamento extra','altro'], true)){
             $errors[] = 'Tipo di impegno non selezionato';
         }
 
@@ -135,6 +135,7 @@ $user = currentUser();
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="fisioterapista">Fisioterapista</option>
                                 <option value="nutrizionista">Nutrizionista</option>
+                                <option value="massaggiatore">Massaggiatore</option>
                                 <option value="palestra">Palestra</option>
                                 <option value="allenamento extra">Allenamento extra</option>
                                 <option value="altro">Altro</option>
