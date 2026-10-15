@@ -52,7 +52,9 @@ class Db{
 
                 // 'die' rappreenta un comando che da un messaggio di connessione
                 // fallita e fa uscire dal login
-                die('Connessione fallita: ' . $e->getMessage());
+                error_log('DB non raggiungibile: ' . $e->getMessage());
+                http_response_code(500);
+                die('Servizio momentaneamente non disponibile: ');
 
             }
             
@@ -62,4 +64,3 @@ class Db{
 
     }
 }
-?>
