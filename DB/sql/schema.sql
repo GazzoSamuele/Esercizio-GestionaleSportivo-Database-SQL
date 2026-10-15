@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS products(
     description TEXT,
     price DECIMAL(10,2) NOT NULL,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
+    file_path varchar(255) DEFAULT NULL,
     image_path VARCHAR(255) DEFAULT NULL,
-    category VARCHAR(50) NOT NULL DEFAULT 'sport',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
 ) ENGINE=InnoDB;
@@ -138,7 +138,8 @@ CREATE TABLE IF NOT EXISTS purchases(
     product_id INT NOT NULL,
 
     prezzo_pagato DECIMAL(10,2) NOT NULL,
-    status ENUM('In attesa', 'pagato', 'Rimborsato') NOT NULL DEFAULT 'In attesa',
+    status ENUM('pending', 'paid', 'refunded') NOT NULL DEFAULT 'pending',
+    payment_ref varchar(100) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     pronto_ritiro BOOLEAN NOT NULL DEFAULT FALSE,

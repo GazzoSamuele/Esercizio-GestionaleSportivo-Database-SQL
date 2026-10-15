@@ -47,7 +47,7 @@ class Purchases
                 // SUM(prezzo_pagato) è la funzione di aggregazione(somma), serve per avere il totale della colonna di tutti i singoli incassi
                 "SELECT DATE_FORMAT(created_at, '%Y-%m') AS mese, SUM(prezzo_pagato) AS totale
                 FROM purchases
-                WHERE status = 'pagato'
+                WHERE status = 'paid'
                 GROUP BY mese
                 ORDER BY mese"
             );
@@ -85,7 +85,7 @@ class Purchases
 
         // funzione che crea un nuovo prodotto da inserire nel DB
 
-        public static function create(int $userId, int $productId, string $pricePaid, string $status = 'In attesa'): int
+        public static function create(int $userId, int $productId, string $pricePaid, string $status = 'pending'): int
         {
             $pdo = Db::connect();
             $stmt = $pdo->prepare(
@@ -125,7 +125,7 @@ class Purchases
 
 // contaPerStato()
 
-// Cosa rappresenta: quanti ordini sono In attesa, pagato, Rimborsato.
+// Cosa rappresenta: quanti ordini sono pending, paid, refurbed.
 // Dove finisce: in una card che mostra gli iscritti o le richieste di informazioni ancora da visualizzare. essa si collega alla pagina ordiniProdottiRicevuti.php
 
 // topProdotti()

@@ -38,8 +38,8 @@
 
         if($prodotto){
           // creo una riga d'ordine: questo utente, questo prodotto, 
-          // questo prezzo, stato "In attesa". Una per ogni prodotto del carrello.
-          Purchases::create($u['id'], $prodId, $prodotto['price'], 'In attesa');
+          // questo prezzo, stato "pending". Una per ogni prodotto del carrello.
+          Purchases::create($u['id'], $prodId, $prodotto['price'], 'pending');
         }
       }
 
