@@ -67,6 +67,9 @@
                 <small><?= htmlspecialchars($user['role']) ?></small>
             </div>
         </div>
+        <a href="/Gestionale-Hockey/index.php" class="dash-link <?= $pagina === 'dashboard.php' ? 'active' : '' ?>">
+            <i class="fas fa-house"></i><span>Torna al sito</span>
+        </a>
         <a href="/Gestionale-Hockey/logout.php" class="dash-logout">
             <i class="fas fa-right-from-bracket"></i> Logout
         </a>

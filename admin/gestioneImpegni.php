@@ -3,6 +3,24 @@
 require_once __DIR__ . '/../DB/helpers/auth.php';
 require_once __DIR__ . '/../DB/classes/Impegni.php';
 
+function validaImpegno($titolo, $descrizione, $tipo){
+    $errors = [];
+
+    if($titolo === ''){
+        $errors[] = "Il titolo è obbligatorio";
+    }
+        
+    if($descrizione === ''){
+        $errors[] = "La descrizione è obbligatoria";
+    }
+
+    if(!in_array($tipo, ['allenamento', 'partita', 'coppa', 'riunione', 'altro'], true)){
+        $errors[] = 'Tipo non valido';
+    }
+
+    return $errors;
+}
+
 // dico al pc che sono l'amministratore
 requireAdmin();
 // mi dice chi sono, se admin o client
@@ -29,20 +47,7 @@ $user = currentUser();
         $ora = $_POST['ora'] ?? '';
         $luogo = $_POST['luogo'] ?? '';
 
-        //titolo
-        if($titolo === ''){
-            $errors[] = "Il titolo è obbligatorio";
-        }
-        
-        //descrizione
-        if($descrizione === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
-
-        //tipo
-        if(!in_array($tipo, ['allenamento', 'partita', 'coppa', 'riunione', 'altro'], true)){
-            $errors[] = 'Tipo non valido';
-        }
+        $errors = validaImpegno($titolo, $descrizione, $tipo);
 
         if(empty($errors)){
             Impegni::createImpegno($titolo, $descrizione, $tipo, $data, $ora, $luogo);
@@ -66,18 +71,7 @@ $user = currentUser();
         $ora = $_POST['ora'] ?? '';
         $luogo = $_POST['luogo'] ?? '';
 
-        if($titolo === ''){
-            $errors[] = "Il titolo è obbligatorio";
-        }
-
-        if($descrizione === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
-
-        //tipo
-        if(!in_array($tipo, ['allenamento', 'partita', 'coppa', 'riunione', 'altro'], true)){
-            $errors[] = 'Tipo non valido';
-        }
+       $errors = validaImpegno($titolo, $descrizione, $tipo);
 
         if(empty($errors)){
             Impegni::updateImpegno($id, $titolo, $descrizione, $tipo, $data, $ora, $luogo);

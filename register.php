@@ -76,6 +76,8 @@
                 $passwordHash = password_hash($password, PASSWORD_DEFAULT);
                 $quotaScadenza = date('Y-m-d', strtotime('+10 months'));
 
+                $connettoreDb->beginTransaction();
+            try{
                 $stmt = $connettoreDb->prepare(
                     'INSERT INTO users(
                         name, email, password, role, quota_scadenza)
@@ -103,8 +105,14 @@
                     // WHERE id = :cid → aggiorna solo quella riga del codice
                 );
                 $stmt->execute([':uid' => $newUserId, ':cid' => $codeRow['id']]);
-
+                
+                $connettoreDb->commit();
                 $success = true;
+            } catch (PDOException $e){
+                $connettoreDb->rollBack();
+                error_log('Registrazione fallita: ' . $e->getMessage());
+                $errors[] = 'Registrazione non riuscita, riprova più tardi';
+            }
             }
         }
     }
@@ -170,7 +178,6 @@
                                 <input type="password"
                                        class="form-control"
                                        name="confermaPassword"
-                                       value="<?= htmlspecialchars($_POST['confermaPassword'] ?? '') ?>"
                                        required>
                             </div>
 
