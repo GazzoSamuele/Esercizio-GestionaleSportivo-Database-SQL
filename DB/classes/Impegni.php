@@ -115,7 +115,8 @@ class Impegni {
                 'DELETE FROM impegni WHERE id = :id'
             );
 
-            return $stmt->execute([':id' => $id]);
+            $stmt->execute([':id' => $id]);
+            return $stmt->rowCount() > 0;
             
         }
 
