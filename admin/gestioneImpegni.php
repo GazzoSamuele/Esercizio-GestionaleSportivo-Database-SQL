@@ -9,7 +9,13 @@ requireAdmin();
 $user = currentUser();
 
     $errors = [];
-    $success = '';
+    $messages = array(
+            'creato' => 'Impegno Creato!',
+            'modificato' => 'Impegno Modificato!',
+            'eliminato' => 'Impegno Eliminato!',
+        );
+    $esito = $_GET['esito'] ?? '';
+    $success = $messages[$esito] ?? '';
 
     //GESTIONE FORM NUOVO IMPEGNO 
 
@@ -41,8 +47,9 @@ $user = currentUser();
         if(empty($errors)){
             Impegni::createImpegno($titolo, $descrizione, $tipo, $data, $ora, $luogo);
 
-            $success = "Impegno creato!";
-            $_POST = [];
+            header('Location: gestioneImpegni.php?esito=creato');
+            exit;
+ 
             }
     }
     
@@ -75,8 +82,9 @@ $user = currentUser();
         if(empty($errors)){
             Impegni::updateImpegno($id, $titolo, $descrizione, $tipo, $data, $ora, $luogo);
 
-            $success = "Impegno modificato!";
-            $_POST = [];
+            header('Location: gestioneImpegni.php?esito=modificato');
+            exit;
+ 
             }
     }
     
@@ -88,7 +96,8 @@ $user = currentUser();
     $targetImpegno = (int) ($_POST['impegno_id'] ?? 0);
 
     if(Impegni::delete($targetImpegno)){
-        $success = "Impegno Rimosso!";
+        header('Location: gestioneImpegni.php?esito=eliminato');
+        exit;
     }else{
         $errors[] = "Fallito tentativo di rimozione di un impegno!";
     }
