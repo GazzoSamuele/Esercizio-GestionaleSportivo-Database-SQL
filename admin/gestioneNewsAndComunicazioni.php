@@ -284,6 +284,6 @@ $user = currentUser();
     </main>
 </div>
 
-<script src="/Gestionale-Hockey/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

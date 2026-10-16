@@ -50,7 +50,7 @@ function requireQuotaValida(): void
 
     // quota assente o passata → fuori
     if(empty($scadenza) || $scadenza < date('Y-m-d')){
-        header('Location: /Gestionale-Hockey/quotaScaduta.php');
+        header('Location: ' . BASE_URL . '/quotaScaduta.php');
         exit;
     }
 }

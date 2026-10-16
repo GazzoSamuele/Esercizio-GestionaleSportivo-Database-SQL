@@ -21,7 +21,7 @@ function shopThumb(array $prodotti, int $i): void {
 <section class="hero">
   <div class="container_hero">
     <video autoplay loop muted playsinline class="video-background">
-    <source src="/Gestionale-Hockey/assets/video/hero-sport.mp4" type="video/mp4">
+    <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
   </video>
     <div class="hero_content">
       <h1>Gestionale società sportiva</h1>
@@ -63,7 +63,7 @@ function shopThumb(array $prodotti, int $i): void {
           <p>Oggi l'Olimpia Sport Club è molto più di una società sportiva: è una grande famiglia basata su rispetto, inclusione e lealtà. 
             Il viaggio continua, pronti a scrivere insieme le prossime pagine di questa storia.</p>
         </div>
-        <img class="split__img" src="/Gestionale-Hockey/assets/img/storia-club-index.png" alt="Storia della società">
+        <img class="split__img" src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="Storia della società">
       </div>
 
       <div class="split split--reverse">
@@ -82,7 +82,7 @@ function shopThumb(array $prodotti, int $i): void {
               <p>Qui si trova anche la zona dedicata al ritiro dei prodotti acquistati online. Che si tratti del kit ufficiale da gioco, 
                 dell'abbigliamento da allenamento o del merchandising del club, il ritiro è rapido, gratuito e assistito dal nostro staff negli orari di apertura.</p>
         </div>
-        <img class="split__img" src="/Gestionale-Hockey/assets/img/club-house.png" alt="Club house della società">
+        <img class="split__img" src="<?= BASE_URL ?>/assets/img/club-house.png" alt="Club house della società">
       </div>
   </div>
 </section>

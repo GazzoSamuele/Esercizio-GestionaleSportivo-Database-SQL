@@ -8,9 +8,9 @@ $newsOnSite = array_slice(array_reverse(News::findAllNews()), 0, 3);
 
 // immagine dedicata in base al titolo della news 
 $immaginiNews = [
-    "L'Under 19 conquista la vetta della classifica" => '/Gestionale-Hockey/assets/img/img-calendario-1.png',
-    'Vittoria in rimonta della Prima Squadra'        => '/Gestionale-Hockey/assets/img/img-calendario-2.png',
-    'Andrea Conti firma una tripletta'               => '/Gestionale-Hockey/assets/img/img-calendario-3.png',
+    "L'Under 19 conquista la vetta della classifica" => BASE_URL . '/assets/img/img-calendario-1.png',
+    'Vittoria in rimonta della Prima Squadra'        => BASE_URL . '/assets/img/img-calendario-2.png',
+    'Andrea Conti firma una tripletta'               => BASE_URL . '/assets/img/img-calendario-3.png',
 ];
 
 ?>

@@ -19,8 +19,8 @@
     <link rel="icon" type="image/png" sizes="32x32" href="favicons/apple-touch-icon-72x72.png">
     <link rel="icon" type="image/png" sizes="96x96" href="favicons/apple-touch-icon-96x96.png">
 
-    <link rel="stylesheet" href="/Gestionale-Hockey/node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Gestionale-Hockey/assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
     <title>Gestionale Club Sportivo</title>
     
 </head>
@@ -42,7 +42,7 @@
                 </div>
                 <div class="offcanvas-body">
                     <ul class="navbar-nav">
-                        <li><img class="logo navbar-nav" src="/Gestionale-Hockey/assets/img/sporthub_logo.svg" alt="SportHub Logo"></li>
+                        <li><img class="logo navbar-nav" src="<?= BASE_URL ?>/assets/img/sporthub_logo.svg" alt="SportHub Logo"></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'index.php' ? 'active' : '' ?>" href="index.php">Home</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'calendario.php' ? 'active' : '' ?>" href="calendario.php">Calendario</a></li>
                         <li class="nav-item"><a class="nav-link <?= $pagina === 'prodotti.php' ? 'active' : '' ?>" href="prodotti.php">Prodotti</a></li>

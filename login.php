@@ -98,7 +98,7 @@
 
     <div class="authbox no_padding">
       <video autoplay loop muted playsinline class="video-login">
-        <source src="/Gestionale-Hockey/assets/video/hero-sport.mp4" type="video/mp4">
+        <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
       </video>
     </div>
 
