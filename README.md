@@ -24,6 +24,7 @@ Unisce un **sito pubblico** vetrina della società a un'**area riservata** (dash
 - [Dati dinamici](#-dati-dinamici)
 - [Struttura del progetto](#-struttura-del-progetto)
 - [Installazione e avvio](#-installazione-e-avvio)
+- [Migliorie](#-migliorie)
 - [Note](#-note)
 
 ---
@@ -205,15 +206,9 @@ Gestionale-Hockey/
 
 2. **Avvia Apache e MySQL** dal pannello di controllo XAMPP.
 
-3. **Crea il file di configurazione** `DB/config/config.php` (è escluso da Git per sicurezza):
-   ```php
-   <?php
-   define('DB_HOST', 'localhost');
-   define('DB_NAME', 'dbSocietaSportiva_app');
-   define('DB_USER', 'root');
-   define('DB_PASS', '');
-   define('DB_CHARSET', 'utf8mb4');
-   ```
+3. **Crea il file di configurazione**: copia `DB/config/config.example.php` in `DB/config/config.php` (è escluso da Git per sicurezza).
+
+   Controlla `BASE_URL`: è il percorso della cartella del progetto visto dal server, e tutti i link del sito iniziano con questo valore. Usa `/Gestionale-Hockey` se il server parte dalla cartella che contiene il progetto (come con XAMPP, dove la cartella è `htdocs`), oppure `''` (stringa vuota) se il server parte dentro la cartella del progetto.
 
 4. **Crea il database**: apri phpMyAdmin, scheda **SQL**, e incolla il contenuto di [`DB/sql/schema.sql`](DB/sql/schema.sql).
 
@@ -234,6 +229,20 @@ Gestionale-Hockey/
    - `scripts/notizieSportive.php`
 
 8. **Apri il sito**: <http://localhost/Gestionale-Hockey/>
+
+---
+
+## 🔧 Migliorie
+
+- Costante BASE_URL e config.example.php, perchè prima aprendo il progetto da un'altra cartella, non caricava il CSS
+- Aggiunte funzioni di sicurezza sui form di creazione degli impegni
+- Miglioramenti di sicurezza nei vari passaggi della registrazione ed aggiunto il pulsante per tornare indietro nella pagina web dalla dashboard
+- Funzione unica per la validazione dei form degli impegni
+- API in JSON per le partite, con filtro per categoria
+- Segnalazione dell'eliminazione quando l’impegno non esiste
+- Correzione dello stato degli acquisti ed aggiornamento dello schema db sullo schema del progetto sql
+- Errori del database nel log invece che sullo schermo
+- Redirect dopo creazione, modifica ed eliminazione degli impegni
 
 ---
 
