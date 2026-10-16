@@ -4,6 +4,7 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-start">
       <form action="" method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
         <div class="modal-header">
           <h5 class="modal-title">Modifica <?= htmlspecialchars($imp['titolo']) ?></h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>

@@ -77,6 +77,38 @@ function currentUser(): ?array
     ];
 }
 
+function csrfToken():  string
+{
+     if(session_status() === PHP_SESSION_NONE){
+
+        session_start();
+    }
+
+    if(empty($_SESSION['csrf_token'])) {
+    
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+
+    }
+
+    return $_SESSION['csrf_token'];
+    
+}
+
+function verificaCsrf(): void
+{
+    if(session_status() === PHP_SESSION_NONE){
+        session_start();
+    }
+
+    $tokenForm = $_POST['csrf_token'] ?? '';
+    $tokenSessione = $_SESSION['csrf_token'] ?? '';
+
+    if ($tokenForm === '' || !hash_equals($tokenSessione, $tokenForm)) {
+        http_response_code(403);
+        die('Richiesta non valida');
+    }
+}
+
 function logOut(): void
 {
     if(session_status() === PHP_SESSION_NONE){

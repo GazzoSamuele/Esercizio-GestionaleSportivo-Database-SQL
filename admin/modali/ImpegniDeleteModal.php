@@ -14,6 +14,7 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                 <form action="" method="post">
                     <input type="hidden" name="action"  value="delete">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <input type="hidden" name="impegno_id" value="<?= (int) $imp['id'] ?>">
                     <button type="submit" class="btn btn-danger">Elimina Impegno</button>
                 </form>

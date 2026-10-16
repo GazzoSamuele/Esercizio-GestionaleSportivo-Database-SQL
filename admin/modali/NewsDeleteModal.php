@@ -13,6 +13,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                 <form action="" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <input type="hidden" name="action"  value="delete">
                     <input type="hidden" name="news_id" value="<?= (int) $nw['id'] ?>">
                     <button type="submit" class="btn btn-danger">Elimina Comunicazione</button>

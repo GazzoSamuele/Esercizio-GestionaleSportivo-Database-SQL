@@ -23,6 +23,11 @@ function validaImpegno($titolo, $descrizione, $tipo){
 
 // dico al pc che sono l'amministratore
 requireAdmin();
+
+if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+    verificaCsrf();
+}
 // mi dice chi sono, se admin o client
 $user = currentUser();
 
@@ -142,6 +147,7 @@ $user = currentUser();
             <div class="dash-formbody">
                 <!-- Serve per attivare la funzione di aggiunta impegno alla tabella tramite il form -->
                 <form action="" method="post">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <input type="hidden" name="action" value="create">
                     <div class="mb-3">
                         <label for="titolo">Titolo</label>
