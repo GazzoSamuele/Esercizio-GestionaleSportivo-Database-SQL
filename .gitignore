@@ -1,6 +1,6 @@
 /node_modules
 
-/DB/config
+/DB/config/config.php
 
 info.tht
 
