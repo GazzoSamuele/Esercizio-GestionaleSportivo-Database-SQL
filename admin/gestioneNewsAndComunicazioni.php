@@ -10,140 +10,145 @@ requireAdmin();
 // mi dice chi sono, se admin o client
 $user = currentUser();
 
-    $errors = [];
-    $success = '';
+$errors = [];
+$success = '';
 
-    //GESTIONE FORM
+//GESTIONE FORM
 
-    // FUNZIONE CHE CREA UNA NUOVA NEWS
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create'){
+// FUNZIONE CHE CREA UNA NUOVA NEWS
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create') {
 
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $image_path = $_POST['image_path'] ?? '';
-        $tipo = $_POST['tipo'] ?? 'notizia';
-        $data = $_POST['data'] ?? date('Y-m-d');
+    verificaCsrf();
 
-        // validazione degli input
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $image_path = $_POST['image_path'] ?? '';
+    $tipo = $_POST['tipo'] ?? 'notizia';
+    $data = $_POST['data'] ?? date('Y-m-d');
 
-        //titolo
-        if($title === ''){
-            $errors[] = "Il titolo è obbligatorio";
-        }
-        
-        //descrizione
-        if($description === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
+    // validazione degli input
 
-        //tipo
-        if(!in_array($tipo, ['notizia', 'comunicazione'], true)){
-            $errors[] = 'Tipo non valido';
-        }
-
-        // se non ho l'array di errors popolato,
-        // procedo con la creazione di una nuova news
-
-        if(empty($errors)){
-            // così facendo richiamo i parametri che mi servono
-            News::createNews($title, $description, $data, $tipo, $image_path);
-
-            $success = "News creata!";
-            // una volta creato l'utente svuoto la post
-            $_POST = [];
-            }
+    //titolo
+    if ($title === '') {
+        $errors[] = "Il titolo è obbligatorio";
     }
-    
 
-    // FUNZIONE CHE MODIFICA LA NEWS
-
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'){
-        
-        // mettimo zero(in fondo) perchè è un int
-        $id = (int) ($_POST['news_id'] ?? 0);
-        $title = trim($_POST['title'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $image_path = $_POST['image_path'] ?? '';
-        $tipo = $_POST['tipo'] ?? 'notizia';
-        $data = $_POST['data'] ?? date('Y-m-d');
-
-        if($title === ''){
-            $errors[] = "Il titolo è obbligatorio";
-        }
-
-        if($description === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
-
-        if(!in_array($tipo, ['notizia', 'comunicazione'], true)){
-            $errors[] = 'Tipo non valido';
-        }
-
-        // se non ho l'array di errors popolato,
-        // procedo con la creazione di un nuovo utente
-
-        if(empty($errors)){
-            // così facendo richiamo i parametri che mi servono
-            News::updateNews($id, $title, $description, $data, $tipo, $image_path);
-
-            $success = "News aggiornata!";
-            // una volta creato l'utente svuoto la post
-            $_POST = [];
-        }
+    //descrizione
+    if ($description === '') {
+        $errors[] = "La descrizione è obbligatoria";
     }
-    
 
-    // FUNZIONE CHE ELIMINA LA NEWS
+    //tipo
+    if (!in_array($tipo, ['notizia', 'comunicazione'], true)) {
+        $errors[] = 'Tipo non valido';
+    }
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete'){
+    // se non ho l'array di errors popolato,
+    // procedo con la creazione di una nuova news
+
+    if (empty($errors)) {
+        // così facendo richiamo i parametri che mi servono
+        News::createNews($title, $description, $data, $tipo, $image_path);
+
+        $success = "News creata!";
+        // una volta creato l'utente svuoto la post
+        $_POST = [];
+    }
+}
+
+
+// FUNZIONE CHE MODIFICA LA NEWS
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
+
+    verificaCsrf();
+
+    // mettimo zero(in fondo) perchè è un int
+    $id = (int) ($_POST['news_id'] ?? 0);
+    $title = trim($_POST['title'] ?? '');
+    $description = trim($_POST['description'] ?? '');
+    $image_path = $_POST['image_path'] ?? '';
+    $tipo = $_POST['tipo'] ?? 'notizia';
+    $data = $_POST['data'] ?? date('Y-m-d');
+
+    if ($title === '') {
+        $errors[] = "Il titolo è obbligatorio";
+    }
+
+    if ($description === '') {
+        $errors[] = "La descrizione è obbligatoria";
+    }
+
+    if (!in_array($tipo, ['notizia', 'comunicazione'], true)) {
+        $errors[] = 'Tipo non valido';
+    }
+
+    // se non ho l'array di errors popolato,
+    // procedo con la creazione di un nuovo utente
+
+    if (empty($errors)) {
+        // così facendo richiamo i parametri che mi servono
+        News::updateNews($id, $title, $description, $data, $tipo, $image_path);
+
+        $success = "News aggiornata!";
+        // una volta creato l'utente svuoto la post
+        $_POST = [];
+    }
+}
+
+
+// FUNZIONE CHE ELIMINA LA NEWS
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
+
+    verificaCsrf();
 
     // prendiamo il target ID (cioè l'id dell'oggetto che deve essere cambiato)
     // mettimo zero(in fondo) perchè è un int
     $targetID = (int) ($_POST['news_id'] ?? 0);
 
-    if(News::delete($targetID)){
+    if (News::delete($targetID)) {
         $success = "News eliminata!";
-    }else{
+    } else {
         $errors[] = "Eliminazione news fallita!";
     }
+}
 
-    }
+$news = News::findAllNews();
 
-    $news = News::findAllNews();
-
-    $ultimeNews = array_slice(array_reverse($news), 0, 5);
+$ultimeNews = array_slice(array_reverse($news), 0, 5);
 
 ?>
-    <?php 
-  
-    $titoloPagina = 'Gestione News e Comunicazioni'; 
-  
-    include __DIR__ . '/headerDashboard.php'; 
-    
-   ?>
+<?php
 
-    <!-- ============ MAIN ============ -->
-    <main class="dash-main">
-        <header class="dash-head">
-            <h1>Gestione News e Comunicazioni Societarie</h1>
-            <p>Crea una nuova news e comunicazione societaria</p>
-        </header>
+$titoloPagina = 'Gestione News e Comunicazioni';
 
-        <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
-        <?php if(!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    <?php foreach($errors as $e): ?>
-                        <li><?= htmlspecialchars($e) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-        <?php if($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
+include __DIR__ . '/headerDashboard.php';
 
-        <!-- ---- form nuovo utente ---- -->
+?>
+
+<!-- ============ MAIN ============ -->
+<main class="dash-main">
+    <header class="dash-head">
+        <h1>Gestione News e Comunicazioni Societarie</h1>
+        <p>Crea una nuova news e comunicazione societaria</p>
+    </header>
+
+    <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
+    <?php if (!empty($errors)): ?>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                <?php foreach ($errors as $e): ?>
+                    <li><?= htmlspecialchars($e) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <!-- ---- form nuovo utente ---- -->
     <div class="alg-form-results">
         <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
@@ -153,6 +158,7 @@ $user = currentUser();
                 <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
                 <form action="" method="post">
                     <input type="hidden" name="action" value="create">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <div class="mb-3">
                         <label for="name">Titolo</label>
                         <input type="text" class="form-control" id="name" name="title" required>
@@ -194,18 +200,18 @@ $user = currentUser();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($ultimeNews as $nw): ?>
-                    <tr>
-                        <!-- prendo l'id dell'utente singolo -->
-                        <td>#<?= (int) $nw['id'] ?></td>
+                    <?php foreach ($ultimeNews as $nw): ?>
+                        <tr>
+                            <!-- prendo l'id dell'utente singolo -->
+                            <td>#<?= (int) $nw['id'] ?></td>
 
-                        <td><?= htmlspecialchars($nw['title']) ?></td>
+                            <td><?= htmlspecialchars($nw['title']) ?></td>
 
-                        <td><?= htmlspecialchars($nw['description']) ?></td>
+                            <td><?= htmlspecialchars($nw['description']) ?></td>
 
-                        <td class="dim-td-custom"><?= htmlspecialchars($nw['data']) ?></td>
+                            <td class="dim-td-custom"><?= htmlspecialchars($nw['data']) ?></td>
 
-                        <td><?= htmlspecialchars($nw['tipo']) ?></td>
+                            <td><?= htmlspecialchars($nw['tipo']) ?></td>
 
                         </tr>
                     <?php endforeach; ?>
@@ -213,25 +219,25 @@ $user = currentUser();
             </table>
         </section>
     </div>
-        <!-- ---- tabella news ---- -->
-        <section class="dash-panel">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i> Tutte le News</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titolo</th>
-                        <th>Immagine</th>
-                        <th>Descrizione</th>
-                        <th>Data</th>
-                        <th>Tipo di Comunicazione</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($news as $nw): ?>
+    <!-- ---- tabella news ---- -->
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2><i class="fas fa-users"></i> Tutte le News</h2>
+        </div>
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titolo</th>
+                    <th>Immagine</th>
+                    <th>Descrizione</th>
+                    <th>Data</th>
+                    <th>Tipo di Comunicazione</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($news as $nw): ?>
                     <tr>
                         <!-- prendo l'id dell'utente singolo -->
                         <td>#<?= (int) $nw['id'] ?></td>
@@ -240,7 +246,7 @@ $user = currentUser();
 
                         <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
                         <td>
-                            <?php if(!empty($nw['image_path'])): ?>
+                            <?php if (!empty($nw['image_path'])): ?>
                                 <img src="<?= htmlspecialchars($nw['image_path']) ?>" alt="<?= htmlspecialchars($nw['title']) ?>"
                                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
                             <?php else: ?>
@@ -255,35 +261,38 @@ $user = currentUser();
                         <td><?= htmlspecialchars($nw['tipo']) ?></td>
 
                         <td class="text-end">
-                                <!-- PULSANTE DI EDIT -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-info" 
-                                    title="Modifica comunicazione"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditNews<?= (int) $nw['id'] ?>">
-                                        <i class="fas fa-edit"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/NewsEditModal.php'; ?>
+                            <!-- PULSANTE DI EDIT -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-info"
+                                aria-label="Modifica Comunicazione"
+                                title="Modifica comunicazione"
+                                data-bs-toggle="modal" data-bs-target="#modalEditNews<?= (int) $nw['id'] ?>">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/NewsEditModal.php'; ?>
 
-                                <!-- PULSANTE DI DELETE -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-danger" 
-                                    title="Elimina comunicazione"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalDeleteNews<?= (int) $nw['id'] ?>">
-                                        <i class="fas fa-trash"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/NewsDeleteModal.php'; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </section>
-    </main>
+                            <!-- PULSANTE DI DELETE -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Elimina comunicazione"
+                                aria-label="Elimina comunicazione"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDeleteNews<?= (int) $nw['id'] ?>">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/NewsDeleteModal.php'; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+</main>
 </div>
 
 <script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>

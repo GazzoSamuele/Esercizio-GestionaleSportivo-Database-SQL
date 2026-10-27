@@ -3,18 +3,19 @@
 require_once __DIR__ . '/../DB/helpers/auth.php';
 require_once __DIR__ . '/../DB/classes/Impegni.php';
 
-function validaImpegno($titolo, $descrizione, $tipo){
+function validaImpegno($titolo, $descrizione, $tipo)
+{
     $errors = [];
 
-    if($titolo === ''){
+    if ($titolo === '') {
         $errors[] = "Il titolo è obbligatorio";
     }
-        
-    if($descrizione === ''){
+
+    if ($descrizione === '') {
         $errors[] = "La descrizione è obbligatoria";
     }
 
-    if(!in_array($tipo, ['allenamento', 'partita', 'coppa', 'riunione', 'altro'], true)){
+    if (!in_array($tipo, ['allenamento', 'partita', 'coppa', 'riunione', 'altro'], true)) {
         $errors[] = 'Tipo non valido';
     }
 
@@ -24,121 +25,120 @@ function validaImpegno($titolo, $descrizione, $tipo){
 // dico al pc che sono l'amministratore
 requireAdmin();
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-    verificaCsrf();
-}
 // mi dice chi sono, se admin o client
 $user = currentUser();
 
-    $errors = [];
-    $messages = array(
-            'creato' => 'Impegno Creato!',
-            'modificato' => 'Impegno Modificato!',
-            'eliminato' => 'Impegno Eliminato!',
-        );
-    $esito = $_GET['esito'] ?? '';
-    $success = $messages[$esito] ?? '';
+$errors = [];
+$messages = array(
+    'creato' => 'Impegno Creato!',
+    'modificato' => 'Impegno Modificato!',
+    'eliminato' => 'Impegno Eliminato!',
+);
+$esito = $_GET['esito'] ?? '';
+$success = $messages[$esito] ?? '';
 
-    //GESTIONE FORM NUOVO IMPEGNO 
+//GESTIONE FORM NUOVO IMPEGNO 
 
-    // FUNZIONE CHE CREA UN NUOVO IMPEGNO
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create'){
+// FUNZIONE CHE CREA UN NUOVO IMPEGNO
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create') {
 
-        $titolo = trim($_POST['titolo'] ?? '');
-        $descrizione = trim($_POST['descrizione'] ?? '');
-        $tipo = $_POST['tipo'] ?? '';
-        $data = $_POST['data'] ?? date('Y-m-d');
-        $ora = $_POST['ora'] ?? '';
-        $luogo = $_POST['luogo'] ?? '';
+    verificaCsrf();
 
-        $errors = validaImpegno($titolo, $descrizione, $tipo);
+    $titolo = trim($_POST['titolo'] ?? '');
+    $descrizione = trim($_POST['descrizione'] ?? '');
+    $tipo = $_POST['tipo'] ?? '';
+    $data = $_POST['data'] ?? date('Y-m-d');
+    $ora = $_POST['ora'] ?? '';
+    $luogo = $_POST['luogo'] ?? '';
 
-        if(empty($errors)){
-            Impegni::createImpegno($titolo, $descrizione, $tipo, $data, $ora, $luogo);
+    $errors = validaImpegno($titolo, $descrizione, $tipo);
 
-            header('Location: gestioneImpegni.php?esito=creato');
-            exit;
- 
-            }
+    if (empty($errors)) {
+        Impegni::createImpegno($titolo, $descrizione, $tipo, $data, $ora, $luogo);
+
+        header('Location: gestioneImpegni.php?esito=creato');
+        exit;
     }
-    
+}
 
-    // FUNZIONE CHE MODIFICA GLI IMPEGNI ESISTENTI
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'){
-        
-        $id     = (int) ($_POST['impegno_id'] ?? 0);
-        $titolo = trim($_POST['titolo'] ?? '');
-        $descrizione = trim($_POST['descrizione'] ?? '');
-        $tipo = $_POST['tipo'] ?? '';
-        $data = $_POST['data'] ?? date('Y-m-d');
-        $ora = $_POST['ora'] ?? '';
-        $luogo = $_POST['luogo'] ?? '';
+// FUNZIONE CHE MODIFICA GLI IMPEGNI ESISTENTI
 
-       $errors = validaImpegno($titolo, $descrizione, $tipo);
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
 
-        if(empty($errors)){
-            Impegni::updateImpegno($id, $titolo, $descrizione, $tipo, $data, $ora, $luogo);
+    verificaCsrf();
 
-            header('Location: gestioneImpegni.php?esito=modificato');
-            exit;
- 
-            }
+    $id     = (int) ($_POST['impegno_id'] ?? 0);
+    $titolo = trim($_POST['titolo'] ?? '');
+    $descrizione = trim($_POST['descrizione'] ?? '');
+    $tipo = $_POST['tipo'] ?? '';
+    $data = $_POST['data'] ?? date('Y-m-d');
+    $ora = $_POST['ora'] ?? '';
+    $luogo = $_POST['luogo'] ?? '';
+
+    $errors = validaImpegno($titolo, $descrizione, $tipo);
+
+    if (empty($errors)) {
+        Impegni::updateImpegno($id, $titolo, $descrizione, $tipo, $data, $ora, $luogo);
+
+        header('Location: gestioneImpegni.php?esito=modificato');
+        exit;
     }
-    
+}
 
-    // FUNZIONE CHE ELIMINA L'IMPEGNO
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete'){
+// FUNZIONE CHE ELIMINA L'IMPEGNO
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
+
+    verificaCsrf();
 
     $targetImpegno = (int) ($_POST['impegno_id'] ?? 0);
 
-    if(Impegni::delete($targetImpegno)){
+    if (Impegni::delete($targetImpegno)) {
         header('Location: gestioneImpegni.php?esito=eliminato');
         exit;
-    }else{
+    } else {
         $errors[] = "Fallito tentativo di rimozione di un impegno!";
     }
+}
 
-    }
+$impegni = Impegni::findAllImpegni();
 
-    $impegni = Impegni::findAllImpegni();
+$lastImpegni = Impegni::findProssimiImpegni();
 
-    $lastImpegni = Impegni::findProssimiImpegni();
-
-    $ultimiImpegni = array_slice(array_reverse($lastImpegni), 0, 5);
+$ultimiImpegni = array_slice(array_reverse($lastImpegni), 0, 5);
 
 ?>
-    <?php 
-  
-    $titoloPagina = 'Gestione Impegni Sportivi'; 
-  
-    include __DIR__ . '/headerDashboard.php'; 
-    
-   ?>
+<?php
 
-    <!-- ============ MAIN ============ -->
-    <main class="dash-main">
-        <header class="dash-head">
-            <h1>Gestione Impegni Sportivi</h1>
-            <p>Crea un nuovo impegno sportivo</p>
-        </header>
+$titoloPagina = 'Gestione Impegni Sportivi';
 
-        <?php if(!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    <?php foreach($errors as $e): ?>
-                        <li><?= htmlspecialchars($e) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-        <?php if($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
+include __DIR__ . '/headerDashboard.php';
 
-        <!-- ---- form nuovo impegno ---- -->
+?>
+
+<!-- ============ MAIN ============ -->
+<main class="dash-main">
+    <header class="dash-head">
+        <h1>Gestione Impegni Sportivi</h1>
+        <p>Crea un nuovo impegno sportivo</p>
+    </header>
+
+    <?php if (!empty($errors)): ?>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                <?php foreach ($errors as $e): ?>
+                    <li><?= htmlspecialchars($e) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <!-- ---- form nuovo impegno ---- -->
     <div class="alg-form-results">
         <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
@@ -203,22 +203,22 @@ $user = currentUser();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($ultimiImpegni as $imp): ?>
-                    <tr>
-                        <!-- prendo l'id dell'utente singolo -->
-                        <td>#<?= (int) $imp['id'] ?></td>
+                    <?php foreach ($ultimiImpegni as $imp): ?>
+                        <tr>
+                            <!-- prendo l'id dell'utente singolo -->
+                            <td>#<?= (int) $imp['id'] ?></td>
 
-                        <td><?= htmlspecialchars($imp['titolo']) ?></td>
+                            <td><?= htmlspecialchars($imp['titolo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['tipo']) ?></td>
+                            <td><?= htmlspecialchars($imp['tipo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['data']) ?></td>
+                            <td><?= htmlspecialchars($imp['data']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['ora']) ?></td>
+                            <td><?= htmlspecialchars($imp['ora']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['luogo']) ?></td>
+                            <td><?= htmlspecialchars($imp['luogo']) ?></td>
 
-                        <td><?= htmlspecialchars($imp['descrizione']) ?></td>
+                            <td><?= htmlspecialchars($imp['descrizione']) ?></td>
 
                         </tr>
                     <?php endforeach; ?>
@@ -226,26 +226,26 @@ $user = currentUser();
             </table>
         </section>
     </div>
-        <!-- ---- calendario impegni ---- -->
-        <section class="dash-panel">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i>Tutti gli impegni</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titolo</th>
-                        <th>Tipo</th>
-                        <th>Data</th>
-                        <th>Ora</th>
-                        <th>Luogo</th>
-                        <th>Descrizione</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($impegni as $imp): ?>
+    <!-- ---- calendario impegni ---- -->
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2><i class="fas fa-users"></i>Tutti gli impegni</h2>
+        </div>
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Titolo</th>
+                    <th>Tipo</th>
+                    <th>Data</th>
+                    <th>Ora</th>
+                    <th>Luogo</th>
+                    <th>Descrizione</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($impegni as $imp): ?>
                     <tr>
                         <!-- prendo l'id dell'utente singolo -->
                         <td class="text-align-center">#<?= (int) $imp['id'] ?></td>
@@ -263,36 +263,38 @@ $user = currentUser();
                         <td class="text-align-center"><?= htmlspecialchars($imp['descrizione']) ?></td>
 
                         <td class="text-end">
-                               
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-info" 
-                                    title="Modifica impegno"
-                                    data-bs-toggle="modal" data-bs-target="#modalEditImpegni<?= (int) $imp['id'] ?>">
-                                        <i class="fas fa-edit"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/ImpegniEditModal.php'; ?>
 
-                                
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-danger" 
-                                    title="Elimina impegno"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalDeleteImpegni<?= (int) $imp['id'] ?>">
-                                        <i class="fas fa-trash"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/ImpegniDeleteModal.php'; ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </section>
-    </main>
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-info"
+                                aria-label="Modifica impegno"
+                                title="Modifica impegno"
+                                data-bs-toggle="modal" data-bs-target="#modalEditImpegni<?= (int) $imp['id'] ?>">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/ImpegniEditModal.php'; ?>
+
+
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Elimina impegno"
+                                aria-label="Elimina impegno"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDeleteImpegni<?= (int) $imp['id'] ?>">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/ImpegniDeleteModal.php'; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </section>
+</main>
 </div>
 
 <script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
-</html>
 
+</html>

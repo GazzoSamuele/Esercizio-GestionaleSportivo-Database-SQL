@@ -9,7 +9,8 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <input type="hidden" name="action"  value="edit">
+          <input type="hidden" name="action" value="edit">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
           <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
           <div class="mb-3">
             <label>Nome</label>
@@ -23,7 +24,7 @@
             <label>Ruolo</label>
             <select name="role" class="form-select">
               <option value="client" <?= $u['role'] === 'client' ? 'selected' : '' ?>>Client</option>
-              <option value="admin"  <?= $u['role'] === 'admin'  ? 'selected' : '' ?>>Admin</option>
+              <option value="admin" <?= $u['role'] === 'admin'  ? 'selected' : '' ?>>Admin</option>
             </select>
           </div>
         </div>

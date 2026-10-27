@@ -9,8 +9,9 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-          <input type="hidden" name="action"  value="edit">
+          <input type="hidden" name="action" value="edit">
           <input type="hidden" name="product_id" value="<?= (int) $p['id'] ?>">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
           <div class="mb-3">
             <label>Nome</label>
             <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($p['name']) ?>" required>
@@ -43,4 +44,3 @@
     </div>
   </div>
 </div>
-

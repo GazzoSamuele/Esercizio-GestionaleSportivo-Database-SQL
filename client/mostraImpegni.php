@@ -12,116 +12,118 @@ requireQuotaValida();
 // mi dice chi sono, se admin o client
 $user = currentUser();
 
-   // filtro per tipo (vuoto = tutte)
-    $tipo = trim($_GET['tipo'] ?? '');
-    if($tipo !== ''){
-        $impegni = Impegni::findByTipo($tipo); 
-    } else {
-        $impegni = Impegni::findAllImpegni();
-    }
+// filtro per tipo (vuoto = tutte)
+$tipo = trim($_GET['tipo'] ?? '');
+if ($tipo !== '') {
+    $impegni = Impegni::findByTipo($tipo);
+} else {
+    $impegni = Impegni::findAllImpegni();
+}
 
-    $eventi  = [];
+$eventi  = [];
 
-    $colori = [
-        'allenamento' => '#668041',
-        'partita'     => '#bd4d63',
-        'coppa'       => '#e0a800',
-        'riunione'    => '#3b82f6',
-        'altro'       => '#6b7280',
+$colori = [
+    'allenamento' => '#668041',
+    'partita'     => '#bd4d63',
+    'coppa'       => '#e0a800',
+    'riunione'    => '#3b82f6',
+    'altro'       => '#6b7280',
+];
+
+foreach ($impegni as $imp) {
+    $colore = $colori[$imp['tipo']] ?? '#6b7280';
+    $eventi[] = [
+        'title' => $imp['titolo'],
+        'start' => $imp['data'] . 'T' . $imp['ora'],
+        'backgroundColor' => $colore,
+        'borderColor'     => $colore,
     ];
+}
 
-    foreach ($impegni as $imp) {
-        $colore = $colori[$imp['tipo']] ?? '#6b7280';
-        $eventi[] = [
-            'title' => $imp['titolo'],
-            'start' => $imp['data'] . 'T' . $imp['ora'],  
-            'backgroundColor' => $colore,
-            'borderColor'     => $colore,
-        ];
+$errors = [];
+$success = '';
+
+//GESTIONE FORM
+
+// FUNZIONE CHE CREA L'IMPEGNO
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create') {
+
+    verificaCsrf();
+
+    $titolo = trim($_POST['titolo'] ?? '');
+    $data = $_POST['data'] ?? '';
+    $ora = $_POST['ora'] ?? '';
+    $appunti = trim($_POST['appunti'] ?? '');
+    $tipo = $_POST['tipo'] ?? 'allenamento extra';
+
+    //titolo
+    if ($titolo === '') {
+        $errors[] = "Il nome è obbligatorio";
     }
 
-    $errors = [];
-    $success = '';
-
-    //GESTIONE FORM
-
-    // FUNZIONE CHE CREA L'IMPEGNO
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create'){
-
-        $titolo = trim($_POST['titolo'] ?? '');
-        $data = $_POST['data'] ?? '';
-        $ora = $_POST['ora'] ?? '';
-        $appunti = trim($_POST['appunti'] ?? '');
-        $tipo =$_POST['tipo'] ?? 'allenamento extra';
-
-        //titolo
-        if($titolo === ''){
-            $errors[] = "Il nome è obbligatorio";
-        }
-
-        //data
-        if($data === ''){
-            $errors[] = "La data è obbligatoria";
-        }
-
-        //ora
-        if($ora === ''){
-            $errors[] = "L'ora' è obbligatoria";
-        }
-
-        //role
-        if(!in_array($tipo, ['fisioterapista','nutrizionista', 'massaggiatore', 'palestra','allenamento extra','altro'], true)){
-            $errors[] = 'Tipo di impegno non selezionato';
-        }
-
-        if(empty($errors)) {
-            if(AppuntamentiPersonali::create($user['id'], $titolo, $data, $ora, $appunti,$tipo)) {
-                $success = "Impegno creato!";
-                $_POST = [];
-            } else {
-                $errors[] = 'Errore nel salvataggio';
-            }
-        }
+    //data
+    if ($data === '') {
+        $errors[] = "La data è obbligatoria";
     }
 
-    $prossimi = AppuntamentiPersonali::findProssimiByUserId($user['id']);
-    
-    $coloriAppuntamenti = [
-        'fisioterapista' => '#3b82f6',
-        'nutrizionista'     => '#668041',
-        'massaggiatore'       => '#e0a800',
-        'palestra'       => '#bd4d63',
-        'allenamento extra'    => '#82007b',
-        'altro'       => '#6b7280',
+    //ora
+    if ($ora === '') {
+        $errors[] = "L'ora' è obbligatoria";
+    }
+
+    //role
+    if (!in_array($tipo, ['fisioterapista', 'nutrizionista', 'massaggiatore', 'palestra', 'allenamento extra', 'altro'], true)) {
+        $errors[] = 'Tipo di impegno non selezionato';
+    }
+
+    if (empty($errors)) {
+        if (AppuntamentiPersonali::create($user['id'], $titolo, $data, $ora, $appunti, $tipo)) {
+            $success = "Impegno creato!";
+            $_POST = [];
+        } else {
+            $errors[] = 'Errore nel salvataggio';
+        }
+    }
+}
+
+$prossimi = AppuntamentiPersonali::findProssimiByUserId($user['id']);
+
+$coloriAppuntamenti = [
+    'fisioterapista' => '#3b82f6',
+    'nutrizionista'     => '#668041',
+    'massaggiatore'       => '#e0a800',
+    'palestra'       => '#bd4d63',
+    'allenamento extra'    => '#82007b',
+    'altro'       => '#6b7280',
+];
+
+
+$appuntamenti = AppuntamentiPersonali::findByUserId($user['id']);
+
+foreach ($appuntamenti as $app) {
+    $coloreAppuntamento = $coloriAppuntamenti[$app['tipo']] ?? '#004d13';
+    $eventi[] = [
+        'title'           => $app['titolo'],
+        'start'           => $app['data'] . 'T' . $app['ora'],
+        'backgroundColor' => $coloreAppuntamento,
+        'borderColor'     => $coloreAppuntamento,
     ];
-
-
-    $appuntamenti = AppuntamentiPersonali::findByUserId($user['id']);
-
-    foreach ($appuntamenti as $app) {
-        $coloreAppuntamento = $coloriAppuntamenti[$app['tipo']] ?? '#004d13';
-        $eventi[] = [
-            'title'           => $app['titolo'],
-            'start'           => $app['data'] . 'T' . $app['ora'],
-            'backgroundColor' => $coloreAppuntamento,
-            'borderColor'     => $coloreAppuntamento,
-        ];
 }
 ?>
-    <?php 
-    
-     $titoloPagina = 'Impegni'; 
+<?php
 
-    include __DIR__ . '/../admin/headerDashboard.php'; ?>
+$titoloPagina = 'Impegni';
 
-    <!-- ============ MAIN ============ -->
-    <main class="dash-main">
-        <header class="dash-head">
-            <h1>Calendario impegni</h1>
-            <p>Visualizza ogni impegno o appuntamento imminente o futuro</p>
-        </header>
+include __DIR__ . '/../admin/headerDashboard.php'; ?>
 
-        <!-- ---- form nuovo utente ---- -->
+<!-- ============ MAIN ============ -->
+<main class="dash-main">
+    <header class="dash-head">
+        <h1>Calendario impegni</h1>
+        <p>Visualizza ogni impegno o appuntamento imminente o futuro</p>
+    </header>
+
+    <!-- ---- form nuovo utente ---- -->
     <div class="alg-cal-impegni">
         <div class="form-nuovi-impegni height-fit-content">
             <section class="dash-tab-impegni dash-formcard height-fit-content">
@@ -131,6 +133,7 @@ $user = currentUser();
                 <div class="dash-formbody">
                     <form action="" method="post">
                         <input type="hidden" name="action" value="create">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                         <div class="mb-3">
                             <label for="name">Titolo</label>
                             <input type="text" class="form-control" id="titolo" name="titolo" required>
@@ -143,7 +146,7 @@ $user = currentUser();
                             <label for="ora">Ora</label>
                             <input type="time" id="ora" name="ora" min="08:00" max="18:00" class="form-control" required>
                         </div>
-                            <div class="mb-3">
+                        <div class="mb-3">
                             <label for="tipo">Tipo di impegno</label>
                             <select name="tipo" id="tipo" class="form-select">
                                 <option value="fisioterapista">Fisioterapista</option>
@@ -162,48 +165,50 @@ $user = currentUser();
             <section class="tab-impegni-prossimi height-fit-content">
                 <div class="dash-panel-head">
                     <h2><i class="fas fa-calendar-check"></i> Prossimi appuntamenti</h2>
-                        </div>
-                            <table class="dash-table">
-                                <thead>
-                                    <tr>
-                                        <th>Titolo</th>
-                                        <th>Tipo</th>
-                                        <th>Data</th>
-                                        <th>Ora</th>
-                                    </tr>
-                                </thead>
-                            <tbody>
-                            <?php foreach($prossimi as $app): ?>
-                                <tr>
-                                    <td><?= htmlspecialchars($app['titolo']) ?></td>
-                                    <td><?= htmlspecialchars($app['tipo']) ?></td>
-                                    <td><?= date('d M Y', strtotime($app['data'])) ?></td>
-                                    <td><?= htmlspecialchars($app['ora']) ?></td>
-                                </tr>
-                                <?php endforeach; ?>
-                                <?php if(empty($prossimi)): ?>
-                            <tr><td colspan="4">Nessun appuntamento personale.</td></tr>
+                </div>
+                <table class="dash-table">
+                    <thead>
+                        <tr>
+                            <th>Titolo</th>
+                            <th>Tipo</th>
+                            <th>Data</th>
+                            <th>Ora</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($prossimi as $app): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($app['titolo']) ?></td>
+                                <td><?= htmlspecialchars($app['tipo']) ?></td>
+                                <td><?= date('d M Y', strtotime($app['data'])) ?></td>
+                                <td><?= htmlspecialchars($app['ora']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($prossimi)): ?>
+                            <tr>
+                                <td colspan="4">Nessun appuntamento personale.</td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>
             </section>
         </div>
-        
-            <!-- calendario interattivo -->
-            <div id="calendar"></div>
-        </div>
-    </main>
+
+        <!-- calendario interattivo -->
+        <div id="calendar"></div>
+    </div>
+</main>
 </div>
 
 <script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const tipoAttuale = new URLSearchParams(window.location.search).get('tipo') ?? '';
-      
-      const el = document.getElementById('calendar');
+    document.addEventListener('DOMContentLoaded', function() {
+        const tipoAttuale = new URLSearchParams(window.location.search).get('tipo') ?? '';
 
-      const calendar = new FullCalendar.Calendar(el, {
+        const el = document.getElementById('calendar');
+
+        const calendar = new FullCalendar.Calendar(el, {
             initialView: 'dayGridMonth',
             height: 1000,
             width: "100%",
@@ -213,21 +218,47 @@ $user = currentUser();
                 end: 'tuttiBtn,allenamentoBtn,partiteBtn,coppaBtn,riunioneBtn,altroBtn'
             },
             customButtons: {
-                tuttiBtn:        { text: 'Tutti',        click: () => location.href = 'mostraImpegni.php' },
-                allenamentoBtn:  { text: 'Allenamento',  click: () => location.href = '?tipo=allenamento' },
-                partiteBtn:      { text: 'Partite',      click: () => location.href = '?tipo=partita' },
-                coppaBtn:        { text: 'Coppa',        click: () => location.href = '?tipo=coppa' },
-                riunioneBtn:     { text: 'Riunione',     click: () => location.href = '?tipo=riunione' },
-                altroBtn:        { text: 'Altro',        click: () => location.href = '?tipo=altro' },
+                tuttiBtn: {
+                    text: 'Tutti',
+                    click: () => location.href = 'mostraImpegni.php'
+                },
+                allenamentoBtn: {
+                    text: 'Allenamento',
+                    click: () => location.href = '?tipo=allenamento'
+                },
+                partiteBtn: {
+                    text: 'Partite',
+                    click: () => location.href = '?tipo=partita'
+                },
+                coppaBtn: {
+                    text: 'Coppa',
+                    click: () => location.href = '?tipo=coppa'
+                },
+                riunioneBtn: {
+                    text: 'Riunione',
+                    click: () => location.href = '?tipo=riunione'
+                },
+                altroBtn: {
+                    text: 'Altro',
+                    click: () => location.href = '?tipo=altro'
+                },
             },
-        events: <?= json_encode($eventi) ?>
-    });
-    calendar.render();
-
-    const mappa = { '': 'tuttiBtn', 'allenamento': 'allenamentoBtn', 'partita': 'partiteBtn', 'coppa': 'coppaBtn', 'riunione': 'riunioneBtn', 'altro': 'altroBtn' };
-    const nomeAttivo = mappa[tipoAttuale] ?? 'tuttiBtn';
-    document.querySelector(`.fc-${nomeAttivo}-button`)?.classList.add('fc-button-active');  
+            events: <?= json_encode($eventi) ?>
         });
+        calendar.render();
+
+        const mappa = {
+            '': 'tuttiBtn',
+            'allenamento': 'allenamentoBtn',
+            'partita': 'partiteBtn',
+            'coppa': 'coppaBtn',
+            'riunione': 'riunioneBtn',
+            'altro': 'altroBtn'
+        };
+        const nomeAttivo = mappa[tipoAttuale] ?? 'tuttiBtn';
+        document.querySelector(`.fc-${nomeAttivo}-button`)?.classList.add('fc-button-active');
+    });
 </script>
 </body>
+
 </html>

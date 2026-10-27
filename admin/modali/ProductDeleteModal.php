@@ -1,4 +1,3 @@
-
 <!-- MODALE PRODOTTI -->
 
 <div class="modal fade" id="modalDeleteProduct<?= (int) $p['id'] ?>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
@@ -14,8 +13,9 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annulla</button>
                 <form action="" method="post">
-                    <input type="hidden" name="action"  value="delete">
+                    <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="product_id" value="<?= (int) $p['id'] ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <button type="submit" class="btn btn-danger">Elimina Prodotto</button>
                 </form>
             </div>

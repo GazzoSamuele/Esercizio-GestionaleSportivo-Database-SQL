@@ -1,83 +1,85 @@
 <?php
 
-    // faccio partire la sessione
-    // funzione nativa di php
-    session_start();
+// faccio partire la sessione
+// funzione nativa di php
+session_start();
 
-    //richiamo del singleton per attivare le PDO
-    require_once __DIR__ . '/DB/classes/Db.php';
+//richiamo del singleton per attivare le PDO
+require_once __DIR__ . '/DB/classes/Db.php';
 
-    // raccolgo tutti gli errori e imposto succes=false
-    $errors = [];
-    $success = false;
-    
-    if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-        // recuperare dagli inout i valori del form
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = trim($_POST['password'] ?? '');
-        $conferma_password = trim($_POST['confermaPassword'] ?? '');
-        $codice = trim($_POST['codice'] ?? '');
+// raccolgo tutti gli errori e imposto succes=false
+$errors = [];
+$success = false;
 
-        // validazione con messaggi
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-        // se è vuoto lascio un'errore
-        if ($name === '') {
-            $errors[] = 'Il nome è obbligatorio';
+    verificaCsrf();
+    // recuperare dagli inout i valori del form
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = trim($_POST['password'] ?? '');
+    $conferma_password = trim($_POST['confermaPassword'] ?? '');
+    $codice = trim($_POST['codice'] ?? '');
+
+    // validazione con messaggi
+
+    // se è vuoto lascio un'errore
+    if ($name === '') {
+        $errors[] = 'Il nome è obbligatorio';
+    }
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Email non valida';
+    }
+
+    if (strlen($password) < 8) {
+        $errors[] = 'Password must be longer than 8';
+    }
+    if ($conferma_password !== $password) {
+        $errors[] = 'Passwords do not match';
+    }
+
+    if ($codice === '') {
+        $errors[] = 'il codice societario è obbligatorio';
+    }
+
+    // se la validazione passa interroghiamo il Db
+    // se il container dell'errore è vuoto 
+    if (empty($errors)) {
+        // connetto il db
+        $connettoreDb = Db::connect();
+
+        // controllo che l'email non sia registrata già
+        $stmt = $connettoreDb->prepare('SELECT id FROM users WHERE email = :email');
+        $stmt->execute([':email' => $email]);
+
+        if ($stmt->fetch()) {
+            $errors[] = 'This email is already registered';
         }
+        // il codice esiste? è ancora libero?
 
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $errors[] = 'Email non valida';
-        }
-    
-        if (strlen($password) < 8) {
-            $errors[] = 'Password must be longer than 8';
-        }
-        if ($conferma_password !== $password) {
-            $errors[] = 'Passwords do not match';
-        }
-
-        if ($codice === '') {
-            $errors[] = 'il codice societario è obbligatorio';
-        }
-
-        // se la validazione passa interroghiamo il Db
-        // se il container dell'errore è vuoto 
-        if(empty($errors)) {
-            // connetto il db
-            $connettoreDb = Db::connect();
-
-            // controllo che l'email non sia registrata già
-            $stmt = $connettoreDb->prepare('SELECT id FROM users WHERE email = :email');
-            $stmt->execute([':email' => $email]);
-
-            if($stmt->fetch()){
-                $errors[] = 'This email is already registered';
-        }
-            // il codice esiste? è ancora libero?
-
-            $codeRow = null;
-            if (empty($errors)) {
-                $stmt = $connettoreDb->prepare(
-                    'SELECT id 
+        $codeRow = null;
+        if (empty($errors)) {
+            $stmt = $connettoreDb->prepare(
+                'SELECT id 
                      FROM registration_codes
                      WHERE code = :code AND used = 0'
-                );
-                $stmt->execute([':code' => $codice]);
-                $codeRow = $stmt->fetch();
-                if (!$codeRow) {
-                    $errors[] = 'Codice non valido o già utilizzato';
-                }
+            );
+            $stmt->execute([':code' => $codice]);
+            $codeRow = $stmt->fetch();
+            if (!$codeRow) {
+                $errors[] = 'Codice non valido o già utilizzato';
             }
+        }
 
-            // funzione che crea l'utente e consuma il codice legandolo all'user per sempre
+        // funzione che crea l'utente e consuma il codice legandolo all'user per sempre
 
-            if(empty($errors)) {
-                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-                $quotaScadenza = date('Y-m-d', strtotime('+10 months'));
+        if (empty($errors)) {
+            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+            $quotaScadenza = date('Y-m-d', strtotime('+10 months'));
 
-                $connettoreDb->beginTransaction();
-            try{
+            $connettoreDb->beginTransaction();
+            try {
                 $stmt = $connettoreDb->prepare(
                     'INSERT INTO users(
                         name, email, password, role, quota_scadenza)
@@ -105,20 +107,20 @@
                     // WHERE id = :cid → aggiorna solo quella riga del codice
                 );
                 $stmt->execute([':uid' => $newUserId, ':cid' => $codeRow['id']]);
-                
+
                 $connettoreDb->commit();
                 $success = true;
-            } catch (PDOException $e){
+            } catch (PDOException $e) {
                 $connettoreDb->rollBack();
                 error_log('Registrazione fallita: ' . $e->getMessage());
                 $errors[] = 'Registrazione non riuscita, riprova più tardi';
             }
-            }
         }
     }
+}
 ?>
 
-<?php include __DIR__ . '/includes/header.php'?>
+<?php include __DIR__ . '/includes/header.php' ?>
 
 <main class="mainProject">
     <section class="bg_personal min-vh-100 py-5">
@@ -131,14 +133,14 @@
 
                     <div class="register-body">
                         <!-- se success esiste -->
-                        <?php if($success): ?>
+                        <?php if ($success): ?>
                             <div class="alert alert-success">
                                 Registrazione completata! Ora puoi accedere <a href="login.php" class="alert-link">Login</a>
                             </div>
                         <?php endif; ?>
 
                         <!-- se errors è diverso da vuoto -->
-                        <?php if(!empty($errors)): ?>
+                        <?php if (!empty($errors)): ?>
                             <div class="alert alert-danger">
                                 <ul>
                                     <?php foreach ($errors as $error): ?>
@@ -150,35 +152,44 @@
 
                         <form class="frm-register" action="" method="post">
 
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+
                             <div class="mb-3">
                                 <label for="name">Nome</label>
                                 <input type="text"
-                                       class="form-control"
-                                       name="name"
-                                       value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                                       required>
+                                    class="form-control"
+                                    name="name"
+                                    id="name"
+                                    value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
+                                    required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="email">Email</label>
                                 <input type="email"
-                                       class="form-control"
-                                       name="email"
-                                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                                       required>
+                                    class="form-control"
+                                    name="email"
+                                    id="email"
+                                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                                    required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="password">Password</label>
-                                <input type="password" class="form-control" name="password" required>
+                                <input type="password"
+                                    class="form-control"
+                                    name="password"
+                                    id="password"
+                                    required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="password_confirm">Conferma Password</label>
                                 <input type="password"
-                                       class="form-control"
-                                       name="confermaPassword"
-                                       required>
+                                    class="form-control"
+                                    name="confermaPassword"
+                                    id="password_confirm"
+                                    required>
                             </div>
 
                             <div class="mb-3">
@@ -186,6 +197,7 @@
                                 <input type="text"
                                     class="form-control"
                                     name="codice"
+                                    id="codice"
                                     value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>"
                                     placeholder="Inserisci il tuo codice dato dalla società dopo il pagamento della quota"
                                     required>
@@ -202,6 +214,4 @@
     </section>
 </main>
 
-<?php include __DIR__ . '/includes/footer.php'?>
-
-
+<?php include __DIR__ . '/includes/footer.php' ?>

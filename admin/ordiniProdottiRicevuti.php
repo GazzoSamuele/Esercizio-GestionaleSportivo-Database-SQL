@@ -12,168 +12,174 @@ requireAdmin();
 // mi dice chi sono, se admin o client
 $user = currentUser();
 
-    $errors = [];
-    $success = '';
+$errors = [];
+$success = '';
 
-    //GESTIONE FORM
+//GESTIONE FORM
 
-    // FUNZIONE CHE CREA IL PRODOTTO
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create'){
-        $name        = trim($_POST['name'] ?? '');
-        $descrizione = trim($_POST['descrizione'] ?? '');
-        $prezzo      = trim($_POST['prezzo'] ?? '');
-        $isActive    = (int) ($_POST['isActive'] ?? 1);
-        $immagine    = trim($_POST['immagine'] ?? '');
+// FUNZIONE CHE CREA IL PRODOTTO
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'create') {
 
-        // validazione degli input
+    verificaCsrf();
 
-        //nome
-        if($name === ''){
-            $errors[] = "Il nome è obbligatorio";
-        }
+    $name        = trim($_POST['name'] ?? '');
+    $descrizione = trim($_POST['descrizione'] ?? '');
+    $prezzo      = trim($_POST['prezzo'] ?? '');
+    $isActive    = (int) ($_POST['isActive'] ?? 1);
+    $immagine    = trim($_POST['immagine'] ?? '');
 
-        // descrizione
-        if($descrizione === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
+    // validazione degli input
 
-        // immagine
-        if($immagine === ''){
-            $errors[] = "L'immagine è obbligatoria";
-        }
-
-        //prezzo
-        if($prezzo === '' || !is_numeric($prezzo)){
-            $errors[] = "Prezzo non valido";
-        }
-
-        //disponibilità
-        if(!in_array($isActive, [0,1], true)){
-            $errors[] = 'Invalid disponibility';
-        }
-
-        // se non ho l'array di errors popolato,
-        // procedo con la creazione di un nuovo utente
-
-        if(empty($errors)){
-            // così facendo richiamo i parametri che mi servono
-            $newId = Products::create($name, $descrizione, $prezzo, $isActive, $immagine);
-
-            if($newId === null){
-                $errors[] = 'This product is already registered';
-            }else{
-                $success = "Prodotto creato!";
-
-                // una volta creato l'utente svuoto la post
-                $_POST = [];
-            }
-        }
+    //nome
+    if ($name === '') {
+        $errors[] = "Il nome è obbligatorio";
     }
 
-    // FUNZIONE CHE MODIFICA UN PRODOTTO
-
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit'){
-
-        // mettimo zero(in fondo) perchè è un int
-        $name        = trim($_POST['name'] ?? '');
-        $descrizione = trim($_POST['descrizione'] ?? '');
-        $prezzo      = trim($_POST['prezzo'] ?? '');
-        $isActive    = (int) ($_POST['isActive'] ?? 1);
-        $immagine    = trim($_POST['immagine'] ?? '');
-
-         // validazione degli input
-
-        //nome
-        if($name === ''){
-            $errors[] = "Il nome è obbligatorio";
-        }
-
-        // descrizione
-        if($descrizione === ''){
-            $errors[] = "La descrizione è obbligatoria";
-        }
-
-        // immagine
-        if($immagine === ''){
-            $errors[] = "L'immagine è obbligatoria";
-        }
-
-        //prezzo
-        if($prezzo === '' || !is_numeric($prezzo)){
-            $errors[] = "Prezzo non valido";
-        }
-
-        //disponibilità
-        if(!in_array($isActive, [0,1], true)){
-            $errors[] = 'Invalid disponibility';
-        }
-        // se non ho l'array di errors popolato,
-        // procedo con la creazione di un nuovo utente
-
-        if(empty($errors)){
-            $id = (int) ($_POST['product_id'] ?? 0);
-            // così facendo richiamo i parametri che mi servono
-            if(Products::updateProduct($id, $name, $descrizione, $prezzo, $isActive, $immagine)){
-                $success = "Prodotto aggiornato!";
-            }else{
-                $errors[] = 'You have not change anything';
-            };
-        }
+    // descrizione
+    if ($descrizione === '') {
+        $errors[] = "La descrizione è obbligatoria";
     }
 
-    // FUNZIONE CHE ELIMINA UN PRODOTTO
+    // immagine
+    if ($immagine === '') {
+        $errors[] = "L'immagine è obbligatoria";
+    }
 
-    if($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete'){
+    //prezzo
+    if ($prezzo === '' || !is_numeric($prezzo)) {
+        $errors[] = "Prezzo non valido";
+    }
+
+    //disponibilità
+    if (!in_array($isActive, [0, 1], true)) {
+        $errors[] = 'Invalid disponibility';
+    }
+
+    // se non ho l'array di errors popolato,
+    // procedo con la creazione di un nuovo utente
+
+    if (empty($errors)) {
+        // così facendo richiamo i parametri che mi servono
+        $newId = Products::create($name, $descrizione, $prezzo, $isActive, $immagine);
+
+        if ($newId === null) {
+            $errors[] = 'This product is already registered';
+        } else {
+            $success = "Prodotto creato!";
+
+            // una volta creato l'utente svuoto la post
+            $_POST = [];
+        }
+    }
+}
+
+// FUNZIONE CHE MODIFICA UN PRODOTTO
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'edit') {
+
+    verificaCsrf();
+
+    // mettimo zero(in fondo) perchè è un int
+    $name        = trim($_POST['name'] ?? '');
+    $descrizione = trim($_POST['descrizione'] ?? '');
+    $prezzo      = trim($_POST['prezzo'] ?? '');
+    $isActive    = (int) ($_POST['isActive'] ?? 1);
+    $immagine    = trim($_POST['immagine'] ?? '');
+
+    // validazione degli input
+
+    //nome
+    if ($name === '') {
+        $errors[] = "Il nome è obbligatorio";
+    }
+
+    // descrizione
+    if ($descrizione === '') {
+        $errors[] = "La descrizione è obbligatoria";
+    }
+
+    // immagine
+    if ($immagine === '') {
+        $errors[] = "L'immagine è obbligatoria";
+    }
+
+    //prezzo
+    if ($prezzo === '' || !is_numeric($prezzo)) {
+        $errors[] = "Prezzo non valido";
+    }
+
+    //disponibilità
+    if (!in_array($isActive, [0, 1], true)) {
+        $errors[] = 'Invalid disponibility';
+    }
+    // se non ho l'array di errors popolato,
+    // procedo con la creazione di un nuovo utente
+
+    if (empty($errors)) {
+        $id = (int) ($_POST['product_id'] ?? 0);
+        // così facendo richiamo i parametri che mi servono
+        if (Products::updateProduct($id, $name, $descrizione, $prezzo, $isActive, $immagine)) {
+            $success = "Prodotto aggiornato!";
+        } else {
+            $errors[] = 'You have not change anything';
+        };
+    }
+}
+
+// FUNZIONE CHE ELIMINA UN PRODOTTO
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'delete') {
+
+    verificaCsrf();
 
     // prendiamo il target ID (cioè l'id dell'oggetto che deve essere cambiato)
     // mettimo zero(in fondo) perchè è un int
     $targetID = (int) ($_POST['product_id'] ?? 0);
 
     // mi dice se che se l'id è uguale all'user(cioè l'user loggato in quel momento)
-    if(Products::delete($targetID)){
+    if (Products::delete($targetID)) {
         $success = "Prodotto eliminato!";
-    }else{
+    } else {
         $errors[] = "Eliminazione prodotto fallita!";
     }
+}
 
-    }
+$products = Products::findAllProducts();
 
-    $products = Products::findAllProducts();
-
-    $ordini = Purchases::findAll();
+$ordini = Purchases::findAll();
 
 ?>
 
-  <?php 
-  
-    $titoloPagina = 'Gestione Prodotti Ricevuti'; 
-  
-    include __DIR__ . '/headerDashboard.php'; 
-    
-   ?>
+<?php
 
-    <!-- ============ MAIN ============ -->
-    <main class="dash-main">
-        <header class="dash-head">
-            <h1>Gestione Prodotti</h1>
-            <p>Crea un nuovo prodotto e gestisci gli ordini dei prodotti effettuati.</p>
-        </header>
+$titoloPagina = 'Gestione Prodotti Ricevuti';
 
-        <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
-        <?php if(!empty($errors)): ?>
-            <div class="alert alert-danger">
-                <ul class="mb-0">
-                    <?php foreach($errors as $e): ?>
-                        <li><?= htmlspecialchars($e) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
-        <?php if($success): ?>
-            <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-        <?php endif; ?>
+include __DIR__ . '/headerDashboard.php';
 
-        <!-- ---- form nuovo utente ---- -->
+?>
+
+<!-- ============ MAIN ============ -->
+<main class="dash-main">
+    <header class="dash-head">
+        <h1>Gestione Prodotti</h1>
+        <p>Crea un nuovo prodotto e gestisci gli ordini dei prodotti effettuati.</p>
+    </header>
+
+    <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
+    <?php if (!empty($errors)): ?>
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                <?php foreach ($errors as $e): ?>
+                    <li><?= htmlspecialchars($e) ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+    <?php if ($success): ?>
+        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
+    <?php endif; ?>
+
+    <!-- ---- form nuovo utente ---- -->
     <div class="alg-form-results">
         <section class="dash-panel-form dash-formcard">
             <div class="dash-panel-head">
@@ -183,6 +189,7 @@ $user = currentUser();
                 <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
                 <form action="" method="post">
                     <input type="hidden" name="action" value="create">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <div class="mb-3">
                         <label for="name">Nome</label>
                         <input type="text" class="form-control" id="name" name="name" required>
@@ -206,7 +213,7 @@ $user = currentUser();
                             <option value="0">Non Disponibile</option>
                         </select>
                     </div>
-                    
+
                     <button class="btn btn-warning" type="submit">Crea Prodotto</button>
                 </form>
             </div>
@@ -230,60 +237,62 @@ $user = currentUser();
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($ordini as $ord): ?>
-                    <tr>
-                        <td class="text-align-center">#<?= (int) $ord['id'] ?></td>
-                        <td class="text-align-center"><?= htmlspecialchars($ord['cliente']) ?></td>
-                        <td class="text-align-center">
-                            <?php if(!empty($ord['immagine'])): ?>
-                                <img src="<?= htmlspecialchars($ord['immagine']) ?>" alt="<?= htmlspecialchars($ord['prodotto']) ?>"
-                                    style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-                            <?php else: ?>
-                                <span class="dash-current">—</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="text-align-center"><?= htmlspecialchars($ord['prodotto']) ?></td>
-                        <td class="text-align-center">€ <?= htmlspecialchars($ord['prezzo_pagato']) ?></td>
-                        <td class="text-align-center"><?= htmlspecialchars($ord['status']) ?></td>
-                        <td class="text-align-center"><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
-                    </tr>
+                    <?php foreach ($ordini as $ord): ?>
+                        <tr>
+                            <td class="text-align-center">#<?= (int) $ord['id'] ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ord['cliente']) ?></td>
+                            <td class="text-align-center">
+                                <?php if (!empty($ord['immagine'])): ?>
+                                    <img src="<?= htmlspecialchars($ord['immagine']) ?>" alt="<?= htmlspecialchars($ord['prodotto']) ?>"
+                                        style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
+                                <?php else: ?>
+                                    <span class="dash-current">—</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-align-center"><?= htmlspecialchars($ord['prodotto']) ?></td>
+                            <td class="text-align-center">€ <?= htmlspecialchars($ord['prezzo_pagato']) ?></td>
+                            <td class="text-align-center"><?= htmlspecialchars($ord['status']) ?></td>
+                            <td class="text-align-center"><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
+                        </tr>
                     <?php endforeach; ?>
-                    <?php if(empty($ordini)): ?>
-                    <tr><td colspan="7" class="dash-empty">Nessun ordine ricevuto.</td></tr>
+                    <?php if (empty($ordini)): ?>
+                        <tr>
+                            <td colspan="7" class="dash-empty">Nessun ordine ricevuto.</td>
+                        </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
         </section>
     </div>
-        <!-- ---- tabella Prodotti ---- -->
-        <section class="dash-panel">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i>Gestione Prodotti</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Immagine</th>
-                        <th>Nome</th>
-                        <th>Descrizione</th>
-                        <th>Prezzo</th>
-                        <th>Disponibilità</th>
-                        <th>Data Modifica</th>
-                        <th>Azioni</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($products as $p): ?>
+    <!-- ---- tabella Prodotti ---- -->
+    <section class="dash-panel">
+        <div class="dash-panel-head">
+            <h2><i class="fas fa-users"></i>Gestione Prodotti</h2>
+        </div>
+        <table class="dash-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Immagine</th>
+                    <th>Nome</th>
+                    <th>Descrizione</th>
+                    <th>Prezzo</th>
+                    <th>Disponibilità</th>
+                    <th>Data Modifica</th>
+                    <th>Azioni</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($products as $p): ?>
                     <tr>
 
                         <td>
                             <?= htmlspecialchars($p['id']) ?>
                         </td>
-                        
+
                         <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
                         <td>
-                            <?php if(!empty($p['image_path'])): ?>
+                            <?php if (!empty($p['image_path'])): ?>
                                 <img src="<?= htmlspecialchars($p['image_path']) ?>" alt="<?= htmlspecialchars($p['name']) ?>"
                                     style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
                             <?php else: ?>
@@ -303,39 +312,44 @@ $user = currentUser();
                         <td><?= date('d M Y', strtotime($p['created_at'])) ?></td>
 
                         <td class="text-end">
-                                <!-- PULSANTE DI EDIT -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-info" 
-                                    title="Modifica prodotto"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalEditProduct<?= (int) $p['id'] ?>">
-                                        <i class="fas fa-edit"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/ProductEditModal.php'; ?>
+                            <!-- PULSANTE DI EDIT -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-info"
+                                aria-label="Modifica prodotto"
+                                title="Modifica prodotto"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditProduct<?= (int) $p['id'] ?>">
+                                <i class="fas fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/ProductEditModal.php'; ?>
 
-                                <!-- PULSANTE DI DELETE -->
-                                <button 
-                                    type="button" 
-                                    class="btn btn-sm btn-outline-danger" 
-                                    title="Elimina prodotto"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#modalDeleteProduct<?= (int) $p['id'] ?>">
-                                        <i class="fas fa-trash"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/ProductDeleteModal.php'; ?>
+                            <!-- PULSANTE DI DELETE -->
+                            <button
+                                type="button"
+                                class="btn btn-sm btn-outline-danger"
+                                title="Elimina prodotto"
+                                aria-label="Elimina prodotto"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalDeleteProduct<?= (int) $p['id'] ?>">
+                                <i class="fas fa-trash" aria-hidden="true"></i>
+                            </button>
+                            <?php include __DIR__ . '/modali/ProductDeleteModal.php'; ?>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
-                    <?php if(empty($products)): ?>
-                    <tr><td colspan="8" class="dash-empty">Nessun prodotto registrato</td></tr>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </section>
-    </main>
+                <?php endforeach; ?>
+                <?php if (empty($products)): ?>
+                    <tr>
+                        <td colspan="8" class="dash-empty">Nessun prodotto registrato</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </section>
+</main>
 </div>
 
 <script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
+
 </html>
