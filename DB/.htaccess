@@ -1,0 +1,2 @@
+# Blocca ogni accesso diretto via web ai file in DB/ (config, sql, classi)
+Require all denied
