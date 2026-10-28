@@ -57,130 +57,141 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
 
 <?php include __DIR__ . '/includes/header.php' ?>
 
-<!-- ============ SEZIONE 1 ============ -->
-<section class="sec sec--white ">
-  <div class="container">
-    <h2>Le nostre categorie</h2>
-    <p class="sub">Le nostre categorie di prodotto che possiamo offrirti, sia per fuori che per dentro il campo</p>
+<?php
+// prodotti nel carrello: li recupero una volta sola per lista e totale
+$cart = $_SESSION['cart'] ?? [];   // il carrello (array di id), [] se vuoto
+$prodottiCarrello = [];
+$totale = 0;
+foreach ($cart as $pid) {
+  $prod = Products::findById($pid);
+  if ($prod) {
+    $prodottiCarrello[] = $prod;
+    $totale += (float) $prod['price'];
+  }
+}
 
-    <div class="cat-cards">
+// categorie mostrate in alto: immagine => [titolo, descrizione]
+$categorieShop = [
+  'attrezzatura-allenamento.png' => ["Attrezzatura d'allenamento", 'Tutto il necessario per allenarsi oltre alle classiche sessioni settimanali.'],
+  'attrezzatura-mista.png'       => ['Attrezzatura giocatore', "L'occorrente per le partite più impegnative, scelto per qualità e resistenza."],
+  'attrezzatura-portieri.png'    => ['Attrezzatura portieri', 'Protezioni complete per affrontare ogni parata in totale sicurezza.'],
+  'borsone-sportivo.png'         => ['Borsoni della società', "Capienti e resistenti, con i colori del club, per portare l'attrezzatura ovunque."],
+];
+?>
 
-      <div class="cat">
-        <img class="cat__img" src="<?= BASE_URL ?>/assets/img/attrezzatura-allenamento.png" alt="Attrezzatura d'allenamento">
-        <div class="cat__body">
-          <h3>Attrezzatura d'allenamento</h3>
-          <p>Tutto il necessario per allenarsi oltre alle classiche sessioni settimanali</p>
-        </div>
-      </div>
-
-      <div class="cat">
-        <img class="cat__img" src="<?= BASE_URL ?>/assets/img/attrezzatura-mista.png" alt="Attrezzatura giocatore">
-        <div class="cat__body">
-          <h3>Attrezzatura giocatore</h3>
-          <p>Ampia scelta di massima qualità di tutto l'occorente utile durante le partite più impegnative</p>
-        </div>
-      </div>
-
-      <div class="cat">
-        <img class="cat__img" src="<?= BASE_URL ?>/assets/img/attrezzatura-portieri.png" alt="Attrezzatura portieri">
-        <div class="cat__body">
-          <h3>Attrezzatura portieri</h3>
-          <p>VAsta gamma di protezioni per affrontare ogni parata in totale sicurezza</p>
-        </div>
-      </div>
-
-      <div class="cat">
-        <img class="cat__img" src="<?= BASE_URL ?>/assets/img/borsone-sportivo.png" alt="Borsoni della società">
-        <div class="cat__body">
-          <h3>Borsoni della società</h3>
-          <p>Borsoni capienti e resistenti con i colori della società, per portare l'attrezzatura ovunque</p>
-        </div>
-      </div>
-
-    </div>
-  </div>
+<section class="page-hero">
+  <div class="wrap page-hero__inner">
+    <nav class="breadcrumb-nav" aria-label="Percorso">
+      <a href="<?= BASE_URL ?>/index.php">Home</a><span aria-hidden="true">/</span><span aria-current="page">Prodotti</span>
+    </nav>
+    <h1>Shop del club</h1>
+    <p>Scegli il prodotto, prenotalo online e ritiralo direttamente in club house. Il pagamento avviene al ritiro.</p>
   </div>
 </section>
 
-<!-- ============ SEZIONE 2 — Prodotti + sidebar ============ -->
-<section class="sec sec--bg" id="prodotti">
-  <div class="container">
-    <h2>I prodotti</h2>
-    <p class="sub">Rappresentazione dei nostri prodotti e possibilità di aggiungerli al nostro carrello virtuale collegato direttamente con il club</p>
+<!-- ============ SEZIONE 1 — Categorie ============ -->
+<section class="section">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Le nostre categorie</h2>
+      <p>Attrezzatura per il campo e per fuori dal campo.</p>
+    </div>
+
+    <div class="grid-4">
+      <?php foreach ($categorieShop as $img => [$titolo, $descrizione]): ?>
+        <a class="card cat-card" href="#prodotti">
+          <img src="<?= BASE_URL ?>/assets/img/<?= $img ?>" alt="">
+          <div class="cat-card__body">
+            <h3><?= $titolo ?></h3>
+            <p><?= $descrizione ?></p>
+          </div>
+        </a>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEZIONE 2 — Prodotti + carrello ============ -->
+<section class="section section--white" id="prodotti">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>I prodotti</h2>
+      <p>Aggiungi i prodotti alla tua selezione: la prenotazione arriva direttamente al club.</p>
+    </div>
 
     <?php if (($_GET['ordine'] ?? '') === 'ok'): ?>
-      <div class="alert alert--success">Ordine effettuato! Ritiro in club house.</div>
+      <div class="notice notice--ok" role="status"><i class="fa-solid fa-check" aria-hidden="true"></i> Ordine effettuato! Ritiro e pagamento in club house.</div>
     <?php endif; ?>
-    <div class="layout-shop">
+
+    <div class="shop-layout">
       <!-- griglia prodotti -->
-      <div class="prod-grid">
+      <div class="grid-3">
         <?php foreach ($prodotti as $prod): ?>
-          <article class="product">
-            <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>">
+          <article class="card product">
+            <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="">
             <div class="product__body">
               <h3><?= htmlspecialchars($prod['name']) ?></h3>
-              <p class="desc"><?= htmlspecialchars($prod['description']) ?></p>
+              <p class="product__desc"><?= htmlspecialchars($prod['description']) ?></p>
               <div class="product__foot">
-                <span class="price">€ <?= htmlspecialchars($prod['price']) ?></span>
+                <span class="price">€ <?= number_format((float) $prod['price'], 2, ',', '.') ?></span>
 
                 <?php if ($prod['is_active']): ?>
                   <form action="prodotti.php" method="post">
                     <input type="hidden" name="action" value="add_to_cart">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <input type="hidden" name="product_id" value="<?= (int) $prod['id'] ?>">
-                    <button type="submit" class="btn btn--primary">Prenota</button>
+                    <button type="submit" class="button button--ink button--sm" aria-label="Prenota <?= htmlspecialchars($prod['name']) ?>">Prenota</button>
                   </form>
                 <?php endif; ?>
               </div>
             </div>
           </article>
         <?php endforeach; ?>
+
+        <?php if (empty($prodotti)): ?>
+          <p class="field__hint">Nessun prodotto disponibile al momento.</p>
+        <?php endif; ?>
       </div>
 
-      <!-- sidebar selezione -->
-      <aside class="sidebar">
-        <h3>Prodotti selezionati</h3>
-
-        <?php
-        $cart = $_SESSION['cart'] ?? [];   // il carrello (array di id), [] se vuoto
-        $totale = 0;
-        ?>
-
-        <?php foreach ($cart as $pid): ?>
-          <?php $prod = Products::findById($pid); ?>
-          <?php if ($prod): ?>
-            <div class="cart-item">
-              <span class="ph thumb">
-                <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="<?= htmlspecialchars($prod['name']) ?>">
-              </span>
-              <div>
-                <b><?= htmlspecialchars($prod['name']) ?></b><br>
-                <small>€ <?= htmlspecialchars($prod['price']) ?></small>
-              </div>
-            </div>
-            <?php $totale += (float) $prod['price']; ?>
-          <?php endif; ?>
-        <?php endforeach; ?>
-
-        <?php if (empty($cart)): ?>
-          <p class="note">Nessun prodotto selezionato.</p>
-        <?php endif; ?>
-
-        <div class="sidebar__total">
-          <span>Totale</span>
-          <span>€ <?= number_format($totale, 2) ?></span>
+      <!-- carrello -->
+      <aside class="card cart" aria-labelledby="titolo-carrello">
+        <div class="cart__head">
+          <h3 id="titolo-carrello">Prodotti selezionati</h3>
+          <span class="count-badge" aria-label="<?= count($prodottiCarrello) ?> prodotti"><?= count($prodottiCarrello) ?></span>
         </div>
 
-        <!-- il bottone checkout -->
-        <form action="prodotti.php" method="post">
-          <input type="hidden" name="action" value="checkout">
-          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-          <button type="submit" class="btn btn--primary btn--block">Prenota (ritiro in club house)</button>
-        </form>
+        <div class="cart__body">
+          <?php if (empty($prodottiCarrello)): ?>
+            <p class="cart__empty">Nessun prodotto selezionato.</p>
+          <?php endif; ?>
 
-        <div class="helper">
-          <b>Non sai cosa scegliere?</b>
-          Scrivi direttamente all'allenatore...
+          <?php foreach ($prodottiCarrello as $prod): ?>
+            <div class="cart-item">
+              <img src="<?= htmlspecialchars($prod['image_path']) ?>" alt="">
+              <div>
+                <b><?= htmlspecialchars($prod['name']) ?></b>
+                <small>€ <?= number_format((float) $prod['price'], 2, ',', '.') ?></small>
+              </div>
+            </div>
+          <?php endforeach; ?>
+
+          <div class="cart__total">
+            <span>Totale</span>
+            <strong>€ <?= number_format($totale, 2, ',', '.') ?></strong>
+          </div>
+
+          <!-- il bottone checkout -->
+          <form action="prodotti.php" method="post">
+            <input type="hidden" name="action" value="checkout">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <button type="submit" class="button button--ink button--lg button--block" <?= empty($prodottiCarrello) ? 'disabled' : '' ?>>Conferma prenotazione</button>
+          </form>
+          <p class="cart__note">Ritiro e pagamento in club house</p>
+
+          <div class="helper">
+            <b>Non sai cosa scegliere?</b>
+            Scrivi direttamente all'allenatore o passa in club house durante un allenamento.
+          </div>
         </div>
       </aside>
     </div>

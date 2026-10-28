@@ -6,6 +6,8 @@ session_start();
 
 //richiamo del singleton per attivare le PDO
 require_once __DIR__ . '/DB/classes/Db.php';
+// serve per csrfToken() e verificaCsrf() usati dal form
+require_once __DIR__ . '/DB/helpers/auth.php';
 
 // raccolgo tutti gli errori e imposto succes=false
 $errors = [];
@@ -122,96 +124,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <?php include __DIR__ . '/includes/header.php' ?>
 
-<main class="mainProject">
-    <section class="bg_personal min-vh-100 py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="register-head">
-                        <h2><i class="fas fa-user-plus"></i> Crea Account</h2>
-                    </div>
+<section class="auth">
+  <div class="wrap">
+    <div class="card auth__box auth__box--wide">
+      <form class="auth__form" action="" method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
 
-                    <div class="register-body">
-                        <!-- se success esiste -->
-                        <?php if ($success): ?>
-                            <div class="alert alert-success">
-                                Registrazione completata! Ora puoi accedere <a href="login.php" class="alert-link">Login</a>
-                            </div>
-                        <?php endif; ?>
-
-                        <!-- se errors è diverso da vuoto -->
-                        <?php if (!empty($errors)): ?>
-                            <div class="alert alert-danger">
-                                <ul>
-                                    <?php foreach ($errors as $error): ?>
-                                        <li><?= htmlspecialchars($error); ?></li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        <?php endif; ?>
-
-                        <form class="frm-register" action="" method="post">
-
-                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-
-                            <div class="mb-3">
-                                <label for="name">Nome</label>
-                                <input type="text"
-                                    class="form-control"
-                                    name="name"
-                                    id="name"
-                                    value="<?= htmlspecialchars($_POST['name'] ?? '') ?>"
-                                    required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="email">Email</label>
-                                <input type="email"
-                                    class="form-control"
-                                    name="email"
-                                    id="email"
-                                    value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
-                                    required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password">Password</label>
-                                <input type="password"
-                                    class="form-control"
-                                    name="password"
-                                    id="password"
-                                    required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="password_confirm">Conferma Password</label>
-                                <input type="password"
-                                    class="form-control"
-                                    name="confermaPassword"
-                                    id="password_confirm"
-                                    required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="codice">Codice societario</label>
-                                <input type="text"
-                                    class="form-control"
-                                    name="codice"
-                                    id="codice"
-                                    value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>"
-                                    placeholder="Inserisci il tuo codice dato dalla società dopo il pagamento della quota"
-                                    required>
-                            </div>
-
-                            <button type="submit" class="btn btn-warning">Crea Account</button>
-
-                            <p class="mt-3" style="color: white;">Se hai già un account vai alla pagina login <a class="a-login-register" href="login.php">Login</a></p>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="auth__intro">
+          <h1>Crea il tuo account</h1>
+          <p>La registrazione è riservata ai soci con quota societaria attiva.</p>
         </div>
-    </section>
-</main>
+
+        <?php if ($success): ?>
+          <div class="notice notice--ok" role="status">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+            <span>Registrazione completata! Ora puoi <a href="<?= BASE_URL ?>/login.php"><strong>accedere</strong></a>.</span>
+          </div>
+        <?php endif; ?>
+
+        <?php if (!empty($errors)): ?>
+            <div class="notice notice--error" role="alert">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              <ul>
+                <?php foreach ($errors as $e): ?>
+                  <li><?= htmlspecialchars($e) ?></li>
+                <?php endforeach; ?>
+              </ul>
+            </div>
+          <?php endif; ?>
+
+        <label class="field" for="name">Nome e cognome
+          <input type="text" class="input" name="name" id="name" autocomplete="name"
+            value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+        </label>
+
+        <label class="field" for="email">Email
+          <input type="email" class="input" name="email" id="email" autocomplete="email"
+            value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        </label>
+
+        <div class="field-row">
+          <label class="field" for="password">Password
+            <input type="password" class="input" name="password" id="password" autocomplete="new-password" minlength="8" required>
+            <span class="field__hint">Almeno 8 caratteri</span>
+          </label>
+          <label class="field" for="password_confirm">Conferma password
+            <input type="password" class="input" name="confermaPassword" id="password_confirm" autocomplete="new-password" required>
+          </label>
+        </div>
+
+        <label class="field" for="codice">Codice societario
+          <input type="text" class="input" name="codice" id="codice"
+            value="<?= htmlspecialchars($_POST['codice'] ?? '') ?>" required>
+          <span class="field__hint">Il codice ti viene consegnato dalla società dopo il pagamento della quota.</span>
+        </label>
+
+        <div class="auth__submit">
+          <button type="submit" class="button button--ink">Crea account</button>
+          <span>Hai già un account? <a href="<?= BASE_URL ?>/login.php"><strong>Accedi</strong></a></span>
+        </div>
+      </form>
+
+      <div class="auth__steps">
+        <h2>Come funziona</h2>
+        <div class="step"><small>Passo 1</small><strong>Paga la quota</strong><span>Salda la quota societaria annuale direttamente in club house.</span></div>
+        <div class="step"><small>Passo 2</small><strong>Ricevi il codice</strong><span>La società ti consegna un codice univoco, valido per un solo account.</span></div>
+        <div class="step"><small>Passo 3</small><strong>Crea il tuo account</strong><span>Inserisci il codice nel modulo e accedi subito alla tua area.</span></div>
+        <p class="auth__foot">Hai perso il codice? Scrivi a info@hockeyclub.it o passa in club house.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
 <?php include __DIR__ . '/includes/footer.php' ?>

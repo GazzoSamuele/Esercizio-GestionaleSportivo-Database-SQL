@@ -115,186 +115,140 @@ $ultimiImpegni = array_slice(array_reverse($lastImpegni), 0, 5);
 $titoloPagina = 'Gestione Impegni Sportivi';
 
 include __DIR__ . '/headerDashboard.php';
-
 ?>
 
-<!-- ============ MAIN ============ -->
-<main class="dash-main">
-    <header class="dash-head">
-        <h1>Gestione Impegni Sportivi</h1>
-        <p>Crea un nuovo impegno sportivo</p>
-    </header>
-
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                <?php foreach ($errors as $e): ?>
-                    <li><?= htmlspecialchars($e) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
-
-    <!-- ---- form nuovo impegno ---- -->
-    <div class="alg-form-results">
-        <section class="dash-panel-form dash-formcard">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-user-plus"></i>Nuovo Impegno</h2>
-            </div>
-            <div class="dash-formbody">
-                <!-- Serve per attivare la funzione di aggiunta impegno alla tabella tramite il form -->
-                <form action="" method="post">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                    <input type="hidden" name="action" value="create">
-                    <div class="mb-3">
-                        <label for="titolo">Titolo</label>
-                        <input type="text" class="form-control" id="name" name="titolo" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="descrizione">Descrizione</label>
-                        <textarea name="descrizione" class="form-control" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="tipo">Tipo di impegno</label>
-                        <select name="tipo" id="tipo" class="form-select">
-                            <option value="allenamento">Allenamento</option>
-                            <option value="partita">Partita</option>
-                            <option value="coppa">Coppa</option>
-                            <option value="riunione">Riunione</option>
-                            <option value="altro">Altro</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="data">Data</label>
-                        <input type="date" class="form-control" id="data" name="data" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="ora">Ora</label>
-                        <input type="time" id="ora" name="ora" min="08:00" max="18:00" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="luogo">Luogo</label>
-                        <input type="text" class="form-control" id="luogo" name="luogo" required>
-                    </div>
-
-                    <button class="btn btn-warning" type="submit">Crea Impegno</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- elenco ultimi impegni -->
-        <section class="dash-panel-info">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i>Ultimi Impegni Registrati</h2>
-            </div>
-            <table class="dash-table dash-table-impegni">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titolo</th>
-                        <th>Tipo</th>
-                        <th>Data</th>
-                        <th>Ora</th>
-                        <th>Luogo</th>
-                        <th>Descrizione</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($ultimiImpegni as $imp): ?>
-                        <tr>
-                            <!-- prendo l'id dell'utente singolo -->
-                            <td>#<?= (int) $imp['id'] ?></td>
-
-                            <td><?= htmlspecialchars($imp['titolo']) ?></td>
-
-                            <td><?= htmlspecialchars($imp['tipo']) ?></td>
-
-                            <td><?= htmlspecialchars($imp['data']) ?></td>
-
-                            <td><?= htmlspecialchars($imp['ora']) ?></td>
-
-                            <td><?= htmlspecialchars($imp['luogo']) ?></td>
-
-                            <td><?= htmlspecialchars($imp['descrizione']) ?></td>
-
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </section>
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb">Area riservata / Impegni</span>
+        <h1>Gestione impegni</h1>
+        <p>Pianifica allenamenti, partite, coppe e riunioni della società.</p>
     </div>
-    <!-- ---- calendario impegni ---- -->
-    <section class="dash-panel">
-        <div class="dash-panel-head">
-            <h2><i class="fas fa-users"></i>Tutti gli impegni</h2>
+</header>
+
+<?php mostraEsito($errors, $success); ?>
+
+<div class="dash-grid-form">
+    <!-- ---- form nuovo impegno ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Nuovo impegno</h2>
         </div>
-        <table class="dash-table">
+        <form class="panel__body" action="" method="post">
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+
+            <label class="field" for="titolo">Titolo
+                <input type="text" class="input" id="titolo" name="titolo" value="<?= htmlspecialchars($_POST['titolo'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="descrizione">Descrizione
+                <textarea class="input" id="descrizione" name="descrizione" rows="3" required><?= htmlspecialchars($_POST['descrizione'] ?? '') ?></textarea>
+            </label>
+            <label class="field" for="tipo">Tipo di impegno
+                <select name="tipo" id="tipo" class="input">
+                    <option value="allenamento">Allenamento</option>
+                    <option value="partita">Partita</option>
+                    <option value="coppa">Coppa</option>
+                    <option value="riunione">Riunione</option>
+                    <option value="altro">Altro</option>
+                </select>
+            </label>
+            <div class="field-row">
+                <label class="field" for="data">Data
+                    <input type="date" class="input" id="data" name="data" required>
+                </label>
+                <label class="field" for="ora">Ora
+                    <input type="time" class="input" id="ora" name="ora" min="08:00" max="18:00" required>
+                </label>
+            </div>
+            <label class="field" for="luogo">Luogo
+                <input type="text" class="input" id="luogo" name="luogo" value="<?= htmlspecialchars($_POST['luogo'] ?? '') ?>" required>
+            </label>
+            <button class="button button--ink button--block" type="submit">Crea impegno</button>
+        </form>
+    </section>
+
+    <!-- ---- prossimi impegni ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Prossimi impegni</h2>
+        </div>
+        <ul class="item-list">
+            <?php foreach ($ultimiImpegni as $imp): ?>
+                <?php [$giorno, $mese] = explode(' ', dataBreve($imp['data'], false)); ?>
+                <li class="with-chip">
+                    <span class="date-chip"><b><?= $giorno ?></b><span><?= $mese ?></span></span>
+                    <span>
+                        <span class="item-list__title" style="display:block"><?= htmlspecialchars($imp['titolo']) ?></span>
+                        <span class="muted"><?= htmlspecialchars(substr($imp['ora'], 0, 5)) ?> · <?= htmlspecialchars($imp['luogo']) ?></span>
+                    </span>
+                    <?= pillImpegno($imp['tipo']) ?>
+                </li>
+            <?php endforeach; ?>
+            <?php if (empty($ultimiImpegni)): ?>
+                <li class="item-list__empty">Nessun impegno in programma.</li>
+            <?php endif; ?>
+        </ul>
+    </section>
+</div>
+
+<!-- ---- tutti gli impegni ---- -->
+<section class="panel">
+    <div class="panel__head">
+        <h2>Tutti gli impegni</h2>
+        <small><?= count($impegni) ?> totali</small>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Titolo</th>
-                    <th>Tipo</th>
-                    <th>Data</th>
-                    <th>Ora</th>
-                    <th>Luogo</th>
-                    <th>Descrizione</th>
-                    <th>Azioni</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Titolo</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Ora</th>
+                    <th scope="col">Luogo</th>
+                    <th scope="col">Descrizione</th>
+                    <th scope="col" class="num">Azioni</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($impegni as $imp): ?>
                     <tr>
-                        <!-- prendo l'id dell'utente singolo -->
-                        <td class="text-align-center">#<?= (int) $imp['id'] ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['titolo']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['tipo']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['data']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['ora']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['luogo']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($imp['descrizione']) ?></td>
-
-                        <td class="text-end">
-
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-info"
-                                aria-label="Modifica impegno"
-                                title="Modifica impegno"
-                                data-bs-toggle="modal" data-bs-target="#modalEditImpegni<?= (int) $imp['id'] ?>">
-                                <i class="fas fa-edit" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/ImpegniEditModal.php'; ?>
-
-
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-danger"
-                                title="Elimina impegno"
-                                aria-label="Elimina impegno"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalDeleteImpegni<?= (int) $imp['id'] ?>">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/ImpegniDeleteModal.php'; ?>
+                        <td>#<?= (int) $imp['id'] ?></td>
+                        <td class="strong"><?= htmlspecialchars($imp['titolo']) ?></td>
+                        <td><?= pillImpegno($imp['tipo']) ?></td>
+                        <td style="white-space: nowrap"><?= dataBreve($imp['data']) ?></td>
+                        <td><?= htmlspecialchars(substr($imp['ora'], 0, 5)) ?></td>
+                        <td><?= htmlspecialchars($imp['luogo']) ?></td>
+                        <td><span class="clip" title="<?= htmlspecialchars($imp['descrizione']) ?>"><?= htmlspecialchars($imp['descrizione']) ?></span></td>
+                        <td class="num">
+                            <div class="actions">
+                                <button type="button" class="icon-btn" title="Modifica" aria-label="Modifica <?= htmlspecialchars($imp['titolo']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditImpegni<?= (int) $imp['id'] ?>">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="icon-btn icon-btn--danger" title="Elimina" aria-label="Elimina <?= htmlspecialchars($imp['titolo']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalDeleteImpegni<?= (int) $imp['id'] ?>">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (empty($impegni)): ?>
+                    <tr>
+                        <td colspan="8" class="center">Nessun impegno registrato.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
-    </section>
-</main>
-</div>
+    </div>
+</section>
 
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-</body>
+<!-- modali: una coppia per ogni impegno -->
+<?php foreach ($impegni as $imp): ?>
+    <?php include __DIR__ . '/modali/ImpegniEditModal.php'; ?>
+    <?php include __DIR__ . '/modali/ImpegniDeleteModal.php'; ?>
+<?php endforeach; ?>
 
-</html>
+<?php include __DIR__ . '/footerDashboard.php'; ?>

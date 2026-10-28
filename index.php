@@ -4,306 +4,253 @@ require_once __DIR__ . '/DB/classes/Products.php';
 // prendo i prodotti per mostrare le loro foto nei riquadri dello shop
 $shopProdotti = Products::findAllProducts();
 
-// stampa la foto di un prodotto reale nel riquadro; se manca, lascia il placeholder grigio
-function shopThumb(array $prodotti, int $i): void
-{
-  if (!empty($prodotti[$i]['image_path'])) {
-    echo '<img class="thumb" src="' . htmlspecialchars($prodotti[$i]['image_path'])
-      . '" alt="' . htmlspecialchars($prodotti[$i]['name'] ?? '') . '">';
-  } else {
-    echo '<span class="ph thumb"></span>';
-  }
-}
+// tab del palmarès: id => [etichetta, intestazioni colonne]
+$tabPalmares = [
+  'generali'  => ['Risultati generali', ['Stagione', 'Categoria', 'Risultato', 'Competizione']],
+  'attuali'   => ['Stagione in corso', ['Stagione', 'Categoria', 'Risultato', 'Competizione']],
+  'giocatori' => ['Giocatori iscritti', ['Stagione', 'Categoria', 'Giocatore', 'Ruolo']],
+];
 ?>
 
 <?php include __DIR__ . '/includes/header.php' ?>
 
 <!-- ============ HERO ============ -->
 <section class="hero">
-  <div class="container_hero">
-    <video autoplay loop muted playsinline class="video-background" aria-hidden="true">
-      <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
-    </video>
-    <div class="hero_content">
-      <h1>Gestionale società sportiva</h1>
-      <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
-      <!-- <div class="minicards">
-        
-        <a href="#storia"><div class="minicard"><b>Storia</b></div></a>
-        <a href="#servizi"><div class="minicard"><b>Servizi</b></div></a>
-        <a href="#palmares"><div class="minicard"><b>Palmarès</b></div></a>
-        <a href="#shop"><div class="minicard"><b>Shop</b></div></a>
-
-      </div> -->
+  <div class="wrap hero__grid">
+    <div class="hero__text">
+      <h1>Il club, i risultati e la vita di squadra in un unico posto.</h1>
+      <p class="hero__lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
       <div class="hero__cta">
-        <a href="#servizi" class="btn btn--primary">Scopri i servizi</a>
-        <a href="contatti.php" class="btn btn--accent">Contattaci</a>
+        <a href="#servizi" class="button button--accent button--lg">Scopri i servizi <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        <a href="<?= BASE_URL ?>/contatti.php" class="button button--ghost button--lg">Contattaci</a>
       </div>
+    </div>
+    <img class="hero__img" src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="La squadra dell'Olimpia Sport Club">
+  </div>
+
+  <div class="facts">
+    <div class="wrap facts__grid">
+      <div class="stat"><span class="stat__value">1985</span><span class="stat__label">Anno di fondazione</span></div>
+      <div class="stat"><span class="stat__value">350+</span><span class="stat__label">Iscritti al club</span></div>
+      <div class="stat"><span class="stat__value"><?= count($categorie) ?></span><span class="stat__label">Categorie, dai Pulcini alla Prima Squadra</span></div>
+      <div class="stat"><span class="stat__value">Club House</span><span class="stat__label">Punto d'incontro e ritiro ordini</span></div>
     </div>
   </div>
 </section>
 
 <!-- ============ SEZIONE 1 — Società ============ -->
-<section class="sec sec--white" id="storia">
-  <div class="container_sez1">
-    <div class="main-title-sez1">
-      <h2>La nostra società</h2>
+<section class="section" id="storia">
+  <div class="wrap">
+    <div class="intro">
+      <h2>Dal 1985, un punto di riferimento per lo sport sul territorio.</h2>
+      <p>Più di una società sportiva: una grande famiglia basata su rispetto, inclusione e lealtà, con uno staff tecnico qualificato e un settore giovanile in crescita.</p>
     </div>
 
-    <div class="split">
-      <div class="split__text">
-        <h3>Le Origini</h3>
-        <p>Tutto ha inizio nel 1985, quando un gruppo di appassionati decide di fondare l'Olimpia Sport Club.
-          L'obiettivo era semplice ma ambizioso: creare un punto di riferimento per lo sport sul territorio e promuovere uno stile di vita sano e condiviso.</p>
-
-        <h3>La Crescita</h3>
-        <p>Anno dopo anno, il club è cresciuto fino a contare oltre 350 iscritti e uno staff tecnico altamente qualificato.
-          Le vittorie sul campo e il consolidamento del settore giovanile hanno trasformato l'entusiasmo iniziale in una realtà solida e organizzata.</p>
-
-        <h3>Oggi</h3>
-        <p>Oggi l'Olimpia Sport Club è molto più di una società sportiva: è una grande famiglia basata su rispetto, inclusione e lealtà.
-          Il viaggio continua, pronti a scrivere insieme le prossime pagine di questa storia.</p>
+    <div class="story">
+      <img class="story__img" src="<?= BASE_URL ?>/assets/img/club-house.png" alt="La club house della società">
+      <div class="timeline">
+        <div class="timeline__item">
+          <span class="timeline__year">1985</span>
+          <div>
+            <h3>Le origini</h3>
+            <p>Un gruppo di appassionati fonda l'Olimpia Sport Club con un obiettivo semplice ma ambizioso: creare un punto di riferimento per lo sport sul territorio e promuovere uno stile di vita sano e condiviso.</p>
+          </div>
+        </div>
+        <div class="timeline__item">
+          <span class="timeline__year">350+</span>
+          <div>
+            <h3>La crescita</h3>
+            <p>Anno dopo anno il club arriva a oltre 350 iscritti. Le vittorie sul campo e il settore giovanile trasformano l'entusiasmo iniziale in una realtà solida e organizzata.</p>
+          </div>
+        </div>
+        <div class="timeline__item">
+          <span class="timeline__year">Oggi</span>
+          <div>
+            <h3>La Club House</h3>
+            <p>Il punto di ritrovo ufficiale per atleti, famiglie e tifosi: area relax e ristoro, zona studio con Wi-Fi gratuito, sala polifunzionale per eventi e il punto ritiro dello store.</p>
+          </div>
+        </div>
       </div>
-      <img class="split__img" src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="Storia della società">
-    </div>
-
-    <div class="split split--reverse">
-      <div class="split__text">
-        <h3>Il Cuore del Club</h3>
-        <p>La nostra Club House è molto più di una struttura: è il punto di ritrovo ufficiale per atleti, famiglie e tifosi dell'Olimpia Sport Club.
-          Uno spazio accogliente e informale pensato per rilassarsi, condividere la passione per lo sport e vivere la vita del club anche fuori dal campo.</p>
-
-        <h3>Spazi e Servizi</h3>
-        <ul style="list-style: none">
-          <li><strong>Area Relax & Ristoro:</strong> Un bar interno attrezzato per colazioni, spuntini post-allenamento o per seguire insieme le partite.</li>
-          <li><strong>Zona Studio e Smart Working:</strong> Tavoli con connessione Wi-Fi gratuita, ideali per i ragazzi che aspettano gli allenamenti o per i genitori.</li>
-          <li><strong>Eventi e Riunioni:</strong> Una sala polifunzionale per assemblee, compleanni e serate sociali.</li>
-        </ul>
-        <h3>Punto Ritiro Store</h3>
-        <p>Qui si trova anche la zona dedicata al ritiro dei prodotti acquistati online. Che si tratti del kit ufficiale da gioco,
-          dell'abbigliamento da allenamento o del merchandising del club, il ritiro è rapido, gratuito e assistito dal nostro staff negli orari di apertura.</p>
-      </div>
-      <img class="split__img" src="<?= BASE_URL ?>/assets/img/club-house.png" alt="Club house della società">
     </div>
   </div>
 </section>
 
 <!-- ============ SEZIONE 2 — Servizi ============ -->
-<section class="sec sec--bg" id="servizi">
-  <div class="container">
-    <h2>I servizi che offriamo</h2>
-    <p class="sub">Descrizione di tutti i servizi disponibili nel club, con collegamento alla pagina completa di riferimento</p>
+<section class="section section--white" id="servizi">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Tutto quello che il club mette a disposizione.</h2>
+    </div>
 
-    <div class="grid-3">
-      <div class="svc">
-        <span class="icon">📊</span>
-        <h3>Risultati & calendario</h3>
-        <p>Risultati recenti e calendario delle categorie di giocatori, sempre aggiornati.</p>
-        <a class="link" href="calendario.php">Vai al Calendario →</a>
+    <div class="services">
+      <div class="service">
+        <span class="service__icon"><i class="fa-regular fa-calendar" aria-hidden="true"></i></span>
+        <h3>Risultati e calendario</h3>
+        <p>Risultati recenti e calendario di tutte le categorie, sempre aggiornati.</p>
+        <a class="text-link" href="<?= BASE_URL ?>/calendario.php">Vai al calendario <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
-
-      <div class="svc">
-        <span class="icon">📝</span>
-        <h3>Iscrizione squadre</h3>
-        <p>Iscrizione alle squadre in base all'età, con accesso all'area personale.</p>
-        <a class="link" href="contatti.php">Vai ai Contatti →</a>
+      <div class="service">
+        <span class="service__icon"><i class="fa-solid fa-user-plus" aria-hidden="true"></i></span>
+        <h3>Iscrizione alle squadre</h3>
+        <p>Iscrizione in base all'età, con accesso immediato all'area personale del socio.</p>
+        <a class="text-link" href="<?= BASE_URL ?>/contatti.php">Vai ai contatti <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
-
-      <div class="svc">
-        <span class="icon">🛒</span>
+      <div class="service">
+        <span class="service__icon"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i></span>
         <h3>Vendita prodotti</h3>
-        <p>Attrezzatura per portieri, bastoni e protezioni. Pagamento in club house.</p>
-        <a class="link" href="prodotti.php">Vai ai Prodotti →</a>
+        <p>Attrezzatura per portieri, bastoni e protezioni. Ordini online, pagamento in club house.</p>
+        <a class="text-link" href="<?= BASE_URL ?>/prodotti.php">Vai ai prodotti <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SEZIONE 3 — Palmarès  ============ -->
-<section class="sec sec--palmares" id="palmares">
-  <div class="container">
-    <h2>Palmarès della società</h2>
-
-    <div class="tabs">
-      <button class="tab active" data-tab="generali">Risultati generali</button>
-      <button class="tab" data-tab="attuali">Risultati attuali</button>
-      <button class="tab" data-tab="giocatori">Giocatori iscritti</button>
-    </div>
-
-    <!-- pannello 1 -->
-    <div class="tab-panel" data-panel="generali">
-      <div class="table">
-        <table>
-          <thead>
-            <tr>
-              <th>Stagione</th>
-              <th>Categoria</th>
-              <th>Risultato</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php for ($i = 0; $i < 5; $i++): ?>
-              <tr>
-                <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
-                <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
-                <td><?= htmlspecialchars($risultati[array_rand($risultati)]) ?></td>
-                <td><?= htmlspecialchars($note[array_rand($note)]) ?></td>
-              </tr>
-            <?php endfor; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- pannello 2 -->
-    <div class="tab-panel" data-panel="attuali" hidden>
-      <div class="table">
-        <table>
-          <thead>
-            <tr>
-              <th>Stagione</th>
-              <th>Categoria</th>
-              <th>Risultato</th>
-              <th>Note</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php for ($i = 0; $i < 5; $i++): ?>
-              <tr>
-                <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
-                <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
-                <td><?= htmlspecialchars($risultati[array_rand($risultati)]) ?></td>
-                <td><?= htmlspecialchars($note[array_rand($note)]) ?></td>
-              </tr>
-            <?php endfor; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- pannello 3 -->
-    <div class="tab-panel" data-panel="giocatori" hidden>
-      <div class="table">
-        <table>
-          <thead>
-            <tr>
-              <th>Stagione</th>
-              <th>Categoria</th>
-              <th>Nome</th>
-              <th>Ruolo</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php for ($i = 0; $i < 5; $i++): ?>
-              <tr>
-                <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
-                <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
-                <td><?= htmlspecialchars($giocatori[array_rand($giocatori)]) ?></td>
-                <td><?= htmlspecialchars($ruoli[array_rand($ruoli)]) ?></td>
-              </tr>
-            <?php endfor; ?>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <div>
-      <a href="calendario.php" class="btn btn--primary">Vai al calendario →</a>
-    </div>
-  </div>
-</section>
-<!-- ============ SEZIONE 4 — Shop ============ -->
-<section class="sec sec-custom sec--dark" id="shop">
-  <div class="container">
-    <h2>Lo shop del club</h2>
-    <p class="sub-shop-index ">La nostra sezione dove poter scegliere il prodotto preferito e farlo arrivare direttamente al club</p>
-
-    <div class="shop">
-      <div class="shop__list">
-        <div class="shop__item"><b>Attrezzatura d'allenamento</b></div>
-        <div class="shop__item"><b>Attrezzatura giocatore</b></div>
-        <div class="shop__item"><b>Attrezzatura portieri</b></div>
-        <div class="shop__item"><b>Borsoni della società</b></div>
-
-      </div>
-      <div class="accordion">
-
-        <div class="acc">
-          <button type="button" class="acc__head" aria-expanded="false"> Come avviene il pagamento?
-            <span class="acc__icon">+</span>
-          </button>
-          <div class="acc__body">
-            <p>Il pagamento avviene in club house dopo aver ritirato i prodotti acquistati.</p>
-          </div>
-        </div>
-
-        <div class="acc">
-          <button type="button" class="acc__head" aria-expanded="false">Dove ritiro i prodotti?
-            <span class="acc__icon">+</span>
-          </button>
-          <div class="acc__body">
-            <p>Direttamente presso la club house della società.</p>
-          </div>
-        </div>
-
-        <div class="acc">
-          <button type="button" class="acc__head" aria-expanded="false"> Quali categorie di prodotti vendete?
-            <span class="acc__icon">+</span>
-          </button>
-          <div class="acc__body">
-            <p>Solo attrezzatura portieri, bastoni e protezioni. La sezione per l'abbigliamento sportivo l'aggiungeremo in seguito</p>
-          </div>
-        </div>
-
-        <div class="acc">
-          <button type="button" class="acc__head" aria-expanded="false">Come scelgo la taglia giusta?
-            <span class="acc__icon">+</span>
-          </button>
-          <div class="acc__body">
-            <p>Puoi venire direttamente al club a testare il tuo prodotto durente un allenamento oppure puoi scrivere all'allenatore per avere maggiori informazioni sull'acquisto</p>
-          </div>
-        </div>
-
-      </div>
-
+<!-- ============ SEZIONE 3 — Palmarès ============ -->
+<section class="section" id="palmares">
+  <div class="wrap">
+    <div class="section-head section-head--row">
       <div>
-        <a href="prodotti.php" class="btn btn--accent">Vai allo shop →</a>
+        <h2>Risultati e rosa</h2>
+      </div>
+      <div class="segmented" role="tablist" aria-label="Sezioni palmarès" data-tabs="palmares">
+        <?php $primo = true; ?>
+        <?php foreach ($tabPalmares as $id => [$etichetta]): ?>
+          <button type="button" role="tab" class="segmented__btn <?= $primo ? 'is-active' : '' ?>"
+            data-tab="<?= $id ?>" aria-selected="<?= $primo ? 'true' : 'false' ?>"><?= $etichetta ?></button>
+          <?php $primo = false; ?>
+        <?php endforeach; ?>
       </div>
     </div>
-</section>
 
-<!-- ============ SEZIONE 5 — Contatti  ============ -->
-<section class="sec sec-custom sec--white" id="iscrizione">
-  <div class="container">
-    <h2>Entra a far parte del club</h2>
-    <p class="sub">Iscriviti e accedi a tutti gli strumenti riservati ai soci.</p>
-
-    <div class="benefits-grid">
-      <div class="svc">
-        <span class="icon">📊</span>
-        <h3>Dashboard personale</h3>
-        <p>Statistiche, grafici e la tua area riservata, sempre aggiornata.</p>
+    <?php $primo = true; ?>
+    <?php foreach ($tabPalmares as $id => [$etichetta, $colonne]): ?>
+      <div class="table-card" data-panel-group="palmares" data-panel="<?= $id ?>" <?= $primo ? '' : 'hidden' ?>>
+        <div class="table-scroll">
+          <table class="data-table">
+            <caption class="sr-only"><?= $etichetta ?></caption>
+            <thead>
+              <tr>
+                <?php foreach ($colonne as $col): ?>
+                  <th scope="col"><?= $col ?></th>
+                <?php endforeach; ?>
+              </tr>
+            </thead>
+            <tbody>
+              <?php for ($i = 0; $i < 5; $i++): ?>
+                <tr>
+                  <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
+                  <td class="strong"><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
+                  <?php if ($id === 'giocatori'): ?>
+                    <td class="em"><?= htmlspecialchars($giocatori[array_rand($giocatori)]) ?></td>
+                    <td><?= htmlspecialchars($ruoli[array_rand($ruoli)]) ?></td>
+                  <?php else: ?>
+                    <td class="em"><?= htmlspecialchars($risultati[array_rand($risultati)]) ?></td>
+                    <td><?= htmlspecialchars($note[array_rand($note)]) ?></td>
+                  <?php endif; ?>
+                </tr>
+              <?php endfor; ?>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="svc">
-        <span class="icon">🛒</span>
-        <h3>Ordini diretti al club</h3>
-        <p>Acquisti i prodotti online e li ritiri comodamente in club house.</p>
-      </div>
-      <div class="svc">
-        <span class="icon">📅</span>
-        <h3>Calendario dinamico</h3>
-        <p>Partite, allenamenti ed eventi della società sempre a portata di mano.</p>
-      </div>
-      <div class="svc">
-        <span class="icon">📰</span>
-        <h3>News &amp; comunicazioni</h3>
-        <p>Resta aggiornato su avvisi e novità ufficiali del club.</p>
-      </div>
-    </div>
+      <?php $primo = false; ?>
+    <?php endforeach; ?>
 
     <div>
-      <a href="contatti.php" class="btn btn--primary">Scopri come iscriverti →</a>
+      <a href="<?= BASE_URL ?>/calendario.php" class="button button--line">Calendario completo <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEZIONE 4 — Shop ============ -->
+<section class="section section--dark" id="shop">
+  <div class="wrap">
+    <div class="shop-band">
+      <div class="shop-band__text">
+        <h2>Ordina online, ritira in club house.</h2>
+        <p>Scegli il prodotto e fallo arrivare direttamente al club. Nessuna spedizione, nessun pagamento online.</p>
+        <ul class="link-list" aria-label="Categorie dello shop">
+          <li><a href="<?= BASE_URL ?>/prodotti.php">Attrezzatura d'allenamento <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></li>
+          <li><a href="<?= BASE_URL ?>/prodotti.php">Attrezzatura giocatore <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></li>
+          <li><a href="<?= BASE_URL ?>/prodotti.php">Attrezzatura portieri <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></li>
+          <li><a href="<?= BASE_URL ?>/prodotti.php">Borsoni della società <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a></li>
+        </ul>
+        <div>
+          <a href="<?= BASE_URL ?>/prodotti.php" class="button button--accent button--lg">Vai allo shop <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div class="shop-band__gallery">
+        <figure>
+          <img src="<?= BASE_URL ?>/assets/img/attrezzatura-allenamento.png" alt="Attrezzatura d'allenamento">
+          <figcaption>Allenamento</figcaption>
+        </figure>
+        <figure>
+          <img src="<?= BASE_URL ?>/assets/img/attrezzatura-portieri.png" alt="Attrezzatura per portieri">
+          <figcaption>Portieri</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="faq">
+      <div>
+        <h3>Come avviene il pagamento?</h3>
+        <p>In club house, al momento del ritiro dei prodotti.</p>
+      </div>
+      <div>
+        <h3>Dove ritiro i prodotti?</h3>
+        <p>Direttamente presso la club house, negli orari di apertura.</p>
+      </div>
+      <div>
+        <h3>Cosa vendete?</h3>
+        <p>Attrezzatura portieri, bastoni e protezioni. L'abbigliamento sportivo arriverà in seguito.</p>
+      </div>
+      <div>
+        <h3>Come scelgo la taglia?</h3>
+        <p>Provala al club durante un allenamento o scrivi all'allenatore per un consiglio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SEZIONE 5 — Iscrizione ============ -->
+<section class="section" id="iscrizione">
+  <div class="wrap">
+    <div class="join">
+      <div class="join__text">
+        <h2>Entra a far parte del club.</h2>
+        <p>Iscriviti e accedi a tutti gli strumenti riservati ai soci.</p>
+        <div class="hero__cta">
+          <a class="button button--ink button--lg" href="<?= BASE_URL ?>/contatti.php">Richiedi l'iscrizione</a>
+          <a class="button button--line button--lg" href="<?= BASE_URL ?>/login.php">Ho già un account</a>
+        </div>
+      </div>
+      <ul class="join__list check-list">
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+          <div>
+            <h3>Dashboard personale</h3>
+            <p>Statistiche, grafici e la tua area riservata, sempre aggiornata.</p>
+          </div>
+        </li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+          <div>
+            <h3>Ordini diretti al club</h3>
+            <p>Acquisti online e ritiri comodamente in club house.</p>
+          </div>
+        </li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+          <div>
+            <h3>Calendario dinamico</h3>
+            <p>Partite, allenamenti ed eventi sempre a portata di mano.</p>
+          </div>
+        </li>
+        <li><i class="fa-solid fa-check" aria-hidden="true"></i>
+          <div>
+            <h3>News e comunicazioni</h3>
+            <p>Avvisi e novità ufficiali della società.</p>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 </section>

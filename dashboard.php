@@ -91,296 +91,235 @@ $partite = Calendar::findAllPartite();  // tutte le partite
 
 <?php include __DIR__ . '/admin/headerDashboard.php'; ?>
 
-    <!-- ============ MAIN ============ -->
-    <main class="dash-main">
-        <header class="dash-head">
-            <h1>Bentornato, <?= htmlspecialchars($user['name']) ?>!</h1>
-        </header>
+<?php
+$giorniSettimana = ['domenica', 'lunedì', 'martedì', 'mercoledì', 'giovedì', 'venerdì', 'sabato'];
+$oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('Y-m-d'));
+?>
 
-        <!-- ---- stat cards ---- -->
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb"><?= $oggiTesto ?></span>
+        <h1>Bentornato, <?= htmlspecialchars($user['name']) ?></h1>
+    </div>
+    <div class="dash-head__actions">
         <?php if ($user['role'] === 'admin'): ?>
-        <div class="dash-stats">
-            <div class="dash-stat">
-                <span class="dash-stat-icon"><i class="fas fa-calendar-check"></i></span>
-                <div>
-                    <b><?= count($partite) ?></b>
-                    <small>Partite in calendario</small>
-                </div>
-            </div>
-            <div class="dash-stat">
-                <span class="dash-stat-icon"><i class="fas fa-id-badge"></i></span>
-                <div>
-                    <b><?= htmlspecialchars(ucfirst($user['role'])) ?></b>
-                    <small>Tipo account</small>
-                </div>
-            </div>
-            <div class="dash-stat">
-                <span class="dash-stat-icon"><i class="fas fa-hashtag"></i></span>
-                <div>
-                    <b>#<?= (int) $user['id'] ?></b>
-                    <small>User ID</small>
-                </div>
-            </div>
-        </div>
+            <a class="button button--ink button--sm" href="<?= BASE_URL ?>/admin/gestioneNewsAndComunicazioni.php"><i class="fa-solid fa-plus" aria-hidden="true"></i> Nuova comunicazione</a>
         <?php else: ?>
-        <div class="dash-stats">
-            <!-- scadenza quota (verde = ok, giallo = in scadenza) -->
-            <div class="dash-stat <?= ($giorniAllaScadenza !== null && $giorniAllaScadenza <= 30) ? 'quota-warn' : 'quota-ok' ?>">
-                    <span class="dash-stat-icon">
-                        <i class="fas fa-id-card"></i>
-                    </span>
-                <div>
-                    <h3>Tra quanto scade la quota societaria?</h3>
-                    <b><?= $giorniAllaScadenza !== null ? (int) $giorniAllaScadenza . ' giorni' : '—' ?></b>
-                    <small>Alla scadenza della quota</small>
-                </div>
-            </div>
-            <!-- ordini effettuati -->
-            <div class="dash-stat dash-stat-prodotti">
-                <span class="dash-stat-icon"><i class="fas fa-receipt"></i></span>
-                <div>
-                    <h3>Totale ordini effettuati</h3>
-                    <b><?= (int) $numOrdini ?></b>
-                    <small>Ordini effettuati</small>
-                </div>
-            </div>
-            <!-- prossimo impegno -->
-            <div class="dash-stat dash-stat-impegni">
-                <span class="dash-stat-icon"><i class="fas fa-calendar-day"></i></span>
-                <div>
-                    <h3>Quand'è la prossima partita?</h3>
-                    <b><?= $prossimoImpegno ? date('d M', strtotime($prossimoImpegno['data'])) : '—' ?></b>
-                    <small><?= $prossimoImpegno ? htmlspecialchars($prossimoImpegno['titolo']) : 'Nessun impegno in programma' ?></small>
-                </div>
-            </div>
-        </div>
+            <a class="button button--line button--sm" href="<?= BASE_URL ?>/prodotti.php"><i class="fa-solid fa-bag-shopping" aria-hidden="true"></i> Vai allo shop</a>
         <?php endif; ?>
+    </div>
+</header>
 
-    <?php if($user['role'] === 'admin'): ?>
+<?php if ($user['role'] === 'admin'): ?>
 
-        <div class="dash-charts">
-        <!-- diagramma a barre per le categorie delle partite -->
-        <div class="dash-chart-card" style="height:320px;">
-            <h3>Partite per categoria</h3>
-            <canvas id="chartCategorie"></canvas>
-        </div>
+    <!-- ---- numeri principali ---- -->
+    <div class="stat-strip">
+        <div class="stat"><span class="stat__value"><?= count($partite) ?></span><span class="stat__label">Partite in calendario</span></div>
+        <div class="stat"><span class="stat__value"><?= (int) $inSospeso ?></span><span class="stat__label"><a href="<?= BASE_URL ?>/admin/ordiniProdottiRicevuti.php">Ordini in attesa</a></span></div>
+        <div class="stat"><span class="stat__value"><?= (int) $numRichieste ?></span><span class="stat__label"><a href="<?= BASE_URL ?>/admin/users.php">Richieste informazioni</a></span></div>
+        <div class="stat"><span class="stat__value"><?= (int) $quoteValide ?></span><span class="stat__label">Quote valide</span></div>
+    </div>
 
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-
-        <!-- istogramma per il totale degli incassi del mese -->
-        <div class="dash-chart-card" style="height:320px;">
-            <h3>Incassi per mese</h3>
-            <canvas id="chartIncassi"></canvas>
-        </div>
-
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-
-        <!-- diagramma a torta per le i prodotti più venduti -->
-        <div class="dash-chart-card" style="height:320px;">
-            <h3>Prodotti più venuduti</h3>
-            <canvas id="chartProdotti"></canvas>
-        </div>
-
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-
-        <!-- diagramma a barre per le classifica delle scquadre -->
-        <div class="dash-chart-card" style="height:320px;">
-            <h3>Classifica delle squadre</h3>
-            <canvas id="chartCalendario"></canvas>
-        </div>
-
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-        <!-------------------------------------------------->
-
-        <!-- diagramma a lina per rappresenatare il totale degli iscritti -->
-        <div class="dash-chart-card" style="height:320px;">
-            <h3>Totale iscritti</h3>
-            <canvas id="chartIscritti"></canvas>
-        </div>
-        </div><!-- /dash-charts -->
-
-        <div class="dash-stats">
-            <!-- card che rappresenta il numero di richieste informazioni che sono arrivate -->
-            <div class="dash-stat">
-                <span class="dash-stat-icon"><i class="fas fa-envelope"></i></span>
-                <div>
-                    <b><?= (int) $numRichieste ?></b>
-                    <small>Richieste informazioni</small>
-                </div>
+    <!-- ---- incassi + quote ---- -->
+    <div class="dash-grid-side" style="grid-template-columns: minmax(0, 2fr) minmax(0, 1fr)">
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Incassi per mese</h2><small>€</small>
             </div>
+            <div class="panel__body">
+                <div class="chart-box"><canvas id="chartIncassi" aria-label="Grafico incassi per mese" role="img"></canvas></div>
+            </div>
+        </section>
 
-            <!-- card che rappresenta il numero di ordini in sospeso che sono arrivati -->
-            <div class="dash-stat">
-                <span class="dash-stat-icon"><i class="fas fa-hourglass-half"></i></span>
-                <div>
-                    <b><?= (int) $inSospeso ?></b>
-                    <a class="link" href="admin/ordiniProdottiRicevuti.php">Ordini in sospeso</a>
-                </div>
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Quote associative</h2>
+                <small><?= (int) $quoteValide + (int) $quoteInScadenza + (int) $quoteScadute ?> soci</small>
+            </div>
+            <ul class="item-list">
+                <li class="item-list__row"><span class="item-list__title">Valide</span><span class="pill pill--ok"><?= (int) $quoteValide ?></span></li>
+                <li class="item-list__row"><span class="item-list__title">In scadenza</span><span class="pill pill--wait"><?= (int) $quoteInScadenza ?></span></li>
+                <li class="item-list__row"><span class="item-list__title">Scadute</span><span class="pill pill--dark"><?= (int) $quoteScadute ?></span></li>
+            </ul>
+            <div class="panel__body" style="padding-top: 0">
+                <a class="text-link" href="<?= BASE_URL ?>/admin/users.php">Gestisci utenti <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></a>
+            </div>
+        </section>
+    </div>
+
+    <!-- ---- altri grafici ---- -->
+    <div class="dash-grid-2">
+        <section class="panel">
+            <div class="panel__head"><h2>Partite per categoria</h2></div>
+            <div class="panel__body"><div class="chart-box"><canvas id="chartCategorie" aria-label="Grafico partite per categoria" role="img"></canvas></div></div>
+        </section>
+        <section class="panel">
+            <div class="panel__head"><h2>Classifica squadre</h2><small>Punti</small></div>
+            <div class="panel__body"><div class="chart-box"><canvas id="chartCalendario" aria-label="Grafico classifica squadre" role="img"></canvas></div></div>
+        </section>
+        <section class="panel">
+            <div class="panel__head"><h2>Prodotti più venduti</h2></div>
+            <div class="panel__body"><div class="chart-box"><canvas id="chartProdotti" aria-label="Grafico prodotti più venduti" role="img"></canvas></div></div>
+        </section>
+        <section class="panel">
+            <div class="panel__head"><h2>Iscritti per mese</h2></div>
+            <div class="panel__body"><div class="chart-box"><canvas id="chartIscritti" aria-label="Grafico iscritti per mese" role="img"></canvas></div></div>
+        </section>
+    </div>
+
+    <script>
+        // colori della palette per tutti i grafici
+        Chart.defaults.font.family = "'Inter', system-ui, sans-serif";
+        Chart.defaults.color = '#5c6b4a';
+        Chart.defaults.borderColor = '#eef0e6';
+        Chart.defaults.plugins.legend.display = false;
+        const PALETTE = ['#668041', '#cf9b4e', '#24371c', '#adb97c', '#a9721f', '#3d562a'];
+        const base = { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } };
+
+        new Chart(document.getElementById('chartIncassi'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($incassiLabels) ?>,
+                datasets: [{ label: 'Incassi €', data: <?= json_encode($incassiValori) ?>, backgroundColor: '#668041', borderRadius: 4, maxBarThickness: 56 }]
+            },
+            options: base
+        });
+
+        new Chart(document.getElementById('chartCategorie'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($catLabels) ?>,
+                datasets: [{ label: 'Partite', data: <?= json_encode($catValori) ?>, backgroundColor: '#668041', borderRadius: 4, maxBarThickness: 18 }]
+            },
+            options: { ...base, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } }, y: { grid: { display: false } } } }
+        });
+
+        new Chart(document.getElementById('chartCalendario'), {
+            type: 'bar',
+            data: {
+                labels: <?= json_encode($classificaLabels) ?>,
+                datasets: [{ label: 'Punti', data: <?= json_encode($classificaValori) ?>, backgroundColor: '#24371c', borderRadius: 4, maxBarThickness: 40 }]
+            },
+            options: base
+        });
+
+        new Chart(document.getElementById('chartProdotti'), {
+            type: 'doughnut',
+            data: {
+                labels: <?= json_encode($prodottiLabels) ?>,
+                datasets: [{ label: 'Prodotti venduti', data: <?= json_encode($prodottiValori) ?>, backgroundColor: PALETTE, borderColor: '#fff', borderWidth: 2 }]
+            },
+            options: { maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: true, position: 'right' } } }
+        });
+
+        new Chart(document.getElementById('chartIscritti'), {
+            type: 'line',
+            data: {
+                labels: <?= json_encode($iscrittiLabels) ?>,
+                datasets: [{ label: 'Iscritti', data: <?= json_encode($iscrittiValori) ?>, borderColor: '#668041', backgroundColor: 'rgba(102,128,65,.12)', fill: true, tension: .3, pointRadius: 3 }]
+            },
+            options: base
+        });
+    </script>
+
+<?php else: ?>
+
+    <!-- ---- numeri principali del socio ---- -->
+    <div class="dash-grid-3">
+        <div class="kpi <?= ($giorniAllaScadenza !== null && $giorniAllaScadenza <= 30) ? 'kpi--warn' : '' ?>">
+            <div class="kpi__body">
+                <span class="kpi__label">Scadenza quota societaria</span>
+                <span class="kpi__value"><?= $giorniAllaScadenza !== null ? (int) $giorniAllaScadenza . ' giorni' : '—' ?></span>
+                <span class="kpi__note"><?= $quotaScadenza ? 'Valida fino al ' . dataBreve($quotaScadenza) : 'Nessuna scadenza registrata' ?></span>
             </div>
         </div>
-
-        <div class="all-card-quote">
-            <h2>Tutte le quote </h2>
-            <!-- card che rappresenta il numero delle quote scadute -->
-            <div class="dash-stat">
-                    <span class="dash-stat-icon"><i class="fas fa-envelope"></i></span>
-                <div>
-                    <b><?= (int) $quoteScadute ?></b>
-                    <p>Quote Scadute</p>
-                </div>
-            </div>
-            <!-- card che rappresenta il numero delle quote valide -->
-            <div class="dash-stat">
-                    <span class="dash-stat-icon"><i class="fas fa-envelope"></i></span>
-                <div>
-                    <b><?= (int) $quoteValide ?></b>
-                    <p>Quote Correnti</p>
-                </div>
-            </div>
-            <!-- card che rappresenta il numero delle quote in scadenza -->
-            <div class="dash-stat">
-                    <span class="dash-stat-icon"><i class="fas fa-envelope"></i></span>
-                <div>
-                    <b><?= (int) $quoteInScadenza ?></b>
-                    <p>Quote In Scadenza</p>
-                </div>
+        <div class="kpi">
+            <div class="kpi__body">
+                <span class="kpi__label">Ordini effettuati</span>
+                <span class="kpi__value"><?= (int) $numOrdini ?></span>
+                <span class="kpi__note"><a href="<?= BASE_URL ?>/client/ordiniEffettuati.php">Vedi i tuoi ordini</a></span>
             </div>
         </div>
-    <?php endif; ?>
-    
-    <?php if($user['role'] === 'client'): ?>
+        <div class="kpi">
+            <div class="kpi__body">
+                <span class="kpi__label">Prossimo impegno</span>
+                <span class="kpi__value"><?= $prossimoImpegno ? dataBreve($prossimoImpegno['data'], false) : '—' ?></span>
+                <span class="kpi__note"><?= $prossimoImpegno ? htmlspecialchars($prossimoImpegno['titolo']) : 'Nessun impegno in programma' ?></span>
+            </div>
+        </div>
+    </div>
 
-        <div class="dash-cards-grid">
-        <!-- Rappresentazione delle ultime comunicazioni dalla società per il giocatore -->
-        <div class="dash-news-card">
-            <h3>Ultime comunicazioni</h3>
+    <div class="dash-grid-3">
+        <!-- ultime comunicazioni della società -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Ultime comunicazioni</h2>
+                <a href="<?= BASE_URL ?>/client/mostraNewsAndComunicazioni.php">Tutte</a>
+            </div>
+            <ul class="item-list">
                 <?php foreach ($comunicazioni as $c): ?>
-                    <div class="news-item">
-                        <strong><?= htmlspecialchars($c['title']) ?></strong>
-                        <small><?= htmlspecialchars($c['data']) ?></small>
-                        <p><?= htmlspecialchars($c['description']) ?></p>
-                    </div>
-            <?php endforeach; ?>
-        </div>
-        
-        <!-- Rappresentazione delle degli ultimi ordini effettuati dal giocatore -->
-        <div class="dash-news-card">
-            <h3>Ultimi Prodotti Acquistati</h3>
+                    <li>
+                        <div class="item-list__row">
+                            <span class="item-list__title"><?= htmlspecialchars($c['title']) ?></span>
+                            <span class="item-list__meta"><?= dataBreve($c['data']) ?></span>
+                        </div>
+                        <p class="item-list__text"><?= htmlspecialchars($c['description']) ?></p>
+                    </li>
+                <?php endforeach; ?>
+                <?php if (empty($comunicazioni)): ?>
+                    <li class="item-list__empty">Nessuna comunicazione.</li>
+                <?php endif; ?>
+            </ul>
+        </section>
+
+        <!-- ultimi acquisti -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Ultimi acquisti</h2>
+                <a href="<?= BASE_URL ?>/client/ordiniEffettuati.php">Tutti</a>
+            </div>
+            <ul class="item-list">
                 <?php foreach ($mieiOrdini as $o): ?>
-                    <div class="news-item">
-                        <strong><?= htmlspecialchars($o['prodotto']) ?></strong>
-                        <small><?= htmlspecialchars($o['status']) ?></small>
-                            <?php if ($o['pronto_ritiro']): ?>
-                                <span class="badge-ritiro">Pronto al ritiro al club ✅</span>
-                            <?php else: ?>
-                                <span class="badge-attesa">In preparazione…</span>
-                            <?php endif; ?>
-                    </div>
-            <?php endforeach; ?>
-        </div>
+                    <li class="item-list__row">
+                        <span class="item-list__title"><?= htmlspecialchars($o['prodotto']) ?></span>
+                        <?php if ($o['pronto_ritiro']): ?>
+                            <span class="pill pill--ok">Pronto al ritiro</span>
+                        <?php else: ?>
+                            <span class="pill pill--wait">In preparazione</span>
+                        <?php endif; ?>
+                    </li>
+                <?php endforeach; ?>
+                <?php if (empty($mieiOrdini)): ?>
+                    <li class="item-list__empty">Nessun ordine effettuato.</li>
+                <?php endif; ?>
+            </ul>
+        </section>
 
-        <!-- Rappresentazione delle degli impegni settimanali -->
-        <div class="dash-news-card">
-            <h3>Prossimi Impegni Settimanali</h3>
+        <!-- prossimi impegni -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Prossimi impegni</h2>
+                <a href="<?= BASE_URL ?>/client/mostraImpegni.php">Calendario</a>
+            </div>
+            <ul class="item-list">
                 <?php foreach ($prossimiImpegni as $imp): ?>
-                    <div class="news-item">
-                        <strong><?= htmlspecialchars($imp['titolo']) ?></strong>
-                        <small><?= htmlspecialchars($imp['tipo']) ?></small>
-                        <p><?= htmlspecialchars($imp['data']) ?> — <?= htmlspecialchars($imp['ora']) ?></p>
-                    </div>
-            <?php endforeach; ?>
-        </div>
-        </div><!-- /dash-cards-grid -->
+                    <?php [$giorno, $mese] = explode(' ', dataBreve($imp['data'], false)); ?>
+                    <li class="with-chip">
+                        <span class="date-chip"><b><?= $giorno ?></b><span><?= $mese ?></span></span>
+                        <span>
+                            <span class="item-list__title" style="display:block"><?= htmlspecialchars($imp['titolo']) ?></span>
+                            <span class="muted"><?= htmlspecialchars(substr($imp['ora'], 0, 5)) ?></span>
+                        </span>
+                        <?= pillImpegno($imp['tipo']) ?>
+                    </li>
+                <?php endforeach; ?>
+                <?php if (empty($prossimiImpegni)): ?>
+                    <li class="item-list__empty">Nessun impegno in programma.</li>
+                <?php endif; ?>
+            </ul>
+        </section>
+    </div>
 
-       <?php endif; ?>
-    </main>
-</div>
-
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-
-<?php if($user['role'] === 'admin'): ?>
-    
-<!-- diagramma a barre per la categoria delle partite -->
-<script>
-  new Chart(document.getElementById('chartCategorie'), {
-      type: 'bar',
-      data: {
-          labels: <?= json_encode($catLabels) ?>,
-          datasets: [{
-              label: 'Partite',
-              data: <?= json_encode($catValori) ?>
-          }]
-      },
-      options: { maintainAspectRatio: false }
-  });
-</script>
-
-
-<!-- grafico che rappresenta gli incassi totali del mese -->
-<script>
-  new Chart(document.getElementById('chartIncassi'), {
-      type: 'line',
-      data: {
-          labels: <?= json_encode($incassiLabels) ?>,
-          datasets: [{ label: 'Incassi €', data: <?= json_encode($incassiValori) ?> }]
-      },
-      options: { maintainAspectRatio: false }
-  });
-</script>
-
-
-<!-- grafico a torta che rappresenta i prodotti totali venduti -->
-<script>
-  new Chart(document.getElementById('chartProdotti'), {
-      type: 'doughnut',
-      data: {
-          labels: <?= json_encode($prodottiLabels) ?>,
-          datasets: [{ 
-            label: 'Prodotti venduti', 
-            data: <?= json_encode($prodottiValori) ?>,
-            backgroundColor: [
-            'rgb(255, 99, 132)',
-            'rgb(54, 162, 235)',
-            'rgb(255, 205, 86)'
-            ],
-        }],
-      },
-      options: { maintainAspectRatio: false }
-  });
-</script>
-
-
-<!-- grafico a barre che rappresenta la classifica delle squadre -->
-<script>
-  new Chart(document.getElementById('chartCalendario'), {
-      type: 'bar',
-      data: {
-          labels: <?= json_encode($classificaLabels) ?>,
-          datasets: [{ label: 'Punti', data: <?= json_encode($classificaValori) ?> }]
-      },
-      options: { maintainAspectRatio: false }
-  });
-</script>
-
-
-<!-- grafico che rappresenta gli iscritti totali -->
-<script>
-  new Chart(document.getElementById('chartIscritti'), {
-      type: 'line',
-      data: {
-          labels: <?= json_encode($iscrittiLabels) ?>,
-          datasets: [{ label: 'Numero Totale Iscritti', data: <?= json_encode($iscrittiValori) ?> }]
-      },
-      options: { maintainAspectRatio: false }
-  });
-</script>
 <?php endif; ?>
-</body>
-</html>
+
+<?php include __DIR__ . '/admin/footerDashboard.php'; ?>

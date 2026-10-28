@@ -1,81 +1,68 @@
-// TABELLA NELL'INDEX PER MOSTRARE I RISULTATI E I GIOCATORI ISCIRTTI
+// ============================================================
+//  SCRIPT CONDIVISI — sito pubblico e area riservata
+// ============================================================
 
-document.querySelectorAll(".tabs .tab").forEach((tab) => {
-  // per ogni tab della tabella mi cancelli il contenuto precedente
-  // e mi aggiungi la parte della sezione che voglio visualizzare
-  tab.addEventListener("click", () => {
-    const target = tab.dataset.tab;
+// ---------- TAB A SEGMENTI ----------
+// Markup:
+//   <div class="segmented" role="tablist" data-tabs="nome-gruppo">
+//     <button class="segmented__btn is-active" data-tab="a" role="tab" aria-selected="true">A</button>
+//     <button class="segmented__btn" data-tab="b" role="tab" aria-selected="false">B</button>
+//   </div>
+//   <div data-panel-group="nome-gruppo" data-panel="a">…</div>
+//   <div data-panel-group="nome-gruppo" data-panel="b" hidden>…</div>
+// Più gruppi possono stare nella stessa pagina perché ognuno ha il suo nome.
 
-    // attiva solo il tab cliccato
-    document
-      .querySelectorAll(".tabs .tab")
-      .forEach((t) => t.classList.remove("active"));
-    tab.classList.add("active");
+document.querySelectorAll("[data-tabs]").forEach((gruppo) => {
+  const nome = gruppo.dataset.tabs;
+  const bottoni = gruppo.querySelectorAll("[data-tab]");
 
-    // mostra solo il pannello corrispondente
-    document.querySelectorAll(".tab-panel").forEach((p) => {
-      // l'attributo hidden nasconde senza CSS extra
-      p.hidden = p.dataset.panel !== target;
+  bottoni.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.tab;
+
+      // attivo solo il bottone cliccato
+      bottoni.forEach((b) => {
+        const attivo = b === btn;
+        b.classList.toggle("is-active", attivo);
+        b.setAttribute("aria-selected", attivo ? "true" : "false");
+      });
+
+      // mostro solo i pannelli del gruppo che corrispondono
+      document
+        .querySelectorAll(`[data-panel-group="${nome}"]`)
+        .forEach((p) => {
+          p.hidden = p.dataset.panel !== target;
+        });
+
+      // eventuali testi che riportano l'etichetta della tab (es. "Classifica · Under 19")
+      document
+        .querySelectorAll(`[data-tab-label="${nome}"]`)
+        .forEach((el) => {
+          el.textContent = btn.textContent.trim();
+        });
     });
   });
 });
 
-// TABELLA NELL'INDEX PER ATTIVARE GLI ACCORDION DELLA SEZIONE SHOP
+// ---------- MENU MOBILE (sito pubblico) ----------
+const navToggle = document.querySelector(".nav-toggle");
+const siteNav = document.getElementById("site-nav");
 
-document.querySelectorAll(".accordion .acc__head").forEach((head) => {
-  head.addEventListener("click", () => {
-    const item = head.parentElement; // .acc
-    const body = item.querySelector(".acc__body");
-    const giaAperto = item.classList.contains("open");
-
-    // chiudo tutti (così ne resta aperto uno solo)
-    document.querySelectorAll(".accordion .acc").forEach((a) => {
-      a.classList.remove("open");
-      a.querySelector(".acc__body").style.maxHeight = null;
-      a.querySelector(".acc__head").setAttribute("aria-expanded", "false");
-    });
-
-    // se non era già aperto, apro questo
-    if (!giaAperto) {
-      item.classList.add("open");
-      body.style.maxHeight = body.scrollHeight + "px";
-      head.setAttribute("aria-expanded", "true");
-    }
+if (navToggle && siteNav) {
+  navToggle.addEventListener("click", () => {
+    const aperto = siteNav.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", aperto ? "true" : "false");
+    navToggle.setAttribute("aria-label", aperto ? "Chiudi il menu" : "Apri il menu");
   });
-});
+}
 
-// TABELLA NEL FILE CALENDARIO.PHP PER MOSTRARE I RISULTATI DELLe SCQUADRe NEL CAMPIONATO
+// ---------- SIDEBAR MOBILE (area riservata) ----------
+const sideToggle = document.querySelector(".dash-toggle");
+const sidebar = document.getElementById("dash-sidebar");
 
-document.querySelectorAll(".categories .category").forEach((cat) => {
-  cat.addEventListener("click", () => {
-    const results = cat.dataset.tab;
-
-    document
-      .querySelectorAll(".categories .category")
-      .forEach((c) => c.classList.remove("active"));
-
-    cat.classList.add("active");
-
-    document.querySelectorAll(".tab-panel").forEach((tp) => {
-      tp.hidden = tp.dataset.panel !== results;
-    });
+if (sideToggle && sidebar) {
+  sideToggle.addEventListener("click", () => {
+    const aperta = sidebar.classList.toggle("is-open");
+    sideToggle.setAttribute("aria-expanded", aperta ? "true" : "false");
   });
-});
-
-// TABELLA NEL FILE CALENDARIO.PHP PER MOSTRARE la Classifica Del Campionato
-
-document.querySelectorAll(".results .result").forEach((res) => {
-  res.addEventListener("click", () => {
-    const position = res.dataset.tab;
-
-    document
-      .querySelectorAll(".results .result")
-      .forEach((r) => r.classList.remove("active"));
-
-    res.classList.add("active");
-
-    document.querySelectorAll(".results-panel").forEach((tp) => {
-      tp.hidden = tp.dataset.panel !== position;
-    });
-  });
-});
+}

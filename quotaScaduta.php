@@ -4,17 +4,24 @@ require_once __DIR__ . '/DB/helpers/auth.php';
 requireLogin();   
 ?>
 
-<?php include __DIR__ . '/includes/header.php'?>
+<?php include __DIR__ . '/includes/header.php' ?>
 
-<section class="sec sec--white">
-  <h2>Quota societaria scaduta</h2>
-  <div class="container">
-    <div class="authbox">
+<section class="auth">
+  <div class="wrap">
+    <div class="card message-card">
+      <span class="icon-tile"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i></span>
+      <h1>Quota societaria scaduta</h1>
       <p>La tua quota societaria è scaduta, quindi l'accesso all'area riservata è sospeso.</p>
-      <p>Per riattivarla, passa in club house e salda la quota: un responsabile della società rinnoverà il tuo accesso.</p>
-      <a href="logout.php" class="btn btn--primary btn--block">Esci</a>
+      <div class="bar-note">
+        <strong>Come riattivarla</strong>
+        <span>Passa in club house e salda la quota: un responsabile della società rinnoverà il tuo accesso.</span>
+      </div>
+      <div class="hero__cta">
+        <a href="<?= BASE_URL ?>/logout.php" class="button button--ink button--lg">Esci</a>
+        <a href="<?= BASE_URL ?>/contatti.php" class="button button--line button--lg">Contatta il club</a>
+      </div>
     </div>
   </div>
 </section>
 
-<?php include __DIR__ . '/includes/footer.php'?>
+<?php include __DIR__ . '/includes/footer.php' ?>

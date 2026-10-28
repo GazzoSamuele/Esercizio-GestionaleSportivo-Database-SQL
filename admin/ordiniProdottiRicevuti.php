@@ -155,201 +155,168 @@ $ordini = Purchases::findAll();
 $titoloPagina = 'Gestione Prodotti Ricevuti';
 
 include __DIR__ . '/headerDashboard.php';
-
 ?>
 
-<!-- ============ MAIN ============ -->
-<main class="dash-main">
-    <header class="dash-head">
-        <h1>Gestione Prodotti</h1>
-        <p>Crea un nuovo prodotto e gestisci gli ordini dei prodotti effettuati.</p>
-    </header>
+<?php
+$ordiniInAttesa = count(array_filter($ordini, fn($o) => in_array($o['status'], ['pending', 'In attesa'], true)));
+$nonDisponibili = count(array_filter($products, fn($p) => (int) $p['is_active'] === 0));
+?>
 
-    <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                <?php foreach ($errors as $e): ?>
-                    <li><?= htmlspecialchars($e) ?></li>
-                <?php endforeach; ?>
-            </ul>
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb">Area riservata / Prodotti e ordini</span>
+        <h1>Prodotti e ordini</h1>
+        <p>Gestisci il catalogo e gli ordini arrivati dai soci.</p>
+    </div>
+</header>
+
+<?php mostraEsito($errors, $success); ?>
+
+<div class="stat-strip">
+    <div class="stat"><span class="stat__value"><?= $ordiniInAttesa ?></span><span class="stat__label">Ordini in attesa di ritiro</span></div>
+    <div class="stat"><span class="stat__value"><?= count($ordini) ?></span><span class="stat__label">Ordini totali</span></div>
+    <div class="stat"><span class="stat__value"><?= count($products) ?></span><span class="stat__label">Prodotti a catalogo</span></div>
+    <div class="stat"><span class="stat__value"><?= $nonDisponibili ?></span><span class="stat__label">Non disponibili</span></div>
+</div>
+
+<div class="dash-grid-form">
+    <!-- ---- form nuovo prodotto ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Nuovo prodotto</h2>
         </div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
+        <form class="panel__body" action="" method="post">
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
 
-    <!-- ---- form nuovo utente ---- -->
-    <div class="alg-form-results">
-        <section class="dash-panel-form dash-formcard">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-user-plus"></i> Nuovo Ordine Prodotto</h2>
+            <label class="field" for="name">Nome
+                <input type="text" class="input" id="name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="url_img">URL immagine
+                <input type="url" class="input" id="url_img" name="immagine" placeholder="https://" value="<?= htmlspecialchars($_POST['immagine'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="descrizione">Descrizione
+                <textarea class="input" id="descrizione" name="descrizione" rows="3" required><?= htmlspecialchars($_POST['descrizione'] ?? '') ?></textarea>
+            </label>
+            <div class="field-row">
+                <label class="field" for="price">Prezzo (€)
+                    <input type="text" class="input" id="price" name="prezzo" inputmode="decimal" placeholder="0.00" value="<?= htmlspecialchars($_POST['prezzo'] ?? '') ?>" required>
+                </label>
+                <label class="field" for="isActive">Disponibilità
+                    <select name="isActive" id="isActive" class="input">
+                        <option value="1">Disponibile</option>
+                        <option value="0">Non disponibile</option>
+                    </select>
+                </label>
             </div>
-            <div class="dash-formbody">
-                <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
-                <form action="" method="post">
-                    <input type="hidden" name="action" value="create">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                    <div class="mb-3">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="img">Immagine</label>
-                        <input type="url" class="form-control" id="url_img" name="immagine" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="floatingTextarea">Descrizione</label>
-                        <textarea class="form-control" id="floatingTextarea" name="descrizione" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="price">Prezzo</label>
-                        <input type="text" class="form-control" id="price" name="prezzo" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="disponibility">Disponibilità</label>
-                        <select name="isActive" id="isActive" class="form-select">
-                            <option value="1">Disponibile</option>
-                            <option value="0">Non Disponibile</option>
-                        </select>
-                    </div>
+            <button class="button button--ink button--block" type="submit">Crea prodotto</button>
+        </form>
+    </section>
 
-                    <button class="btn btn-warning" type="submit">Crea Prodotto</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- ---- ordini ricevuti dai clienti ---- -->
-        <section class="dash-panel-info">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-receipt"></i> Ordini ricevuti dai clienti</h2>
-            </div>
-            <table class="dash-table">
+    <!-- ---- ordini ricevuti dai soci ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Ordini ricevuti</h2>
+            <small><?= count($ordini) ?> ordini</small>
+        </div>
+        <div class="table-scroll">
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Cliente</th>
-                        <th>Immagine</th>
-                        <th>Prodotto</th>
-                        <th>Prezzo</th>
-                        <th>Stato</th>
-                        <th>Data</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Socio</th>
+                        <th scope="col">Prodotto</th>
+                        <th scope="col" class="num">Importo</th>
+                        <th scope="col">Stato</th>
+                        <th scope="col">Data</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($ordini as $ord): ?>
                         <tr>
-                            <td class="text-align-center">#<?= (int) $ord['id'] ?></td>
-                            <td class="text-align-center"><?= htmlspecialchars($ord['cliente']) ?></td>
-                            <td class="text-align-center">
-                                <?php if (!empty($ord['immagine'])): ?>
-                                    <img src="<?= htmlspecialchars($ord['immagine']) ?>" alt="<?= htmlspecialchars($ord['prodotto']) ?>"
-                                        style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-                                <?php else: ?>
-                                    <span class="dash-current">—</span>
-                                <?php endif; ?>
+                            <td>#<?= (int) $ord['id'] ?></td>
+                            <td class="strong"><?= htmlspecialchars($ord['cliente']) ?></td>
+                            <td>
+                                <span class="with-thumb"><?= miniatura($ord['immagine'] ?? null, 'fa-bag-shopping') ?><span class="strong"><?= htmlspecialchars($ord['prodotto']) ?></span></span>
                             </td>
-                            <td class="text-align-center"><?= htmlspecialchars($ord['prodotto']) ?></td>
-                            <td class="text-align-center">€ <?= htmlspecialchars($ord['prezzo_pagato']) ?></td>
-                            <td class="text-align-center"><?= htmlspecialchars($ord['status']) ?></td>
-                            <td class="text-align-center"><?= date('d M Y', strtotime($ord['created_at'])) ?></td>
+                            <td class="num em">€ <?= number_format((float) $ord['prezzo_pagato'], 2, ',', '.') ?></td>
+                            <td><?= pillStato($ord['status']) ?></td>
+                            <td style="white-space: nowrap"><?= dataBreve($ord['created_at']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if (empty($ordini)): ?>
                         <tr>
-                            <td colspan="7" class="dash-empty">Nessun ordine ricevuto.</td>
+                            <td colspan="6" class="center">Nessun ordine ricevuto.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-        </section>
-    </div>
-    <!-- ---- tabella Prodotti ---- -->
-    <section class="dash-panel">
-        <div class="dash-panel-head">
-            <h2><i class="fas fa-users"></i>Gestione Prodotti</h2>
         </div>
-        <table class="dash-table">
+    </section>
+</div>
+
+<!-- ---- catalogo prodotti ---- -->
+<section class="panel">
+    <div class="panel__head">
+        <h2>Catalogo prodotti</h2>
+        <small><?= count($products) ?> prodotti</small>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Immagine</th>
-                    <th>Nome</th>
-                    <th>Descrizione</th>
-                    <th>Prezzo</th>
-                    <th>Disponibilità</th>
-                    <th>Data Modifica</th>
-                    <th>Azioni</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Prodotto</th>
+                    <th scope="col">Descrizione</th>
+                    <th scope="col" class="num">Prezzo</th>
+                    <th scope="col">Disponibilità</th>
+                    <th scope="col">Modificato</th>
+                    <th scope="col" class="num">Azioni</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($products as $p): ?>
                     <tr>
-
+                        <td>#<?= (int) $p['id'] ?></td>
                         <td>
-                            <?= htmlspecialchars($p['id']) ?>
+                            <span class="with-thumb"><?= miniatura($p['image_path'] ?? null, 'fa-bag-shopping') ?><span class="strong"><?= htmlspecialchars($p['name']) ?></span></span>
                         </td>
-
-                        <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
+                        <td><span class="clip" title="<?= htmlspecialchars($p['description']) ?>"><?= htmlspecialchars($p['description']) ?></span></td>
+                        <td class="num em">€ <?= number_format((float) $p['price'], 2, ',', '.') ?></td>
                         <td>
-                            <?php if (!empty($p['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($p['image_path']) ?>" alt="<?= htmlspecialchars($p['name']) ?>"
-                                    style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-                            <?php else: ?>
-                                <span class="dash-current">—</span>
-                            <?php endif; ?>
+                            <?= (int) $p['is_active'] === 1
+                                ? '<span class="pill pill--ok">Disponibile</span>'
+                                : '<span class="pill pill--neutral">Non disponibile</span>' ?>
                         </td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($p['name']) ?></td>
-
-                        <td><?= htmlspecialchars($p['description']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($p['price']) ?></td>
-
-                        <td class="text-align-center"><?= htmlspecialchars($p['is_active']) ?></td>
-
-                        <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
-                        <td><?= date('d M Y', strtotime($p['created_at'])) ?></td>
-
-                        <td class="text-end">
-                            <!-- PULSANTE DI EDIT -->
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-info"
-                                aria-label="Modifica prodotto"
-                                title="Modifica prodotto"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEditProduct<?= (int) $p['id'] ?>">
-                                <i class="fas fa-edit" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/ProductEditModal.php'; ?>
-
-                            <!-- PULSANTE DI DELETE -->
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-danger"
-                                title="Elimina prodotto"
-                                aria-label="Elimina prodotto"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalDeleteProduct<?= (int) $p['id'] ?>">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/ProductDeleteModal.php'; ?>
+                        <td style="white-space: nowrap"><?= dataBreve($p['created_at']) ?></td>
+                        <td class="num">
+                            <div class="actions">
+                                <button type="button" class="icon-btn" title="Modifica prodotto" aria-label="Modifica <?= htmlspecialchars($p['name']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditProduct<?= (int) $p['id'] ?>">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="icon-btn icon-btn--danger" title="Elimina prodotto" aria-label="Elimina <?= htmlspecialchars($p['name']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalDeleteProduct<?= (int) $p['id'] ?>">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if (empty($products)): ?>
                     <tr>
-                        <td colspan="8" class="dash-empty">Nessun prodotto registrato</td>
+                        <td colspan="7" class="center">Nessun prodotto registrato.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
-    </section>
-</main>
-</div>
+    </div>
+</section>
 
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-</body>
+<!-- modali: una coppia per ogni prodotto -->
+<?php foreach ($products as $p): ?>
+    <?php include __DIR__ . '/modali/ProductEditModal.php'; ?>
+    <?php include __DIR__ . '/modali/ProductDeleteModal.php'; ?>
+<?php endforeach; ?>
 
-</html>
+<?php include __DIR__ . '/footerDashboard.php'; ?>

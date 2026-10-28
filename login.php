@@ -5,6 +5,8 @@ session_start();
 
 //richiamo del singleton per attivare le PDO
 require_once __DIR__ . '/DB/classes/Db.php';
+// serve per csrfToken() e verificaCsrf() usati dal form
+require_once __DIR__ . '/DB/helpers/auth.php';
 
 $errors = [];
 $success = false;
@@ -59,20 +61,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <?php include __DIR__ . '/includes/header.php' ?>
 
-<section class="sec sec--white sec-login">
-  <div class="container-login">
-    <h2>Accedi al gestionale</h2>
-    <p class="sub">Semplice form dove inserire le proprie credenziali per accedere alla dashboard oppure registrarsi attraverso il link sottostante</p>
-    <div class="container-credentials">
-      <div class="authbox">
-        <form class="form-login" action="" method="post">
+<section class="auth">
+  <div class="wrap">
+    <div class="card auth__box">
+      <form class="auth__form" action="" method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
 
-          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+        <div class="auth__intro">
+          <h1>Accedi al gestionale</h1>
+          <p>Inserisci le tue credenziali per entrare nella tua area riservata.</p>
+        </div>
 
-          <!-- messaggi di errore (validazione campi + credenziali) -->
-          <?php if (!empty($errors)): ?>
-            <div class="alert alert-danger">
-              <ul class="mb-0">
+        <!-- messaggi di errore (validazione campi + credenziali) -->
+        <?php if (!empty($errors)): ?>
+            <div class="notice notice--error" role="alert">
+              <i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i>
+              <ul>
                 <?php foreach ($errors as $e): ?>
                   <li><?= htmlspecialchars($e) ?></li>
                 <?php endforeach; ?>
@@ -80,32 +84,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           <?php endif; ?>
 
+        <label class="field" for="email">Email
+          <input type="email" id="email" name="email" class="input" autocomplete="email"
+            value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+        </label>
 
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" id="email" name="email" class="form-control"
-              value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
-          </div>
+        <label class="field" for="password">Password
+          <input type="password" id="password" name="password" class="input" autocomplete="current-password" required>
+        </label>
 
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-          </div>
+        <button type="submit" class="button button--ink button--lg button--block">Entra</button>
 
-          <button type="submit" class="btn btn-warning w-100">Entra</button>
+        <p class="auth__alt">Non hai un account? <a href="<?= BASE_URL ?>/register.php"><strong>Registrati con il codice societario</strong></a></p>
+      </form>
 
-          <p class="mt-3 text-center">
-            Non hai un account? <a class="a-login-register" href="register.php">Registrati</a>
-          </p>
-        </form>
+      <div class="auth__media">
+        <img src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="">
       </div>
-
-      <div class="authbox no_padding">
-        <video autoplay loop muted playsinline class="video-login" aria-hidden="true">
-          <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
-        </video>
-      </div>
-
     </div>
   </div>
 </section>

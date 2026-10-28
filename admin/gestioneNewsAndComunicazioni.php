@@ -124,175 +124,125 @@ $ultimeNews = array_slice(array_reverse($news), 0, 5);
 $titoloPagina = 'Gestione News e Comunicazioni';
 
 include __DIR__ . '/headerDashboard.php';
-
 ?>
 
-<!-- ============ MAIN ============ -->
-<main class="dash-main">
-    <header class="dash-head">
-        <h1>Gestione News e Comunicazioni Societarie</h1>
-        <p>Crea una nuova news e comunicazione societaria</p>
-    </header>
-
-    <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                <?php foreach ($errors as $e): ?>
-                    <li><?= htmlspecialchars($e) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
-
-    <!-- ---- form nuovo utente ---- -->
-    <div class="alg-form-results">
-        <section class="dash-panel-form dash-formcard">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-user-plus"></i>Nuova News o Comunicazione</h2>
-            </div>
-            <div class="dash-formbody">
-                <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
-                <form action="" method="post">
-                    <input type="hidden" name="action" value="create">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                    <div class="mb-3">
-                        <label for="name">Titolo</label>
-                        <input type="text" class="form-control" id="name" name="title" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description">Descrizione</label>
-                        <textarea name="description" class="form-control" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="img">Immagine</label>
-                        <input type="url" class="form-control" id="url_img" name="image_path" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="role">News oppure Comunicazione Interna</label>
-                        <select name="tipo" id="tipo" class="form-select">
-                            <option value="notizia">News</option>
-                            <option value="comunicazione">Comunicazione</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-warning" type="submit">Crea News</button>
-                </form>
-            </div>
-        </section>
-
-        <!-- sezione ultime news registrate -->
-
-        <section class="dash-panel-info">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i> Le ultime news o comunicazioni registrate</h2>
-            </div>
-            <table class="dash-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Titolo</th>
-                        <th>Descrizione</th>
-                        <th>Data</th>
-                        <th>Tipo di Comunicazione</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($ultimeNews as $nw): ?>
-                        <tr>
-                            <!-- prendo l'id dell'utente singolo -->
-                            <td>#<?= (int) $nw['id'] ?></td>
-
-                            <td><?= htmlspecialchars($nw['title']) ?></td>
-
-                            <td><?= htmlspecialchars($nw['description']) ?></td>
-
-                            <td class="dim-td-custom"><?= htmlspecialchars($nw['data']) ?></td>
-
-                            <td><?= htmlspecialchars($nw['tipo']) ?></td>
-
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </section>
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb">Area riservata / News e comunicazioni</span>
+        <h1>News e comunicazioni</h1>
+        <p>Pubblica notizie sul sito e comunicazioni interne per i soci.</p>
     </div>
-    <!-- ---- tabella news ---- -->
-    <section class="dash-panel">
-        <div class="dash-panel-head">
-            <h2><i class="fas fa-users"></i> Tutte le News</h2>
+</header>
+
+<?php mostraEsito($errors, $success); ?>
+
+<div class="dash-grid-form">
+    <!-- ---- form nuova pubblicazione ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Nuova pubblicazione</h2>
         </div>
-        <table class="dash-table">
+        <form class="panel__body" action="" method="post">
+            <input type="hidden" name="action" value="create">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+
+            <label class="field" for="title">Titolo
+                <input type="text" class="input" id="title" name="title" value="<?= htmlspecialchars($_POST['title'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="description">Descrizione
+                <textarea class="input" id="description" name="description" rows="4" required><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
+            </label>
+            <label class="field" for="url_img">URL immagine
+                <input type="url" class="input" id="url_img" name="image_path" placeholder="https://" value="<?= htmlspecialchars($_POST['image_path'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="tipo">Tipo
+                <select name="tipo" id="tipo" class="input">
+                    <option value="notizia">Notizia (sito pubblico)</option>
+                    <option value="comunicazione">Comunicazione (solo soci)</option>
+                </select>
+            </label>
+            <button class="button button--ink button--block" type="submit">Pubblica</button>
+        </form>
+    </section>
+
+    <!-- ---- ultime pubblicazioni ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Ultime pubblicazioni</h2>
+        </div>
+        <ul class="item-list">
+            <?php foreach ($ultimeNews as $nw): ?>
+                <li>
+                    <div class="item-list__row">
+                        <span class="item-list__title"><?= htmlspecialchars($nw['title']) ?></span>
+                        <?= pillNews($nw['tipo']) ?>
+                    </div>
+                    <p class="item-list__text"><?= dataBreve($nw['data']) ?> · <?= htmlspecialchars($nw['description']) ?></p>
+                </li>
+            <?php endforeach; ?>
+            <?php if (empty($ultimeNews)): ?>
+                <li class="item-list__empty">Nessuna pubblicazione.</li>
+            <?php endif; ?>
+        </ul>
+    </section>
+</div>
+
+<!-- ---- tutte le pubblicazioni ---- -->
+<section class="panel">
+    <div class="panel__head">
+        <h2>Tutte le pubblicazioni</h2>
+        <small><?= count($news) ?> totali</small>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Titolo</th>
-                    <th>Immagine</th>
-                    <th>Descrizione</th>
-                    <th>Data</th>
-                    <th>Tipo di Comunicazione</th>
-                    <th>Azioni</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Titolo</th>
+                    <th scope="col">Descrizione</th>
+                    <th scope="col">Data</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col" class="num">Azioni</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($news as $nw): ?>
                     <tr>
-                        <!-- prendo l'id dell'utente singolo -->
                         <td>#<?= (int) $nw['id'] ?></td>
-
-                        <td><?= htmlspecialchars($nw['title']) ?></td>
-
-                        <!-- MOSTRA IMMAGINE(se non c'è, viene mostrato un fallback) -->
                         <td>
-                            <?php if (!empty($nw['image_path'])): ?>
-                                <img src="<?= htmlspecialchars($nw['image_path']) ?>" alt="<?= htmlspecialchars($nw['title']) ?>"
-                                    style="width:60px;height:60px;object-fit:cover;border-radius:8px;">
-                            <?php else: ?>
-                                <span class="dash-current">—</span>
-                            <?php endif; ?>
+                            <span class="with-thumb"><?= miniatura($nw['image_path'] ?? null, 'fa-newspaper') ?><span class="strong"><?= htmlspecialchars($nw['title']) ?></span></span>
                         </td>
-
-                        <td><?= htmlspecialchars($nw['description']) ?></td>
-
-                        <td><?= htmlspecialchars($nw['data']) ?></td>
-
-                        <td><?= htmlspecialchars($nw['tipo']) ?></td>
-
-                        <td class="text-end">
-                            <!-- PULSANTE DI EDIT -->
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-info"
-                                aria-label="Modifica Comunicazione"
-                                title="Modifica comunicazione"
-                                data-bs-toggle="modal" data-bs-target="#modalEditNews<?= (int) $nw['id'] ?>">
-                                <i class="fas fa-edit" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/NewsEditModal.php'; ?>
-
-                            <!-- PULSANTE DI DELETE -->
-                            <button
-                                type="button"
-                                class="btn btn-sm btn-outline-danger"
-                                title="Elimina comunicazione"
-                                aria-label="Elimina comunicazione"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalDeleteNews<?= (int) $nw['id'] ?>">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </button>
-                            <?php include __DIR__ . '/modali/NewsDeleteModal.php'; ?>
+                        <td><span class="clip" title="<?= htmlspecialchars($nw['description']) ?>"><?= htmlspecialchars($nw['description']) ?></span></td>
+                        <td style="white-space: nowrap"><?= dataBreve($nw['data']) ?></td>
+                        <td><?= pillNews($nw['tipo']) ?></td>
+                        <td class="num">
+                            <div class="actions">
+                                <button type="button" class="icon-btn" title="Modifica" aria-label="Modifica <?= htmlspecialchars($nw['title']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalEditNews<?= (int) $nw['id'] ?>">
+                                    <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                </button>
+                                <button type="button" class="icon-btn icon-btn--danger" title="Elimina" aria-label="Elimina <?= htmlspecialchars($nw['title']) ?>"
+                                    data-bs-toggle="modal" data-bs-target="#modalDeleteNews<?= (int) $nw['id'] ?>">
+                                    <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 <?php endforeach; ?>
+                <?php if (empty($news)): ?>
+                    <tr>
+                        <td colspan="6" class="center">Nessuna news registrata.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
-    </section>
-</main>
-</div>
+    </div>
+</section>
 
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-</body>
+<!-- modali: una coppia per ogni pubblicazione -->
+<?php foreach ($news as $nw): ?>
+    <?php include __DIR__ . '/modali/NewsEditModal.php'; ?>
+    <?php include __DIR__ . '/modali/NewsDeleteModal.php'; ?>
+<?php endforeach; ?>
 
-</html>
+<?php include __DIR__ . '/footerDashboard.php'; ?>

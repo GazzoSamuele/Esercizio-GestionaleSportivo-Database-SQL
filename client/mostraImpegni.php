@@ -23,20 +23,21 @@ if ($tipo !== '') {
 $eventi  = [];
 
 $colori = [
-    'allenamento' => '#668041',
-    'partita'     => '#bd4d63',
-    'coppa'       => '#e0a800',
-    'riunione'    => '#3b82f6',
-    'altro'       => '#6b7280',
+    'allenamento' => ['#668041', '#ffffff'],
+    'partita'     => ['#24371c', '#ffffff'],
+    'coppa'       => ['#cf9b4e', '#24371c'],
+    'riunione'    => ['#d2d1bd', '#24371c'],
+    'altro'       => ['#8a8f7a', '#ffffff'],
 ];
 
 foreach ($impegni as $imp) {
-    $colore = $colori[$imp['tipo']] ?? '#6b7280';
+    [$colore, $testo] = $colori[$imp['tipo']] ?? ['#8a8f7a', '#ffffff'];
     $eventi[] = [
         'title' => $imp['titolo'],
         'start' => $imp['data'] . 'T' . $imp['ora'],
         'backgroundColor' => $colore,
         'borderColor'     => $colore,
+        'textColor'       => $testo,
     ];
 }
 
@@ -88,25 +89,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'creat
 
 $prossimi = AppuntamentiPersonali::findProssimiByUserId($user['id']);
 
-$coloriAppuntamenti = [
-    'fisioterapista' => '#3b82f6',
-    'nutrizionista'     => '#668041',
-    'massaggiatore'       => '#e0a800',
-    'palestra'       => '#bd4d63',
-    'allenamento extra'    => '#82007b',
-    'altro'       => '#6b7280',
-];
+// gli appuntamenti personali hanno tutti lo stesso stile (bianco con bordo), così si distinguono da quelli della società
+$coloriAppuntamenti = [];
 
 
 $appuntamenti = AppuntamentiPersonali::findByUserId($user['id']);
 
 foreach ($appuntamenti as $app) {
-    $coloreAppuntamento = $coloriAppuntamenti[$app['tipo']] ?? '#004d13';
     $eventi[] = [
         'title'           => $app['titolo'],
         'start'           => $app['data'] . 'T' . $app['ora'],
-        'backgroundColor' => $coloreAppuntamento,
-        'borderColor'     => $coloreAppuntamento,
+        'backgroundColor' => '#ffffff',
+        'borderColor'     => '#3d562a',
+        'textColor'       => '#3d562a',
     ];
 }
 ?>
@@ -116,149 +111,124 @@ $titoloPagina = 'Impegni';
 
 include __DIR__ . '/../admin/headerDashboard.php'; ?>
 
-<!-- ============ MAIN ============ -->
-<main class="dash-main">
-    <header class="dash-head">
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb">Area riservata / I miei impegni</span>
         <h1>Calendario impegni</h1>
-        <p>Visualizza ogni impegno o appuntamento imminente o futuro</p>
-    </header>
-
-    <!-- ---- form nuovo utente ---- -->
-    <div class="alg-cal-impegni">
-        <div class="form-nuovi-impegni height-fit-content">
-            <section class="dash-tab-impegni dash-formcard height-fit-content">
-                <div class="dash-panel-head">
-                    <h2><i class="fas fa-user-plus"></i>Nuovo Appuntamento</h2>
-                </div>
-                <div class="dash-formbody">
-                    <form action="" method="post">
-                        <input type="hidden" name="action" value="create">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                        <div class="mb-3">
-                            <label for="name">Titolo</label>
-                            <input type="text" class="form-control" id="titolo" name="titolo" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="data">Data</label>
-                            <input type="date" class="form-control" id="data" name="data" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="ora">Ora</label>
-                            <input type="time" id="ora" name="ora" min="08:00" max="18:00" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="tipo">Tipo di impegno</label>
-                            <select name="tipo" id="tipo" class="form-select">
-                                <option value="fisioterapista">Fisioterapista</option>
-                                <option value="nutrizionista">Nutrizionista</option>
-                                <option value="massaggiatore">Massaggiatore</option>
-                                <option value="palestra">Palestra</option>
-                                <option value="allenamento extra">Allenamento extra</option>
-                                <option value="altro">Altro</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-warning" type="submit">Crea Appuntamento</button>
-                    </form>
-                </div>
-            </section>
-
-            <section class="tab-impegni-prossimi height-fit-content">
-                <div class="dash-panel-head">
-                    <h2><i class="fas fa-calendar-check"></i> Prossimi appuntamenti</h2>
-                </div>
-                <table class="dash-table">
-                    <thead>
-                        <tr>
-                            <th>Titolo</th>
-                            <th>Tipo</th>
-                            <th>Data</th>
-                            <th>Ora</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($prossimi as $app): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($app['titolo']) ?></td>
-                                <td><?= htmlspecialchars($app['tipo']) ?></td>
-                                <td><?= date('d M Y', strtotime($app['data'])) ?></td>
-                                <td><?= htmlspecialchars($app['ora']) ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                        <?php if (empty($prossimi)): ?>
-                            <tr>
-                                <td colspan="4">Nessun appuntamento personale.</td>
-                            </tr>
-                        <?php endif; ?>
-                    </tbody>
-                </table>
-            </section>
-        </div>
-
-        <!-- calendario interattivo -->
-        <div id="calendar"></div>
+        <p>Gli impegni della società e i tuoi appuntamenti personali.</p>
     </div>
-</main>
+    
+</header>
+
+<?php mostraEsito($errors, $success); ?>
+
+<?php
+$filtriTipo = ['' => 'Tutti', 'allenamento' => 'Allenamento', 'partita' => 'Partite', 'coppa' => 'Coppa', 'riunione' => 'Riunione', 'altro' => 'Altro'];
+$tipoAttivo = trim($_GET['tipo'] ?? '');
+?>
+
+<div class="dash-grid-form" style="grid-template-columns: 320px minmax(0, 1fr)">
+    <div style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+        <!-- ---- form nuovo appuntamento ---- -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Nuovo appuntamento</h2>
+            </div>
+            <form class="panel__body" action="" method="post">
+                <input type="hidden" name="action" value="create">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+
+                <label class="field" for="titolo">Titolo
+                    <input type="text" class="input" id="titolo" name="titolo" value="<?= htmlspecialchars($_POST['titolo'] ?? '') ?>" required>
+                </label>
+                <div class="field-row">
+                    <label class="field" for="data">Data
+                        <input type="date" class="input" id="data" name="data" required>
+                    </label>
+                    <label class="field" for="ora">Ora
+                        <input type="time" class="input" id="ora" name="ora" min="08:00" max="18:00" required>
+                    </label>
+                </div>
+                <label class="field" for="tipo">Tipo
+                    <select name="tipo" id="tipo" class="input">
+                        <option value="fisioterapista">Fisioterapista</option>
+                        <option value="nutrizionista">Nutrizionista</option>
+                        <option value="massaggiatore">Massaggiatore</option>
+                        <option value="palestra">Palestra</option>
+                        <option value="allenamento extra">Allenamento extra</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </label>
+                <label class="field" for="appunti">Appunti
+                    <textarea class="input" id="appunti" name="appunti" rows="3"><?= htmlspecialchars($_POST['appunti'] ?? '') ?></textarea>
+                </label>
+                <button class="button button--ink button--block" type="submit">Aggiungi al calendario</button>
+            </form>
+        </section>
+
+        <!-- ---- prossimi appuntamenti personali ---- -->
+        <section class="panel">
+            <div class="panel__head">
+                <h2>Prossimi appuntamenti</h2>
+            </div>
+            <ul class="item-list">
+                <?php foreach ($prossimi as $app): ?>
+                    <?php [$giorno, $mese] = explode(' ', dataBreve($app['data'], false)); ?>
+                    <li class="with-chip" style="grid-template-columns: 56px minmax(0, 1fr)">
+                        <span class="date-chip"><b><?= $giorno ?></b><span><?= $mese ?></span></span>
+                        <span>
+                            <span class="item-list__title" style="display: block"><?= htmlspecialchars($app['titolo']) ?></span>
+                            <span class="muted"><?= htmlspecialchars(substr($app['ora'], 0, 5)) ?> · <?= htmlspecialchars(ucfirst($app['tipo'])) ?></span>
+                        </span>
+                    </li>
+                <?php endforeach; ?>
+                <?php if (empty($prossimi)): ?>
+                    <li class="item-list__empty">Nessun appuntamento personale.</li>
+                <?php endif; ?>
+            </ul>
+        </section>
+    </div>
+
+    <!-- ---- calendario ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <nav class="segmented" aria-label="Filtra per tipo di impegno">
+                <?php foreach ($filtriTipo as $valore => $etichetta): ?>
+                    <a href="<?= $valore === '' ? 'mostraImpegni.php' : '?tipo=' . urlencode($valore) ?>"
+                        class="segmented__btn <?= $tipoAttivo === $valore ? 'is-active' : '' ?>"
+                        <?= $tipoAttivo === $valore ? 'aria-current="true"' : '' ?>><?= $etichetta ?></a>
+                <?php endforeach; ?>
+            </nav>
+            <div class="legend" aria-label="Legenda colori">
+                <span><i style="background: #668041"></i>Allenamento</span>
+                <span><i style="background: #24371c"></i>Partita</span>
+                <span><i style="background: #cf9b4e"></i>Coppa</span>
+                <span><i style="background: #d2d1bd"></i>Riunione</span>
+                <span><i style="background: #fff; box-shadow: inset 0 0 0 1px #3d562a"></i>Personale</span>
+            </div>
+        </div>
+        <div class="calendar-wrap">
+            <div id="calendar"></div>
+        </div>
+    </section>
 </div>
 
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/@fullcalendar/core@6.1.15/locales/it.global.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const tipoAttuale = new URLSearchParams(window.location.search).get('tipo') ?? '';
-
-        const el = document.getElementById('calendar');
-
-        const calendar = new FullCalendar.Calendar(el, {
+        const calendar = new FullCalendar.Calendar(document.getElementById('calendar'), {
             initialView: 'dayGridMonth',
-            height: 1000,
-            width: "100%",
-            headerToolbar: {
-                start: 'prev,next today',
-                center: 'title',
-                end: 'tuttiBtn,allenamentoBtn,partiteBtn,coppaBtn,riunioneBtn,altroBtn'
-            },
-            customButtons: {
-                tuttiBtn: {
-                    text: 'Tutti',
-                    click: () => location.href = 'mostraImpegni.php'
-                },
-                allenamentoBtn: {
-                    text: 'Allenamento',
-                    click: () => location.href = '?tipo=allenamento'
-                },
-                partiteBtn: {
-                    text: 'Partite',
-                    click: () => location.href = '?tipo=partita'
-                },
-                coppaBtn: {
-                    text: 'Coppa',
-                    click: () => location.href = '?tipo=coppa'
-                },
-                riunioneBtn: {
-                    text: 'Riunione',
-                    click: () => location.href = '?tipo=riunione'
-                },
-                altroBtn: {
-                    text: 'Altro',
-                    click: () => location.href = '?tipo=altro'
-                },
-            },
+            locale: 'it',
+            firstDay: 1,
+            height: 'auto',
+            buttonText: { today: 'Oggi', month: 'Mese', week: 'Settimana' },
+            headerToolbar: { start: 'prev,next today', center: 'title', end: 'dayGridMonth,timeGridWeek' },
+            eventDisplay: 'block',
+            eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
             events: <?= json_encode($eventi) ?>
         });
         calendar.render();
-
-        const mappa = {
-            '': 'tuttiBtn',
-            'allenamento': 'allenamentoBtn',
-            'partita': 'partiteBtn',
-            'coppa': 'coppaBtn',
-            'riunione': 'riunioneBtn',
-            'altro': 'altroBtn'
-        };
-        const nomeAttivo = mappa[tipoAttuale] ?? 'tuttiBtn';
-        document.querySelector(`.fc-${nomeAttivo}-button`)?.classList.add('fc-button-active');
     });
 </script>
-</body>
 
-</html>
+<?php include __DIR__ . '/../admin/footerDashboard.php'; ?>

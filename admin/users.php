@@ -153,210 +153,184 @@ $users = User::findAllUsers();
 $titoloPagina = 'Gestione Utenti';
 
 include __DIR__ . '/headerDashboard.php';
-
 ?>
 
-<!-- ============ MAIN ============ -->
-<main class="dash-main">
-    <header class="dash-head">
-        <h1>Gestione Utenti</h1>
-        <p>Crea un nuovo utente e gestisci gli account esistenti.</p>
-    </header>
+<header class="dash-head">
+    <div class="dash-head__text">
+        <span class="dash-head__crumb">Area riservata / Utenti</span>
+        <h1>Gestione utenti</h1>
+        <p>Crea nuovi account e gestisci quelli esistenti.</p>
+    </div>
+</header>
 
-    <!-- messaggi di esito (prima venivano calcolati ma non mostrati) -->
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                <?php foreach ($errors as $e): ?>
-                    <li><?= htmlspecialchars($e) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-    <?php if ($success): ?>
-        <div class="alert alert-success"><?= htmlspecialchars($success) ?></div>
-    <?php endif; ?>
+<?php mostraEsito($errors, $success); ?>
 
+<?php
+$numAdmin = count(array_filter($users, fn($u) => $u['role'] === 'admin'));
+?>
+<div class="stat-strip">
+    <div class="stat"><span class="stat__value"><?= count($users) ?></span><span class="stat__label">Utenti registrati</span></div>
+    <div class="stat"><span class="stat__value"><?= count($users) - $numAdmin ?></span><span class="stat__label">Soci</span></div>
+    <div class="stat"><span class="stat__value"><?= $numAdmin ?></span><span class="stat__label">Amministratori</span></div>
+    <div class="stat"><span class="stat__value"><?= count($request) ?></span><span class="stat__label">Richieste informazioni</span></div>
+</div>
+
+<div class="dash-grid-form">
     <!-- ---- form nuovo utente ---- -->
-    <div class="alg-form-results">
-        <section class="dash-panel-form dash-formcard">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-user-plus"></i> Nuovo Utente</h2>
-            </div>
-            <div class="dash-formbody">
-                <!-- Serve per attivare la funzione di aggiunta utenti alla tabella tramite il form -->
-                <form action="" method="post">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                    <input type="hidden" name="action" value="create">
-                    <div class="mb-3">
-                        <label for="name">Nome</label>
-                        <input type="text" class="form-control" id="name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" minlength="8" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="role">Ruolo</label>
-                        <select name="role" id="role" class="form-select">
-                            <option value="client">Client</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
-                    <button class="btn btn-warning" type="submit">Crea utente</button>
-                </form>
-            </div>
-        </section>
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Nuovo utente</h2>
+        </div>
+        <form class="panel__body" action="" method="post">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <input type="hidden" name="action" value="create">
 
-        <!-- ---- tabella richieste informazioni ---- -->
-        <section class="dash-panel-info">
-            <div class="dash-panel-head">
-                <h2><i class="fas fa-users"></i> Richieste informazioni</h2>
-            </div>
-            <table class="dash-table">
+            <label class="field" for="name">Nome
+                <input type="text" class="input" id="name" name="name" value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="email">Email
+                <input type="email" class="input" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
+            </label>
+            <label class="field" for="password">Password
+                <input type="password" class="input" id="password" name="password" minlength="8" required>
+                <span class="field__hint">Almeno 8 caratteri</span>
+            </label>
+            <label class="field" for="role">Ruolo
+                <select name="role" id="role" class="input">
+                    <option value="client">Socio</option>
+                    <option value="admin">Amministratore</option>
+                </select>
+            </label>
+            <button class="button button--ink button--block" type="submit">Crea utente</button>
+        </form>
+    </section>
+
+    <!-- ---- richieste informazioni ---- -->
+    <section class="panel">
+        <div class="panel__head">
+            <h2>Richieste informazioni</h2>
+            <small><?= count($request) ?> totali</small>
+        </div>
+        <div class="table-scroll">
+            <table class="data-table">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Telefono</th>
-                        <th>Categoria</th>
-                        <th>Messaggio</th>
-                        <th>Data</th>
+                        <th scope="col">ID</th>
+                        <th scope="col">Nome</th>
+                        <th scope="col">Contatti</th>
+                        <th scope="col">Categoria</th>
+                        <th scope="col">Messaggio</th>
+                        <th scope="col">Data</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($request as $req): ?>
                         <tr>
                             <td>#<?= (int) $req['id'] ?></td>
-
+                            <td class="strong"><?= htmlspecialchars($req['name']) ?></td>
                             <td>
-                                <?= htmlspecialchars($req['name']) ?>
+                                <a href="mailto:<?= htmlspecialchars($req['email']) ?>"><?= htmlspecialchars($req['email']) ?></a><br>
+                                <span class="muted"><?= htmlspecialchars($req['phone']) ?></span>
                             </td>
-
-                            <td><?= htmlspecialchars($req['email']) ?></td>
-
-                            <td><?= htmlspecialchars($req['phone']) ?></td>
-
                             <td><?= htmlspecialchars($req['categoria']) ?></td>
-
-                            <td><?= htmlspecialchars($req['messaggio']) ?></td>
-
-                            <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
-                            <td><?= date('d M Y', strtotime($req['created_at'])) ?></td>
+                            <td><span class="clip" title="<?= htmlspecialchars($req['messaggio']) ?>"><?= htmlspecialchars($req['messaggio']) ?></span></td>
+                            <td style="white-space: nowrap"><?= dataBreve($req['created_at']) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     <?php if (empty($request)): ?>
                         <tr>
-                            <td colspan="7" class="dash-empty">Nessuna nuova richiesta di informazioni</td>
+                            <td colspan="6" class="center">Nessuna nuova richiesta di informazioni.</td>
                         </tr>
                     <?php endif; ?>
                 </tbody>
             </table>
-        </section>
-    </div>
-
-    <!-- ---- tabella utenti ---- -->
-    <section class="dash-panel">
-        <div class="dash-panel-head">
-            <h2><i class="fas fa-users"></i> Utenti registrati</h2>
         </div>
-        <table class="dash-table">
+    </section>
+</div>
+
+<!-- ---- tabella utenti ---- -->
+<section class="panel">
+    <div class="panel__head">
+        <h2>Utenti registrati</h2>
+        <small><?= count($users) ?> account</small>
+    </div>
+    <div class="table-scroll">
+        <table class="data-table">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Email</th>
-                    <th>Ruolo</th>
-                    <th>Iscritto</th>
-                    <th>Azioni</th>
+                    <th scope="col">ID</th>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Ruolo</th>
+                    <th scope="col">Iscritto il</th>
+                    <th scope="col" class="num">Azioni</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($users as $u): ?>
+                    <?php $sonoIo = (int) $u['id'] === (int) $user['id']; ?>
                     <tr>
-                        <!-- prendo l'id dell'utente singolo -->
                         <td>#<?= (int) $u['id'] ?></td>
-
-                        <td>
+                        <td class="strong">
                             <?= htmlspecialchars($u['name']) ?>
-                            <!-- Se siamo noi gli utenti in tabella colora di warning -->
-                            <?php if ((int) $u['id'] === (int) $user['id']): ?>
-                                <small class="text-warning">(tu)</small>
-                            <?php endif ?>
+                            <?php if ($sonoIo): ?><span class="pill pill--wait">Tu</span><?php endif; ?>
                         </td>
-
                         <td><?= htmlspecialchars($u['email']) ?></td>
-
-                        <td><?= htmlspecialchars($u['role']) ?></td>
-
-                        <!-- rappresentazione di quando abbiamo loggato/joinato sottoforma di date-->
-                        <td><?= date('d M Y', strtotime($u['created_at'])) ?></td>
-
-                        <td class="text-end">
-                            <?php if ((int) $u['id'] !== (int) $user['id']): ?>
-
-                                <!-- PULSANTE DI EDIT -->
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-info"
-                                    aria-label="Modifica utente"
-                                    title="Modifica utente"
-                                    data-bs-toggle="modal" data-bs-target="#modalEdit<?= (int) $u['id'] ?>">
-                                    <i class="fas fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/UserEditModal.php'; ?>
-
-                                <!-- PULSANTE DI DELETE -->
-                                <button
-                                    type="button"
-                                    class="btn btn-sm btn-outline-danger"
-                                    title="Elimina utente"
-                                    aria-label="Elimina utente"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalDelete<?= (int) $u['id'] ?>">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
-                                </button>
-                                <?php include __DIR__ . '/modali/UserDeleteModal.php'; ?>
-
-                                <!-- TOGGLE ROLE  ENT_QUOTES -> converte anche gli apostrofi cosi la stringa JS non si rompe -->
-                                <form action="" method="post" class="d-inline">
-                                    <input type="hidden" name="action" value="toggle_role">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                                    <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
-                                    <input type="hidden" name="new_role" value="<?= $u['role'] === 'admin' ? 'client' : 'admin' ?>">
-                                    <button type="submit"
-                                        class="btn btn-sm btn-outline-warning"
-                                        title="Make <?= $u['role'] === 'admin' ? 'client' : 'admin' ?>"
-                                        aria-label="Cambia ruolo"
-                                        onclick="return confirm('Change role of <?= htmlspecialchars($u['name'], ENT_QUOTES) ?>?');">
-                                        <i class="fas fa-exchange-alt" aria-hidden="true"></i>
-                                    </button>
-                                </form>
-
+                        <td>
+                            <?= $u['role'] === 'admin'
+                                ? '<span class="pill pill--dark">Amministratore</span>'
+                                : '<span class="pill pill--ok">Socio</span>' ?>
+                        </td>
+                        <td style="white-space: nowrap"><?= dataBreve($u['created_at']) ?></td>
+                        <td class="num">
+                            <?php if ($sonoIo): ?>
+                                <span class="muted">Account corrente</span>
                             <?php else: ?>
-                                <span class="dash-current">— sei tu —</span>
+                                <div class="actions">
+                                    <button type="button" class="icon-btn" title="Modifica utente" aria-label="Modifica <?= htmlspecialchars($u['name']) ?>"
+                                        data-bs-toggle="modal" data-bs-target="#modalEdit<?= (int) $u['id'] ?>">
+                                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                    </button>
+
+                                    <!-- cambio ruolo (toggle) -->
+                                    <form action="" method="post">
+                                        <input type="hidden" name="action" value="toggle_role">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                                        <input type="hidden" name="user_id" value="<?= (int) $u['id'] ?>">
+                                        <input type="hidden" name="new_role" value="<?= $u['role'] === 'admin' ? 'client' : 'admin' ?>">
+                                        <button type="submit" class="icon-btn"
+                                            title="Rendi <?= $u['role'] === 'admin' ? 'socio' : 'amministratore' ?>"
+                                            aria-label="Cambia ruolo di <?= htmlspecialchars($u['name']) ?>"
+                                            onclick="return confirm('Cambiare il ruolo di <?= htmlspecialchars($u['name'], ENT_QUOTES) ?>?');">
+                                            <i class="fa-solid fa-right-left" aria-hidden="true"></i>
+                                        </button>
+                                    </form>
+
+                                    <button type="button" class="icon-btn icon-btn--danger" title="Elimina utente" aria-label="Elimina <?= htmlspecialchars($u['name']) ?>"
+                                        data-bs-toggle="modal" data-bs-target="#modalDelete<?= (int) $u['id'] ?>">
+                                        <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                                    </button>
+                                </div>
                             <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 <?php if (empty($users)): ?>
                     <tr>
-                        <td colspan="6" class="dash-empty">Nessun utente registrato.</td>
+                        <td colspan="6" class="center">Nessun utente registrato.</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
         </table>
-    </section>
-</main>
+    </div>
+</section>
 
-</div>
+<!-- modali: stanno fuori dalla tabella, una coppia per ogni utente -->
+<?php foreach ($users as $u): ?>
+    <?php if ((int) $u['id'] !== (int) $user['id']): ?>
+        <?php include __DIR__ . '/modali/UserEditModal.php'; ?>
+        <?php include __DIR__ . '/modali/UserDeleteModal.php'; ?>
+    <?php endif; ?>
+<?php endforeach; ?>
 
-<script src="<?= BASE_URL ?>/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
-</body>
-
-</html>
+<?php include __DIR__ . '/footerDashboard.php'; ?>
