@@ -28,7 +28,7 @@ $vociMenu = [
 
     <link rel="stylesheet" href="<?= BASE_URL ?>/node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
-    <title>Olimpia Sport Club — Gestionale società sportiva</title>
+    <title>Gestionale società sportiva</title>
 </head>
 
 <body>

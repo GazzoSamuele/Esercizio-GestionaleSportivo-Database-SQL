@@ -16,77 +16,77 @@ $partite = Calendar::findAllPartite();  // tutte le partite
 
 ?>
 
-    <?php if($user['role'] === 'admin'){ 
+<?php if ($user['role'] === 'admin') {
 
-        // rappresentano tutte le chiamate da fare per avere i dati da inseririre nei grafici di chart.js
-        $incassi      = Purchases::incassoPerMese();
-        $ordiniStato  = Purchases::contaPerStato();
-        $topProdotti  = Purchases::topProdotti();
-        $iscritti     = User::iscrittiPerMese();
-        $quote        = User::contaQuote();
-        $classifica   = Calendar::bilancioRisultati();
-        $perCategoria = Calendar::partitePerCategoria();
-        $numRichieste = InfoRequest::countAll();
+    // rappresentano tutte le chiamate da fare per avere i dati da inseririre nei grafici di chart.js
+    $incassi      = Purchases::incassoPerMese();
+    $ordiniStato  = Purchases::contaPerStato();
+    $topProdotti  = Purchases::topProdotti();
+    $iscritti     = User::iscrittiPerMese();
+    $quote        = User::contaQuote();
+    $classifica   = Calendar::bilancioRisultati();
+    $perCategoria = Calendar::partitePerCategoria();
+    $numRichieste = InfoRequest::countAll();
 
-        // partite per categorie 
-        $catLabels = array_column($perCategoria, 'categoria'); 
-        $catValori = array_column($perCategoria, 'total');  
+    // partite per categorie 
+    $catLabels = array_column($perCategoria, 'categoria');
+    $catValori = array_column($perCategoria, 'total');
 
-        // incassi per mese
-        $incassiLabels = array_column($incassi, 'mese');
-        $incassiValori = array_column($incassi, 'totale');
+    // incassi per mese
+    $incassiLabels = array_column($incassi, 'mese');
+    $incassiValori = array_column($incassi, 'totale');
 
-        // prodotti più venduti
-        $prodottiLabels = array_column($topProdotti, 'name');
-        $prodottiValori = array_column($topProdotti, 'total');
+    // prodotti più venduti
+    $prodottiLabels = array_column($topProdotti, 'name');
+    $prodottiValori = array_column($topProdotti, 'total');
 
-        // classifica delle scquadre
-        $classificaLabels = array_column($classifica, 'squadra');
-        $classificaValori = array_column($classifica, 'punti_totali');
+    // classifica delle scquadre
+    $classificaLabels = array_column($classifica, 'squadra');
+    $classificaValori = array_column($classifica, 'punti_totali');
 
-        // rappresentazione degli iscritti per mese
-        $iscrittiLabels = array_column($iscritti, 'mese');
-        $iscrittiValori = array_column($iscritti, 'totale');
+    // rappresentazione degli iscritti per mese
+    $iscrittiLabels = array_column($iscritti, 'mese');
+    $iscrittiValori = array_column($iscritti, 'totale');
 
-        // rappresentazione degli ordini in sospeso
-        $inSospeso = 0;
-        foreach ($ordiniStato as $riga) {
-            if ($riga['status'] === 'pending') {
-                $inSospeso = $riga['total'];
-            }
+    // rappresentazione degli ordini in sospeso
+    $inSospeso = 0;
+    foreach ($ordiniStato as $riga) {
+        if ($riga['status'] === 'pending') {
+            $inSospeso = $riga['total'];
         }
-        // si creano 3 variabili perchè fetchALL mi restuisce un array singolo con tutti i dati
-        $quoteScadute    = $quote[0]['conteggio_rifiutato'];
-        $quoteValide     = $quote[0]['conteggio_approvati'];
-        $quoteInScadenza = $quote[0]['conteggio_InScadenza'];
     }
+    // si creano 3 variabili perchè fetchALL mi restuisce un array singolo con tutti i dati
+    $quoteScadute    = $quote[0]['conteggio_rifiutato'];
+    $quoteValide     = $quote[0]['conteggio_approvati'];
+    $quoteInScadenza = $quote[0]['conteggio_InScadenza'];
+}
 ?>
 
-    <?php if ($user['role'] === 'client') {
+<?php if ($user['role'] === 'client') {
 
-        // prendo le comunicazioni
-        $comunicazioni = News::findByTipo('comunicazione');
-        // rappresenta le comunicazioni filtrate a massimo 3 visulizzate in pagina
-        $comunicazioni = array_slice(array_reverse($comunicazioni), 0, 3);
+    // prendo le comunicazioni
+    $comunicazioni = News::findByTipo('comunicazione');
+    // rappresenta le comunicazioni filtrate a massimo 3 visulizzate in pagina
+    $comunicazioni = array_slice(array_reverse($comunicazioni), 0, 3);
 
-        // prende tutti gli acquisti attraverso l'user selezionato
-        $tuttiOrdini = Purchases::findByUser($user['id']);
-        $numOrdini = count($tuttiOrdini);                                   // quanti ordini ha fatto
-         // rappresenta solo alcuni degli acquisti fatti (non tutti)
-        $mieiOrdini = array_slice(array_reverse($tuttiOrdini), 0, 4);
+    // prende tutti gli acquisti attraverso l'user selezionato
+    $tuttiOrdini = Purchases::findByUser($user['id']);
+    $numOrdini = count($tuttiOrdini);                                   // quanti ordini ha fatto
+    // rappresenta solo alcuni degli acquisti fatti (non tutti)
+    $mieiOrdini = array_slice(array_reverse($tuttiOrdini), 0, 4);
 
-        $prossimiImpegni = Impegni::findProssimiImpegni();
-        $prossimoImpegno = $prossimiImpegni[0] ?? null;                     // il primo impegno futuro
+    $prossimiImpegni = Impegni::findProssimiImpegni();
+    $prossimoImpegno = $prossimiImpegni[0] ?? null;                     // il primo impegno futuro
 
-        // scadenza quota e giorni mancanti
-        $quotaScadenza = User::quotaScadenza($user['id']);
-        $giorniAllaScadenza = null;
-        if ($quotaScadenza) {
-            $oggi = new DateTime('today');
-            $scad = new DateTime($quotaScadenza);
-            $giorniAllaScadenza = (int) $oggi->diff($scad)->format('%r%a'); // giorni alla scadenza (con segno)
-        }
+    // scadenza quota e giorni mancanti
+    $quotaScadenza = User::quotaScadenza($user['id']);
+    $giorniAllaScadenza = null;
+    if ($quotaScadenza) {
+        $oggi = new DateTime('today');
+        $scad = new DateTime($quotaScadenza);
+        $giorniAllaScadenza = (int) $oggi->diff($scad)->format('%r%a'); // giorni alla scadenza (con segno)
     }
+}
 ?>
 
 <?php include __DIR__ . '/admin/headerDashboard.php'; ?>
@@ -131,7 +131,7 @@ $oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('
             </div>
         </section>
 
-        <section class="panel">
+        <section class="panel-admin-quotes">
             <div class="panel__head">
                 <h2>Quote associative</h2>
                 <small><?= (int) $quoteValide + (int) $quoteInScadenza + (int) $quoteScadute ?> soci</small>
@@ -150,20 +150,36 @@ $oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('
     <!-- ---- altri grafici ---- -->
     <div class="dash-grid-2">
         <section class="panel">
-            <div class="panel__head"><h2>Partite per categoria</h2></div>
-            <div class="panel__body"><div class="chart-box"><canvas id="chartCategorie" aria-label="Grafico partite per categoria" role="img"></canvas></div></div>
+            <div class="panel__head">
+                <h2>Partite per categoria</h2>
+            </div>
+            <div class="panel__body">
+                <div class="chart-box"><canvas id="chartCategorie" aria-label="Grafico partite per categoria" role="img"></canvas></div>
+            </div>
         </section>
         <section class="panel">
-            <div class="panel__head"><h2>Classifica squadre</h2><small>Punti</small></div>
-            <div class="panel__body"><div class="chart-box"><canvas id="chartCalendario" aria-label="Grafico classifica squadre" role="img"></canvas></div></div>
+            <div class="panel__head">
+                <h2>Classifica squadre</h2><small>Punti</small>
+            </div>
+            <div class="panel__body">
+                <div class="chart-box"><canvas id="chartCalendario" aria-label="Grafico classifica squadre" role="img"></canvas></div>
+            </div>
         </section>
         <section class="panel">
-            <div class="panel__head"><h2>Prodotti più venduti</h2></div>
-            <div class="panel__body"><div class="chart-box"><canvas id="chartProdotti" aria-label="Grafico prodotti più venduti" role="img"></canvas></div></div>
+            <div class="panel__head">
+                <h2>Prodotti più venduti</h2>
+            </div>
+            <div class="panel__body">
+                <div class="chart-box"><canvas id="chartProdotti" aria-label="Grafico prodotti più venduti" role="img"></canvas></div>
+            </div>
         </section>
         <section class="panel">
-            <div class="panel__head"><h2>Iscritti per mese</h2></div>
-            <div class="panel__body"><div class="chart-box"><canvas id="chartIscritti" aria-label="Grafico iscritti per mese" role="img"></canvas></div></div>
+            <div class="panel__head">
+                <h2>Iscritti per mese</h2>
+            </div>
+            <div class="panel__body">
+                <div class="chart-box"><canvas id="chartIscritti" aria-label="Grafico iscritti per mese" role="img"></canvas></div>
+            </div>
         </section>
     </div>
 
@@ -174,13 +190,34 @@ $oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('
         Chart.defaults.borderColor = '#eef0e6';
         Chart.defaults.plugins.legend.display = false;
         const PALETTE = ['#668041', '#cf9b4e', '#24371c', '#adb97c', '#a9721f', '#3d562a'];
-        const base = { maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { precision: 0 } }, x: { grid: { display: false } } } };
+        const base = {
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        };
 
         new Chart(document.getElementById('chartIncassi'), {
             type: 'bar',
             data: {
                 labels: <?= json_encode($incassiLabels) ?>,
-                datasets: [{ label: 'Incassi €', data: <?= json_encode($incassiValori) ?>, backgroundColor: '#668041', borderRadius: 4, maxBarThickness: 56 }]
+                datasets: [{
+                    label: 'Incassi €',
+                    data: <?= json_encode($incassiValori) ?>,
+                    backgroundColor: '#668041',
+                    borderRadius: 4,
+                    maxBarThickness: 56
+                }]
             },
             options: base
         });
@@ -189,16 +226,44 @@ $oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('
             type: 'bar',
             data: {
                 labels: <?= json_encode($catLabels) ?>,
-                datasets: [{ label: 'Partite', data: <?= json_encode($catValori) ?>, backgroundColor: '#668041', borderRadius: 4, maxBarThickness: 18 }]
+                datasets: [{
+                    label: 'Partite',
+                    data: <?= json_encode($catValori) ?>,
+                    backgroundColor: '#668041',
+                    borderRadius: 4,
+                    maxBarThickness: 18
+                }]
             },
-            options: { ...base, indexAxis: 'y', scales: { x: { beginAtZero: true, ticks: { precision: 0 } }, y: { grid: { display: false } } } }
+            options: {
+                ...base,
+                indexAxis: 'y',
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
         });
 
         new Chart(document.getElementById('chartCalendario'), {
             type: 'bar',
             data: {
                 labels: <?= json_encode($classificaLabels) ?>,
-                datasets: [{ label: 'Punti', data: <?= json_encode($classificaValori) ?>, backgroundColor: '#24371c', borderRadius: 4, maxBarThickness: 40 }]
+                datasets: [{
+                    label: 'Punti',
+                    data: <?= json_encode($classificaValori) ?>,
+                    backgroundColor: '#24371c',
+                    borderRadius: 4,
+                    maxBarThickness: 40
+                }]
             },
             options: base
         });
@@ -207,16 +272,39 @@ $oggiTesto = ucfirst($giorniSettimana[(int) date('w')]) . ' ' . dataBreve(date('
             type: 'doughnut',
             data: {
                 labels: <?= json_encode($prodottiLabels) ?>,
-                datasets: [{ label: 'Prodotti venduti', data: <?= json_encode($prodottiValori) ?>, backgroundColor: PALETTE, borderColor: '#fff', borderWidth: 2 }]
+                datasets: [{
+                    label: 'Prodotti venduti',
+                    data: <?= json_encode($prodottiValori) ?>,
+                    backgroundColor: PALETTE,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
             },
-            options: { maintainAspectRatio: false, cutout: '62%', plugins: { legend: { display: true, position: 'right' } } }
+            options: {
+                maintainAspectRatio: false,
+                cutout: '62%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'right'
+                    }
+                }
+            }
         });
 
         new Chart(document.getElementById('chartIscritti'), {
             type: 'line',
             data: {
                 labels: <?= json_encode($iscrittiLabels) ?>,
-                datasets: [{ label: 'Iscritti', data: <?= json_encode($iscrittiValori) ?>, borderColor: '#668041', backgroundColor: 'rgba(102,128,65,.12)', fill: true, tension: .3, pointRadius: 3 }]
+                datasets: [{
+                    label: 'Iscritti',
+                    data: <?= json_encode($iscrittiValori) ?>,
+                    borderColor: '#668041',
+                    backgroundColor: 'rgba(102,128,65,.12)',
+                    fill: true,
+                    tension: .3,
+                    pointRadius: 3
+                }]
             },
             options: base
         });

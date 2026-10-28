@@ -37,7 +37,7 @@ if ($user['role'] === 'admin') {
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>/assets/css/dashboard-style.css">
     <link rel="icon" type="image/png" sizes="32x32" href="<?= BASE_URL ?>/favicons/apple-touch-icon-72x72.png">
-    <title><?= htmlspecialchars($titoloPagina) ?> — Gestionale Società Sportiva</title>
+    <title><?= htmlspecialchars($titoloPagina) ?> | Gestionale Società Sportiva</title>
 </head>
 
 <body>
