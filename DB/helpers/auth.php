@@ -7,16 +7,15 @@ require_once __DIR__ . '/../classes/Db.php';
 // una funzione con 'void' non restituisce nulla
 function requireLogin(): void
 {
-    if(session_status() === PHP_SESSION_NONE){
+    if (session_status() === PHP_SESSION_NONE) {
 
         session_start();
     }
-     
-    if(!isset($_SESSION['user_id'])){
 
-    header('Location: login.php');
-    exit;
+    if (!isset($_SESSION['user_id'])) {
 
+        header('Location: ' . BASE_URL . '/login.php');
+        exit;
     }
 }
 
@@ -25,12 +24,11 @@ function requireAdmin(): void
 {
     requireLogin();
 
-    if(($_SESSION['user_role'] ?? '') !== 'admin'){
+    if (($_SESSION['user_role'] ?? '') !== 'admin') {
 
-        header('Location: index.php');
+        header('Location: ' . BASE_URL . '/index.php');
         exit;
     }
-
 }
 
 // Blocca i client con la quota scaduta. Gli admin sono esenti.
@@ -39,7 +37,7 @@ function requireQuotaValida(): void
     requireLogin();
 
     // gli admin non pagano la quota → passano sempre
-    if(($_SESSION['user_role'] ?? '') === 'admin'){
+    if (($_SESSION['user_role'] ?? '') === 'admin') {
         return;
     }
 
@@ -49,7 +47,7 @@ function requireQuotaValida(): void
     $scadenza = $stmt->fetchColumn();   // la data oppure false
 
     // quota assente o passata → fuori
-    if(empty($scadenza) || $scadenza < date('Y-m-d')){
+    if (empty($scadenza) || $scadenza < date('Y-m-d')) {
         header('Location: ' . BASE_URL . '/quotaScaduta.php');
         exit;
     }
@@ -58,15 +56,14 @@ function requireQuotaValida(): void
 // la funzione restuisce un array ma non è obbligatorio
 function currentUser(): ?array
 {
-     if(session_status() === PHP_SESSION_NONE){
+    if (session_status() === PHP_SESSION_NONE) {
 
         session_start();
     }
-     
-    if(!isset($_SESSION['user_id'])){
 
-    return null;
+    if (!isset($_SESSION['user_id'])) {
 
+        return null;
     }
 
     return [
@@ -77,26 +74,24 @@ function currentUser(): ?array
     ];
 }
 
-function csrfToken():  string
+function csrfToken(): string
 {
-     if(session_status() === PHP_SESSION_NONE){
+    if (session_status() === PHP_SESSION_NONE) {
 
         session_start();
     }
 
-    if(empty($_SESSION['csrf_token'])) {
-    
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    if (empty($_SESSION['csrf_token'])) {
 
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
 
     return $_SESSION['csrf_token'];
-    
 }
 
 function verificaCsrf(): void
 {
-    if(session_status() === PHP_SESSION_NONE){
+    if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
 
@@ -111,7 +106,7 @@ function verificaCsrf(): void
 
 function logOut(): void
 {
-    if(session_status() === PHP_SESSION_NONE){
+    if (session_status() === PHP_SESSION_NONE) {
 
         session_start();
     }
@@ -119,8 +114,6 @@ function logOut(): void
     $_SESSION = [];
     session_destroy();
 
-    header('Location: login.php');
+    header('Location: ' . BASE_URL . '/login.php');
     exit;
 }
-
-?>

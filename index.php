@@ -5,24 +5,25 @@ require_once __DIR__ . '/DB/classes/Products.php';
 $shopProdotti = Products::findAllProducts();
 
 // stampa la foto di un prodotto reale nel riquadro; se manca, lascia il placeholder grigio
-function shopThumb(array $prodotti, int $i): void {
-    if (!empty($prodotti[$i]['image_path'])) {
-        echo '<img class="thumb" src="' . htmlspecialchars($prodotti[$i]['image_path'])
-           . '" alt="' . htmlspecialchars($prodotti[$i]['name'] ?? '') . '">';
-    } else {
-        echo '<span class="ph thumb"></span>';
-    }
+function shopThumb(array $prodotti, int $i): void
+{
+  if (!empty($prodotti[$i]['image_path'])) {
+    echo '<img class="thumb" src="' . htmlspecialchars($prodotti[$i]['image_path'])
+      . '" alt="' . htmlspecialchars($prodotti[$i]['name'] ?? '') . '">';
+  } else {
+    echo '<span class="ph thumb"></span>';
+  }
 }
 ?>
 
-<?php include __DIR__ . '/includes/header.php'?>
+<?php include __DIR__ . '/includes/header.php' ?>
 
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="container_hero">
     <video autoplay loop muted playsinline class="video-background">
-    <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
-  </video>
+      <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
+    </video>
     <div class="hero_content">
       <h1>Gestionale società sportiva</h1>
       <p class="lead">Informa, fa conoscere e rende più facile l'accesso ai risultati delle partite per chi fa parte del club.</p>
@@ -48,42 +49,42 @@ function shopThumb(array $prodotti, int $i): void {
     <div class="main-title-sez1">
       <h2>La nostra società</h2>
     </div>
-    
-      <div class="split">
-        <div class="split__text">
-          <h3>Le Origini</h3>
-          <p>Tutto ha inizio nel 1985, quando un gruppo di appassionati decide di fondare l'Olimpia Sport Club. 
-            L'obiettivo era semplice ma ambizioso: creare un punto di riferimento per lo sport sul territorio e promuovere uno stile di vita sano e condiviso.</p>
 
-          <h3>La Crescita</h3>
-          <p>Anno dopo anno, il club è cresciuto fino a contare oltre 350 iscritti e uno staff tecnico altamente qualificato. 
-            Le vittorie sul campo e il consolidamento del settore giovanile hanno trasformato l'entusiasmo iniziale in una realtà solida e organizzata.</p>
+    <div class="split">
+      <div class="split__text">
+        <h3>Le Origini</h3>
+        <p>Tutto ha inizio nel 1985, quando un gruppo di appassionati decide di fondare l'Olimpia Sport Club.
+          L'obiettivo era semplice ma ambizioso: creare un punto di riferimento per lo sport sul territorio e promuovere uno stile di vita sano e condiviso.</p>
 
-          <h3>Oggi</h3>
-          <p>Oggi l'Olimpia Sport Club è molto più di una società sportiva: è una grande famiglia basata su rispetto, inclusione e lealtà. 
-            Il viaggio continua, pronti a scrivere insieme le prossime pagine di questa storia.</p>
-        </div>
-        <img class="split__img" src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="Storia della società">
+        <h3>La Crescita</h3>
+        <p>Anno dopo anno, il club è cresciuto fino a contare oltre 350 iscritti e uno staff tecnico altamente qualificato.
+          Le vittorie sul campo e il consolidamento del settore giovanile hanno trasformato l'entusiasmo iniziale in una realtà solida e organizzata.</p>
+
+        <h3>Oggi</h3>
+        <p>Oggi l'Olimpia Sport Club è molto più di una società sportiva: è una grande famiglia basata su rispetto, inclusione e lealtà.
+          Il viaggio continua, pronti a scrivere insieme le prossime pagine di questa storia.</p>
       </div>
+      <img class="split__img" src="<?= BASE_URL ?>/assets/img/storia-club-index.png" alt="Storia della società">
+    </div>
 
-      <div class="split split--reverse">
-        <div class="split__text">
-          <h3>Il Cuore del Club</h3>
-          <p>La nostra Club House è molto più di una struttura: è il punto di ritrovo ufficiale per atleti, famiglie e tifosi dell'Olimpia Sport Club. 
-            Uno spazio accogliente e informale pensato per rilassarsi, condividere la passione per lo sport e vivere la vita del club anche fuori dal campo.</p>
+    <div class="split split--reverse">
+      <div class="split__text">
+        <h3>Il Cuore del Club</h3>
+        <p>La nostra Club House è molto più di una struttura: è il punto di ritrovo ufficiale per atleti, famiglie e tifosi dell'Olimpia Sport Club.
+          Uno spazio accogliente e informale pensato per rilassarsi, condividere la passione per lo sport e vivere la vita del club anche fuori dal campo.</p>
 
-            <h3>Spazi e Servizi</h3>
-            <ul style="list-style: none">
-                <li><strong>Area Relax & Ristoro:</strong> Un bar interno attrezzato per colazioni, spuntini post-allenamento o per seguire insieme le partite.</li>
-                <li><strong>Zona Studio e Smart Working:</strong> Tavoli con connessione Wi-Fi gratuita, ideali per i ragazzi che aspettano gli allenamenti o per i genitori.</li>
-                <li><strong>Eventi e Riunioni:</strong> Una sala polifunzionale per assemblee, compleanni e serate sociali.</li>
-            </ul>
-            <h3>Punto Ritiro Store</h3>
-              <p>Qui si trova anche la zona dedicata al ritiro dei prodotti acquistati online. Che si tratti del kit ufficiale da gioco, 
-                dell'abbigliamento da allenamento o del merchandising del club, il ritiro è rapido, gratuito e assistito dal nostro staff negli orari di apertura.</p>
-        </div>
-        <img class="split__img" src="<?= BASE_URL ?>/assets/img/club-house.png" alt="Club house della società">
+        <h3>Spazi e Servizi</h3>
+        <ul style="list-style: none">
+          <li><strong>Area Relax & Ristoro:</strong> Un bar interno attrezzato per colazioni, spuntini post-allenamento o per seguire insieme le partite.</li>
+          <li><strong>Zona Studio e Smart Working:</strong> Tavoli con connessione Wi-Fi gratuita, ideali per i ragazzi che aspettano gli allenamenti o per i genitori.</li>
+          <li><strong>Eventi e Riunioni:</strong> Una sala polifunzionale per assemblee, compleanni e serate sociali.</li>
+        </ul>
+        <h3>Punto Ritiro Store</h3>
+        <p>Qui si trova anche la zona dedicata al ritiro dei prodotti acquistati online. Che si tratti del kit ufficiale da gioco,
+          dell'abbigliamento da allenamento o del merchandising del club, il ritiro è rapido, gratuito e assistito dal nostro staff negli orari di apertura.</p>
       </div>
+      <img class="split__img" src="<?= BASE_URL ?>/assets/img/club-house.png" alt="Club house della società">
+    </div>
   </div>
 </section>
 
@@ -100,7 +101,7 @@ function shopThumb(array $prodotti, int $i): void {
         <p>Risultati recenti e calendario delle categorie di giocatori, sempre aggiornati.</p>
         <a class="link" href="calendario.php">Vai al Calendario →</a>
       </div>
-      
+
       <div class="svc">
         <span class="icon">📝</span>
         <h3>Iscrizione squadre</h3>
@@ -133,42 +134,16 @@ function shopThumb(array $prodotti, int $i): void {
     <div class="tab-panel" data-panel="generali">
       <div class="table">
         <table>
-            <thead>
-              <tr>
-                <th>Stagione</th>
-                <th>Categoria</th>
-                <th>Risultato</th>
-                <th>Note</th>
-              </tr>
+          <thead>
+            <tr>
+              <th>Stagione</th>
+              <th>Categoria</th>
+              <th>Risultato</th>
+              <th>Note</th>
+            </tr>
           </thead>
           <tbody>
-          <?php for($i = 0; $i < 5; $i++): ?>
-            <tr>
-              <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
-              <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
-              <td><?= htmlspecialchars($risultati[array_rand($risultati)]) ?></td>
-              <td><?= htmlspecialchars($note[array_rand($note)]) ?></td>
-            </tr>
-          <?php endfor; ?>
-        </tbody>
-      </table>
-      </div>
-    </div>
-
-    <!-- pannello 2 -->
-    <div class="tab-panel" data-panel="attuali" hidden>
-      <div class="table">
-        <table>
-            <thead>
-              <tr>
-                <th>Stagione</th>
-                <th>Categoria</th>
-                <th>Risultato</th>
-                <th>Note</th>
-              </tr>
-          </thead>
-            <tbody>
-            <?php for($i = 0; $i < 5; $i++): ?>
+            <?php for ($i = 0; $i < 5; $i++): ?>
               <tr>
                 <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
                 <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
@@ -177,24 +152,50 @@ function shopThumb(array $prodotti, int $i): void {
               </tr>
             <?php endfor; ?>
           </tbody>
-      </table>
+        </table>
+      </div>
+    </div>
+
+    <!-- pannello 2 -->
+    <div class="tab-panel" data-panel="attuali" hidden>
+      <div class="table">
+        <table>
+          <thead>
+            <tr>
+              <th>Stagione</th>
+              <th>Categoria</th>
+              <th>Risultato</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php for ($i = 0; $i < 5; $i++): ?>
+              <tr>
+                <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
+                <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
+                <td><?= htmlspecialchars($risultati[array_rand($risultati)]) ?></td>
+                <td><?= htmlspecialchars($note[array_rand($note)]) ?></td>
+              </tr>
+            <?php endfor; ?>
+          </tbody>
+        </table>
       </div>
     </div>
 
     <!-- pannello 3 -->
     <div class="tab-panel" data-panel="giocatori" hidden>
       <div class="table">
-       <table>
-            <thead>
-              <tr>
-                <th>Stagione</th>
-                <th>Categoria</th>
-                <th>Nome</th>
-                <th>Ruolo</th>
-              </tr>
+        <table>
+          <thead>
+            <tr>
+              <th>Stagione</th>
+              <th>Categoria</th>
+              <th>Nome</th>
+              <th>Ruolo</th>
+            </tr>
           </thead>
           <tbody>
-            <?php for($i = 0; $i < 5; $i++): ?>
+            <?php for ($i = 0; $i < 5; $i++): ?>
               <tr>
                 <td><?= htmlspecialchars($stagioni[array_rand($stagioni)]) ?></td>
                 <td><?= htmlspecialchars($categorie[array_rand($categorie)]) ?></td>
@@ -203,7 +204,7 @@ function shopThumb(array $prodotti, int $i): void {
               </tr>
             <?php endfor; ?>
           </tbody>
-      </table>
+        </table>
       </div>
     </div>
 
@@ -224,12 +225,12 @@ function shopThumb(array $prodotti, int $i): void {
         <div class="shop__item"><b>Attrezzatura giocatore</b></div>
         <div class="shop__item"><b>Attrezzatura portieri</b></div>
         <div class="shop__item"><b>Borsoni della società</b></div>
-        
+
       </div>
       <div class="accordion">
 
         <div class="acc">
-          <button type="button" class="acc__head"> Come avviene il pagamento?
+          <button type="button" class="acc__head" aria-expanded="false"> Come avviene il pagamento?
             <span class="acc__icon">+</span>
           </button>
           <div class="acc__body">
@@ -238,14 +239,16 @@ function shopThumb(array $prodotti, int $i): void {
         </div>
 
         <div class="acc">
-          <button type="button" class="acc__head">Dove ritiro i prodotti? 
+          <button type="button" class="acc__head" aria-expanded="false">Dove ritiro i prodotti?
             <span class="acc__icon">+</span>
           </button>
-          <div class="acc__body"><p>Direttamente presso la club house della società.</p></div>
-       </div>
+          <div class="acc__body">
+            <p>Direttamente presso la club house della società.</p>
+          </div>
+        </div>
 
         <div class="acc">
-          <button type="button" class="acc__head"> Quali categorie di prodotti vendete?
+          <button type="button" class="acc__head" aria-expanded="false"> Quali categorie di prodotti vendete?
             <span class="acc__icon">+</span>
           </button>
           <div class="acc__body">
@@ -254,18 +257,20 @@ function shopThumb(array $prodotti, int $i): void {
         </div>
 
         <div class="acc">
-          <button type="button" class="acc__head">Come scelgo la taglia giusta?
+          <button type="button" class="acc__head" aria-expanded="false">Come scelgo la taglia giusta?
             <span class="acc__icon">+</span>
           </button>
-          <div class="acc__body"><p>Puoi venire direttamente al club a testare il tuo prodotto durente un allenamento oppure puoi scrivere all'allenatore per avere maggiori informazioni sull'acquisto</p></div>
-       </div>
+          <div class="acc__body">
+            <p>Puoi venire direttamente al club a testare il tuo prodotto durente un allenamento oppure puoi scrivere all'allenatore per avere maggiori informazioni sull'acquisto</p>
+          </div>
+        </div>
 
-    </div>
+      </div>
 
-    <div>
-      <a href="prodotti.php" class="btn btn--accent">Scopri di più nella sezione dedicata →</a>
+      <div>
+        <a href="prodotti.php" class="btn btn--accent">Scopri di più nella sezione dedicata →</a>
+      </div>
     </div>
-  </div>
 </section>
 
 <!-- ============ SEZIONE 5 — Contatti  ============ -->
@@ -303,4 +308,4 @@ function shopThumb(array $prodotti, int $i): void {
   </div>
 </section>
 
-<?php include __DIR__ . '/includes/footer.php'?>
+<?php include __DIR__ . '/includes/footer.php' ?>
