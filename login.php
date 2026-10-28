@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <div class="authbox no_padding">
-        <video autoplay loop muted playsinline class="video-login">
+        <video autoplay loop muted playsinline class="video-login" aria-hidden="true">
           <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
         </video>
       </div>

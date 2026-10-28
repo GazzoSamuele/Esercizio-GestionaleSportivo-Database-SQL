@@ -17,7 +17,7 @@
   --muted: #5c6b4a;
 
   --accent: #cf9b4e;
-  --accent-dark: #a9721f;
+  --accent-dark: #8f5e14;
   --accent-soft: #f7ecd7;
 
   --textColor1: #f3f4f6;
@@ -524,13 +524,13 @@ hr {
   text-align: center;
   font-size: 12px;
   letter-spacing: 0.06em;
-  color: var(--color-1);
+  color: var(--muted);
   text-transform: uppercase;
   font-weight: 700;
   padding: 14px 22px;
   border-top: 1px solid var(--line-2);
   border-bottom: 1px solid var(--line-2);
-  background: var(--paper);
+  background: var(--muted);
 }
 .dash-table td {
   padding: 14px 22px;
@@ -734,7 +734,7 @@ hr {
   font-size: 15px;
 }
 .news-item small {
-  color: var(--color-1);
+  color: var(--muted);
   font-size: 12px;
   text-transform: capitalize;
 }

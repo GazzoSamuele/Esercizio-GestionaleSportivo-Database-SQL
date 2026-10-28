@@ -21,7 +21,7 @@ function shopThumb(array $prodotti, int $i): void
 <!-- ============ HERO ============ -->
 <section class="hero">
   <div class="container_hero">
-    <video autoplay loop muted playsinline class="video-background">
+    <video autoplay loop muted playsinline class="video-background" aria-hidden="true">
       <source src="<?= BASE_URL ?>/assets/video/hero-sport.mp4" type="video/mp4">
     </video>
     <div class="hero_content">
@@ -209,7 +209,7 @@ function shopThumb(array $prodotti, int $i): void
     </div>
 
     <div>
-      <a href="calendario.php" class="btn btn--primary">Scopri di più nella sezione dedicata →</a>
+      <a href="calendario.php" class="btn btn--primary">Vai al calendario →</a>
     </div>
   </div>
 </section>
@@ -268,7 +268,7 @@ function shopThumb(array $prodotti, int $i): void
       </div>
 
       <div>
-        <a href="prodotti.php" class="btn btn--accent">Scopri di più nella sezione dedicata →</a>
+        <a href="prodotti.php" class="btn btn--accent">Vai allo shop →</a>
       </div>
     </div>
 </section>
@@ -303,7 +303,7 @@ function shopThumb(array $prodotti, int $i): void
     </div>
 
     <div>
-      <a href="contatti.php" class="btn btn--primary">Scopri di più nella sezione dedicata →</a>
+      <a href="contatti.php" class="btn btn--primary">Scopri come iscriverti →</a>
     </div>
   </div>
 </section>
